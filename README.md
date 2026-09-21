@@ -1,27 +1,28 @@
-# Awesome Google Tag Manager MCP [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+# Awesome Google Tag Manager (GTM) MCP [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-> A curated plain-English index of Model Context Protocol (MCP) servers, agent tools, and client infrastructure built for **[Google Tag Manager](https://tagmanager.google.com/)**, automated tag management, and analytics engineering.
+> A curated list of Model Context Protocol (MCP) servers, agent tools, and client infrastructure for Google Tag Manager (GTM).
 
-Official links: [Google Tag Manager](https://tagmanager.google.com/) · [GTM API v2 Docs](https://developers.google.com/tag-platform/tag-manager/api/v2) · [Server-Side GTM Guide](https://developers.google.com/tag-platform/tag-manager/server-side) · [Model Context Protocol Specification](https://modelcontextprotocol.io/) · [Tag Assistant](https://tagassistant.google.com/)
+Google Tag Manager (GTM) Model Context Protocol (MCP) servers bridge AI coding assistants and autonomous agents to Google's container management APIs. This index organizes verified open-source GTM MCP servers, developer tools, auditing linters, and headless QA agents.
+
+Official resources: [Google Tag Manager API](https://developers.google.com/tag-platform/tag-manager/api/v2) | [Model Context Protocol Specification](https://modelcontextprotocol.io)
 
 ---
 
 ## Contents
 
-1. [Client-side web container operations (45)](#1-client-side-web-container-operations)
+1. [Client-side web container operations (27)](#1-client-side-web-container-operations)
    - [Canonical and comprehensive GTM API v2 servers (7)](#canonical-and-comprehensive-gtm-api-v2-servers)
-   - [Lightweight local stdio container inspection (11)](#lightweight-local-stdio-container-inspection)
-   - [Workspace branching, synchronization, and change staging (16)](#workspace-branching-synchronization-and-change-staging)
+   - [Lightweight local stdio container inspection (8)](#lightweight-local-stdio-container-inspection)
+   - [Workspace branching, synchronization, and change staging (1)](#workspace-branching-synchronization-and-change-staging)
    - [Custom JavaScript variable generation and ES5 AST validation (1)](#custom-javascript-variable-generation-and-es5-ast-validation)
    - [Declarative Infrastructure-as-Code container provisioning (2)](#declarative-infrastructure-as-code-container-provisioning)
    - [Container snippet injection and website installation (2)](#container-snippet-injection-and-website-installation)
    - [Multi-account hierarchy browsing and container discovery (6)](#multi-account-hierarchy-browsing-and-container-discovery)
-2. [Server-side GTM and edge infrastructure (13)](#2-server-side-gtm-and-edge-infrastructure)
+2. [Server-side GTM and edge infrastructure (9)](#2-server-side-gtm-and-edge-infrastructure)
    - [Hosted edge proxy and managed Cloudflare Worker endpoints (3)](#hosted-edge-proxy-and-managed-cloudflare-worker-endpoints)
-   - [Self-hosted containerized Docker and Cloud Run infrastructure (4)](#self-hosted-containerized-docker-and-cloud-run-infrastructure)
+   - [Self-hosted containerized Docker and Cloud Run infrastructure (2)](#self-hosted-containerized-docker-and-cloud-run-infrastructure)
    - [Server-side HTTP client routing and request transformations (2)](#server-side-http-client-routing-and-request-transformations)
-   - [Server-side attribution event forwarding and ClickHouse warehousing (2)](#server-side-attribution-event-forwarding-and-clickhouse-warehousing)
-   - [LLM crawler detection and AI traffic classification (1)](#llm-crawler-detection-and-ai-traffic-classification)
+   - [Server-side attribution event forwarding and ClickHouse warehousing (1)](#server-side-attribution-event-forwarding-and-clickhouse-warehousing)
    - [Server-side operational rule enforcement and Stape pitfall auditing (1)](#server-side-operational-rule-enforcement-and-stape-pitfall-auditing)
 3. [Operational safety, mutation gates, and quota control (7)](#3-operational-safety-mutation-gates-and-quota-control)
    - [Proactive request rate-pacing and 0.25 QPS quota protection (1)](#proactive-request-rate-pacing-and-025-qps-quota-protection)
@@ -29,69 +30,57 @@ Official links: [Google Tag Manager](https://tagmanager.google.com/) · [GTM API
    - [Enterprise IAM service-account isolation and write-gated authentication (2)](#enterprise-iam-service-account-isolation-and-write-gated-authentication)
    - [Container rollback, tag state toggling, and version freezing (2)](#container-rollback-tag-state-toggling-and-version-freezing)
    - [Localized read-only guardrails and human-in-the-loop audit gates (1)](#localized-read-only-guardrails-and-human-in-the-loop-audit-gates)
-4. [Testing, QA, dataLayer assertions, and CDN lag bypass (6)](#4-testing-qa-datalayer-assertions-and-cdn-lag-bypass)
+4. [Testing, QA, dataLayer assertions, and CDN lag bypass (5)](#4-testing-qa-datalayer-assertions-and-cdn-lag-bypass)
    - [Tag Assistant Preview automation and WebSocket debugging (1)](#tag-assistant-preview-automation-and-websocket-debugging)
    - [Synthetic browser journey execution and dataLayer event assertion (2)](#synthetic-browser-journey-execution-and-datalayer-event-assertion)
    - [Automated tag firing acceptance testing and defect remediation (2)](#automated-tag-firing-acceptance-testing-and-defect-remediation)
-   - [Scriptless HTML regression testing and clean DOM verification (1)](#scriptless-html-regression-testing-and-clean-dom-verification)
 5. [Governance, compliance, auditing, and linting (6)](#5-governance-compliance-auditing-and-linting)
    - [Consent Mode v2 policy enforcement and privacy gate auditing (1)](#consent-mode-v2-policy-enforcement-and-privacy-gate-auditing)
    - [Container inventory export and Google Sheets automated diffing (2)](#container-inventory-export-and-google-sheets-automated-diffing)
    - [Static container dependency analysis and orphan variable linting (1)](#static-container-dependency-analysis-and-orphan-variable-linting)
    - [Web performance profiling and tracking hygiene monitoring (1)](#web-performance-profiling-and-tracking-hygiene-monitoring)
    - [Autonomous container health auditing and multi-rule diagnostics (1)](#autonomous-container-health-auditing-and-multi-rule-diagnostics)
-6. [Hybrid analytics and cross-platform tag synchronization (29)](#6-hybrid-analytics-and-cross-platform-tag-synchronization)
-   - [Dual-platform GTM and GA4 configuration and event parameter validation (6)](#dual-platform-gtm-and-ga4-configuration-and-event-parameter-validation)
+6. [Hybrid analytics and cross-platform tag synchronization (25)](#6-hybrid-analytics-and-cross-platform-tag-synchronization)
+   - [Dual-platform GTM and GA4 configuration and event parameter validation (5)](#dual-platform-gtm-and-ga4-configuration-and-event-parameter-validation)
    - [Google Ads conversion tracking and enhanced conversion setup (2)](#google-ads-conversion-tracking-and-enhanced-conversion-setup)
    - [Full Google marketing stack unified orchestration (14)](#full-google-marketing-stack-unified-orchestration)
    - [Multi-engine search and performance marketing synchronization (1)](#multi-engine-search-and-performance-marketing-synchronization)
-   - [Analytics data warehouse staging, dbt modeling, and BI dashboarding (4)](#analytics-data-warehouse-staging-dbt-modeling-and-bi-dashboarding)
+   - [Analytics data warehouse staging, dbt modeling, and BI dashboarding (1)](#analytics-data-warehouse-staging-dbt-modeling-and-bi-dashboarding)
    - [Agency call-tracking and third-party attribution integration (2)](#agency-call-tracking-and-third-party-attribution-integration)
-7. [Developer tools, embedded UIs, and caching (8)](#7-developer-tools-embedded-uis-and-caching)
+7. [Developer tools, embedded UIs, and caching (4)](#7-developer-tools-embedded-uis-and-caching)
    - [High-throughput multi-tenant daemon architectures and SSE streaming (1)](#high-throughput-multi-tenant-daemon-architectures-and-sse-streaming)
    - [Curated agent plugin bundles and cross-service automation packs (2)](#curated-agent-plugin-bundles-and-cross-service-automation-packs)
-   - [Ecosystem registries and machine-readable tool catalogs (1)](#ecosystem-registries-and-machine-readable-tool-catalogs)
-   - [Gamified tag management sandboxes and educational simulators (1)](#gamified-tag-management-sandboxes-and-educational-simulators)
-   - [Enterprise Microsoft Copilot Studio connector integration (1)](#enterprise-microsoft-copilot-studio-connector-integration)
-   - [Self-hosted agency deployment wrappers and environment presets (2)](#self-hosted-agency-deployment-wrappers-and-environment-presets)
-8. [Experimental and concept scaffolds (23)](#8-experimental-and-concept-scaffolds)
-   - [Early-stage experimental container prototypes and unverified servers (21)](#early-stage-experimental-container-prototypes-and-unverified-servers)
+   - [Self-hosted agency deployment wrappers and environment presets (1)](#self-hosted-agency-deployment-wrappers-and-environment-presets)
+8. [Experimental and concept scaffolds (12)](#8-experimental-and-concept-scaffolds)
+   - [Early-stage experimental container prototypes and unverified servers (11)](#early-stage-experimental-container-prototypes-and-unverified-servers)
    - [Framework-scaffolded and auto-generated MCP wrappers (1)](#framework-scaffolded-and-auto-generated-mcp-wrappers)
-   - [Alternative developer-native tag management engines (1)](#alternative-developer-native-tag-management-engines)
 9. [Resources](#resources)
 10. [Reference](#reference)
 
 ---
 
-## Developer Comparison Matrix
+## Quick comparison
 
-A screen-optimized decision matrix evaluating key production GTM MCP servers across discriminating architectural, safety, and quota constraints. Click any project name to jump directly to its detailed catalog entry.
+Comparison of leading Google Tag Manager MCP servers across transport, runtime, and operational capabilities.
 
-| Project | Scope | Runtime | Transport | 0.25 QPS Pacing | Compiler Trap | Safety Gate | CDN QA |
-|---|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| [**rgellis**](#canonical-and-comprehensive-gtm-api-v2-servers) | Web (106 API) | Python | stdio | ⚡ Backoff | ✅ Trapped | Ambient | ❌ None |
-| [**A1-x-Tech**](#proactive-request-rate-pacing-and-025-qps-quota-protection) | Web CRUD | TypeScript | stdio | **✅ 4.2s Queue** | **✅ Trapped** | Ambient | ❌ None |
-| [**stape-io**](#hosted-edge-proxy-and-managed-cloudflare-worker-endpoints) | Web + sGTM | Worker | Worker URL | ⚡ Cloudflare | ❌ Ignored | Ambient | ❌ None |
-| [**KUHL-HQ**](#enterprise-iam-service-account-isolation-and-write-gated-authentication) | Web + sGTM | Node.js | stdio | ❌ None | ❌ Ignored | **Service Account** | ❌ None |
-| [**kb223**](#multi-tiered-permission-gates-and-cryptographic-mrtr-verification) | Web + GA4 | Python | stdio | ⚡ Delayed | ✅ Trapped | **MRTR Token** | ❌ None |
-| [**haiqigeng**](#tag-assistant-preview-automation-and-websocket-debugging) | Web Preview | Playwright | stdio | N/A | N/A | Read-Only | **Tag Assist (0s)** |
-| [**mharnett**](#dual-platform-gtm-and-ga4-configuration-and-event-parameter-validation) | Web + GA4 | TypeScript | stdio | ❌ None | ❌ Ignored | **No-Publish** | ❌ None |
-| [**paolobietolini**](#canonical-and-comprehensive-gtm-api-v2-servers) | Web (94 Tools) | Go | stdio / SSE | ❌ None | ❌ Ignored | Ambient | ❌ None |
-| [**flockstore**](#self-hosted-containerized-docker-and-cloud-run-infrastructure) | sGTM Edge | Go | HTTP | ✅ Go Limiter | N/A | Read-Only | Real-time Edge |
-| [**digitalXperiments**](#synthetic-browser-journey-execution-and-datalayer-event-assertion) | Web Assert | Python | stdio | ❌ None | N/A | Safe Testing | **dataLayer QA** |
-| [**samarthanalytics**](#server-side-http-client-routing-and-request-transformations) | Web Audit | Python | stdio | ❌ None | ✅ Trapped | Read-Only | ❌ None |
-| [**burhan29ee**](#dual-platform-gtm-and-ga4-configuration-and-event-parameter-validation) | Web + GA4 | Python | stdio | ❌ None | ❌ Ignored | Ambient | Event Check |
-| [**jinchliu**](#lightweight-local-stdio-container-inspection) | Web Inspect | Python | stdio | ❌ None | ❌ Ignored | Read-Only (ADC) | ❌ None |
-| [**VasthavM**](#lightweight-local-stdio-container-inspection) | Web Branching | TypeScript | stdio | ❌ None | ❌ Ignored | Workspace Staging | ❌ None |
-| [**insightful-pipe**](#container-rollback-tag-state-toggling-and-version-freezing) | Web Rollback | TypeScript | Remote SaaS | ⚡ SaaS Pacing | ✅ Trapped | **Single-Entity** | ❌ None |
-| [**acamolese**](#consent-mode-v2-policy-enforcement-and-privacy-gate-auditing) | Web AST Lint | Python | stdio | N/A | N/A | **Read-Only** | ❌ None |
-| [**pouyanafisi**](#workspace-branching-synchronization-and-change-staging) | Web (104 Tools) | TypeScript | stdio | ❌ None (429) | ❌ Ignored | Ambient | ❌ None |
+| Project | Runtime | Transport | Tools | Safety Mode | Post-Deploy QA |
+|---|---|---|---|---|---|
+| [**rgellis/google-tag-manager-mcp**](https://github.com/rgellis/google-tag-manager-mcp) | Python | Stdio | 106 | Read-Only Flag | Unit Tests (383) |
+| [**paolobietolini/gtm-mcp-server**](https://github.com/paolobietolini/gtm-mcp-server) | Go / Python | Stdio / HTTP | 94 | Workspace Gates | Agent Examples |
+| [**stape-io/google-tag-manager-mcp-server**](https://github.com/stape-io/google-tag-manager-mcp-server) | TypeScript | Cloudflare / Stdio | 42 | User OAuth | sGTM Edge Proxy |
+| [**A1-x-Tech/mcp-google-tagmanager**](https://github.com/A1-x-Tech/mcp-google-tagmanager) | TypeScript | Stdio | 18 | 0.25 QPS Serializer | Error Trapping |
+| [**kb223/gtm-ga4-mcp**](https://github.com/kb223/gtm-ga4-mcp) | TypeScript | Stdio | 32 | Two-Phase Review (MRTR) | Schema Sync |
+| [**KUHL-HQ/gtm-mcp**](https://github.com/KUHL-HQ/gtm-mcp) | Node.js | Stdio | 20 | Service Account IAM | Air-gapped |
+| [**haiqigeng/6-gtm-client-recette**](https://github.com/haiqigeng/6-gtm-client-recette) | Playwright | Stdio | 8 | WebSocket Tunnel | Tag Assistant Live |
+| [**digitalXperiments/fluxito**](https://github.com/digitalXperiments/fluxito) | Node.js | Stdio | 14 | Read-Only | dataLayer Assertions |
+| [**acamolese/gtm-audit-mcp**](https://github.com/acamolese/gtm-audit-mcp) | Python | Stdio | 12 | Read-Only | Static AST Linting |
+| [**burhan29ee/google-analytics-gtm-mcp**](https://github.com/burhan29ee/google-analytics-gtm-mcp) | TypeScript | Stdio | 28 | Workspace Drafts | GA4 Measurement |
 
 ---
 
 ## 1. Client-side web container operations
 
-*45 projects. MCP servers and agent skills executing client-side Google Tag Manager web container operations, entity CRUD, and workspace synchronization.*
+*27 projects. MCP servers and agent skills executing client-side Google Tag Manager web container operations, entity CRUD, and workspace synchronization.*
 
 ### Canonical and comprehensive GTM API v2 servers
 
@@ -100,7 +89,7 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 | Project | What it does |
 |---|---|
 | [**rgellis/google-tag-manager-mcp**](https://github.com/rgellis/google-tag-manager-mcp) | Provides complete, typed FastMCP coverage across all 106 GTM API v2 methods with 383 unit tests and strict Pyright verification. |
-| [**paolobietolini/gtm-mcp-server**](https://github.com/paolobietolini/gtm-mcp-server) | Runs a high-throughput Go daemon exposing 94 GTM API v2 tools with an integrated FastMCP agent orchestration client (distributed across 20+ community builds). |
+| [**paolobietolini/gtm-mcp-server**](https://github.com/paolobietolini/gtm-mcp-server) | Runs a high-throughput Go daemon exposing 94 GTM API v2 tools with an integrated FastMCP agent orchestration client. |
 | [**valentineffi/zenda-tag-manager-mcp**](https://github.com/valentineffi/zenda-tag-manager-mcp) | Exposes 42 typed GTM API v2 tools over local stdio with TypeScript schemas covering accounts, containers, workspaces, tags, and triggers. |
 | [**AlexStansfield/gtm-mcp-server**](https://github.com/AlexStansfield/gtm-mcp-server) | Provides lightweight TypeScript stdio tools for inspecting and updating container configurations directly within coding agent chats. |
 | [**Gatescrispy/mcp-gtm-ultimate**](https://github.com/Gatescrispy/mcp-gtm-ultimate) | Exposes 70+ GTM API tools over local stdio with custom Python wrappers for container and workspace automation. |
@@ -109,16 +98,13 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 
 ### Lightweight local stdio container inspection
 
-*11 projects. Inspect container configurations locally via stdio transports in Claude Desktop, Cursor, and Windsurf without cloud proxies.*
+*8 projects. Inspect container configurations locally via stdio transports in Claude Desktop, Cursor, and Windsurf without cloud proxies.*
 
 | Project | What it does |
 |---|---|
 | [**VasthavM/google-tag-manager-mcp**](https://github.com/VasthavM/google-tag-manager-mcp) | Provides clean multi-workspace branching, snapshot comparisons, and change staging for collaborative GTM development. |
 | [**jinchliu/google-tag-manager-mcp**](https://github.com/jinchliu/google-tag-manager-mcp) | Enables local container inspection over stdio with Google Cloud Application Default Credentials authentication. |
 | [**jinchliu/tagmanager-mcp**](https://github.com/jinchliu/tagmanager-mcp) | Resolves Windows stdio pipe deadlocks and provides local Application Default Credentials authentication for container inspection. |
-| [**ypsum/google-tag-manager-mcp**](https://github.com/ypsum/google-tag-manager-mcp) | Connects Claude Desktop to GTM API v2 for querying container metadata and tag configurations. |
-| [**victorwhale/google-tag-manager-mcp**](https://github.com/victorwhale/google-tag-manager-mcp) | Provides a minimalist stdio wrapper for listing and inspecting GTM accounts and web containers. |
-| [**mattvisme/google-tag-manager-mcp**](https://github.com/mattvisme/google-tag-manager-mcp) | Enables read-only GTM workspace exploration and variable inspection directly within agent sessions. |
 | [**brynj-digital/gtm-mcp-server**](https://github.com/brynj-digital/gtm-mcp-server) | Implements self-hosted GTM container inspection tools tailored for agency analytics workflows. |
 | [**laiskickow/gtm-mcp-server**](https://github.com/laiskickow/gtm-mcp-server) | Provides local stdio tools for inspecting and auditing web container triggers and variables. |
 | [**techdeveloper-org/mcp-gtm**](https://github.com/techdeveloper-org/mcp-gtm) | Enables natural language querying of GTM container assets and tag firing rules. |
@@ -127,30 +113,15 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 
 ### Workspace branching, synchronization, and change staging
 
-*16 projects. Create, diff, synchronize, and resolve merge conflicts across multi-user workspaces before container publication.*
+*1 project. Create, diff, synchronize, and resolve merge conflicts across multi-user workspaces before container publication.*
 
 | Project | What it does |
 |---|---|
 | [**pouyanafisi/gtm-mcp**](https://github.com/pouyanafisi/gtm-mcp) | Provides an early 104-tool stdio server covering client-side workspace, tag, trigger, and variable management. |
-| [**notSet-rawData/gtm-mcp**](https://github.com/notSet-rawData/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**iflow-mcp/pouyanafisi-gtm-mcp**](https://github.com/iflow-mcp/pouyanafisi-gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**PTBWA-jaeyongshim/gtm-mcp**](https://github.com/PTBWA-jaeyongshim/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**gigantsc/gtm-mcp**](https://github.com/gigantsc/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**prodwietecha/gtm-mcp**](https://github.com/prodwietecha/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**Metatalentum/gtm-mcp**](https://github.com/Metatalentum/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**gsteffin/gtm-mcp-fork**](https://github.com/gsteffin/gtm-mcp-fork) | Provides tooling for Google Tag Manager containers. |
-| [**marcoz93/gtm-mcp**](https://github.com/marcoz93/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**pprompt/gtm-mcp**](https://github.com/pprompt/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**clichedmoog/gtm-mcp**](https://github.com/clichedmoog/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**sevenwave/gtm-mcp**](https://github.com/sevenwave/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**topk-ai/gtm-mcp**](https://github.com/topk-ai/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**promptlibraryai/gtm-mcp**](https://github.com/promptlibraryai/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**mentaltoughness/gtm-mcp**](https://github.com/mentaltoughness/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**mseep-ai/gtm-mcp**](https://github.com/mseep-ai/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
 
 ### Custom JavaScript variable generation and ES5 AST validation
 
-*1 projects. Generate and lint ES5-compliant JavaScript functions to prevent GTM sandbox syntax execution crashes.*
+*1 project. Generate and lint ES5-compliant JavaScript functions to prevent GTM sandbox syntax execution crashes.*
 
 | Project | What it does |
 |---|---|
@@ -172,7 +143,7 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 | Project | What it does |
 |---|---|
 | [**owgit/gtm-skill**](https://github.com/owgit/gtm-skill) | Automates the discovery of DOM injection targets and embeds GTM container snippet scripts into web pages. |
-| [**desdobroprod-eng/install-tags-10dobro**](https://github.com/desdobroprod-eng/install-tags-10dobro) | Provides tooling for Google Tag Manager containers. |
+| [**desdobroprod-eng/install-tags-10dobro**](https://github.com/desdobroprod-eng/install-tags-10dobro) | Automates tracking tag and container snippet installation across web applications with Claude Code skills. |
 
 ### Multi-account hierarchy browsing and container discovery
 
@@ -181,17 +152,15 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 | Project | What it does |
 |---|---|
 | [**CarC96/google-tag-manager-mcp**](https://github.com/CarC96/google-tag-manager-mcp) | Navigates enterprise account hierarchies and discovers active web containers across multiple Google organizations. |
-| [**dhawalshah/google-tag-manager-mcp**](https://github.com/dhawalshah/google-tag-manager-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**noviq-ai/google-tagmanager-mcp**](https://github.com/noviq-ai/google-tagmanager-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**beuch26/webguru-gtm-mcp**](https://github.com/beuch26/webguru-gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**Dayuse-Labs/gtm-mcp**](https://github.com/Dayuse-Labs/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**sidiio/mcp-gtm**](https://github.com/sidiio/mcp-gtm) | Provides tooling for Google Tag Manager containers. |
-
----
+| [**dhawalshah/google-tag-manager-mcp**](https://github.com/dhawalshah/google-tag-manager-mcp) | Connects Claude and LLM assistants to GTM API v2 across local stdio and remote HTTP endpoints. |
+| [**noviq-ai/google-tagmanager-mcp**](https://github.com/noviq-ai/google-tagmanager-mcp) | Provides a Python FastMCP interface for navigating GTM accounts, container permissions, and folder hierarchies. |
+| [**beuch26/webguru-gtm-mcp**](https://github.com/beuch26/webguru-gtm-mcp) | Delivers a French-localized MCP server for Google Tag Manager container browsing in Claude Desktop and Claude Code. |
+| [**Dayuse-Labs/gtm-mcp**](https://github.com/Dayuse-Labs/gtm-mcp) | Provides a remote TypeScript MCP server enabling AI agents to read and modify enterprise GTM web containers. |
+| [**sidiio/mcp-gtm**](https://github.com/sidiio/mcp-gtm) | Connects Claude.ai and Cursor to Google Tag Manager containers via OAuth2 authentication. |
 
 ## 2. Server-side GTM and edge infrastructure
 
-*13 projects. MCP servers and edge tools configuring server-side GTM containers, Cloudflare Workers, Cloud Run, and event transformations.*
+*9 projects. MCP servers and edge tools configuring server-side GTM containers, Cloudflare Workers, Cloud Run, and event transformations.*
 
 ### Hosted edge proxy and managed Cloudflare Worker endpoints
 
@@ -199,20 +168,18 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 
 | Project | What it does |
 |---|---|
-| [**stape-io/google-tag-manager-mcp-server**](https://github.com/stape-io/google-tag-manager-mcp-server) | Deploys a Cloudflare Worker edge proxy providing native Server-Side GTM client, transformation, and container management (adopted across 75+ agency forks on GitHub). |
+| [**stape-io/google-tag-manager-mcp-server**](https://github.com/stape-io/google-tag-manager-mcp-server) | Deploys a Cloudflare Worker edge proxy providing native Server-Side GTM client, transformation, and container management. |
 | [**stape-io/stape-mcp-server**](https://github.com/stape-io/stape-mcp-server) | Integrates Stape Cloud hosting with GTM container management, provisioning sGTM custom domains and monitoring edge instances. |
-| [**tijevlam/unboundai-google-tag-manager-mcp-server**](https://github.com/tijevlam/unboundai-google-tag-manager-mcp-server) | Provides tooling for Google Tag Manager containers. |
+| [**tijevlam/unboundai-google-tag-manager-mcp-server**](https://github.com/tijevlam/unboundai-google-tag-manager-mcp-server) | Deploys a TypeScript MCP server proxy connecting UnboundAI agents to GTM server-side containers. |
 
 ### Self-hosted containerized Docker and Cloud Run infrastructure
 
-*4 projects. Deploy and monitor server-side GTM container images directly on private GCP Cloud Run clusters or Docker engines.*
+*2 projects. Deploy and monitor server-side GTM container images directly on private GCP Cloud Run clusters or Docker engines.*
 
 | Project | What it does |
 |---|---|
-| [**metkamedia/gtm-mcp-server**](https://github.com/metkamedia/gtm-mcp-server) | Provides tooling for Google Tag Manager containers. |
+| [**metkamedia/gtm-mcp-server**](https://github.com/metkamedia/gtm-mcp-server) | Packages GTM MCP in Docker containers for deploying dedicated agent bridge services on private cloud infrastructure. |
 | [**flockstore/platofrm-gtm-mcp**](https://github.com/flockstore/platofrm-gtm-mcp) | Serves as a stateless Go sidecar verifying Server-Side GTM hits and event routing without browser cookies. |
-| [**sachin-taldar/gtm-mcp-server**](https://github.com/sachin-taldar/gtm-mcp-server) | Provides tooling for Google Tag Manager containers. |
-| [**r-ms/gtm-mcp-server**](https://github.com/r-ms/gtm-mcp-server) | Provides tooling for Google Tag Manager containers. |
 
 ### Server-side HTTP client routing and request transformations
 
@@ -221,34 +188,23 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 | Project | What it does |
 |---|---|
 | [**samarthanalytics-sj/samarth-analytics-mcp**](https://github.com/samarthanalytics-sj/samarth-analytics-mcp) | Audits European Economic Area Consent Mode v2 parameters and validates tag trigger reachability queues. |
-| [**bintangazhari/gtm-mcp-server**](https://github.com/bintangazhari/gtm-mcp-server) | Provides tooling for Google Tag Manager containers. |
+| [**bintangazhari/gtm-mcp-server**](https://github.com/bintangazhari/gtm-mcp-server) | Implements a self-hosted JavaScript MCP server for routing server-side container events and webhook endpoints. |
 
 ### Server-side attribution event forwarding and ClickHouse warehousing
 
-*2 projects. Extract server-side event payloads and stream them into high-performance analytical ClickHouse databases.*
+*1 project. Extract server-side event payloads and stream them into high-performance analytical ClickHouse databases.*
 
 | Project | What it does |
 |---|---|
-| [**AdPageGroup/AdPageAttributionTag**](https://github.com/AdPageGroup/AdPageAttributionTag) | Provides tooling for Google Tag Manager containers. |
-| [**adpage-dev/google-tag-manager-mcp-server**](https://github.com/adpage-dev/google-tag-manager-mcp-server) | Provides tooling for Google Tag Manager containers. |
-
-### LLM crawler detection and AI traffic classification
-
-*1 projects. Detect traffic originating from large language models and segment AI-influenced visitor flows inside GTM.*
-
-| Project | What it does |
-|---|---|
-| [**TAGGRS/LLM-Checker**](https://github.com/TAGGRS/LLM-Checker) | Provides tooling for Google Tag Manager containers. |
+| [**adpage-dev/google-tag-manager-mcp-server**](https://github.com/adpage-dev/google-tag-manager-mcp-server) | Bridges server-side container configurations to AdPage attribution services and conversion APIs. |
 
 ### Server-side operational rule enforcement and Stape pitfall auditing
 
-*1 projects. Audit server-side container setups against Stape operational best practices, cookie lifetimes, and edge pitfalls.*
+*1 project. Audit server-side container setups against Stape operational best practices, cookie lifetimes, and edge pitfalls.*
 
 | Project | What it does |
 |---|---|
-| [**tmnh83/gtm-tracking-skill**](https://github.com/tmnh83/gtm-tracking-skill) | Provides tooling for Google Tag Manager containers. |
-
----
+| [**tmnh83/gtm-tracking-skill**](https://github.com/tmnh83/gtm-tracking-skill) | Provides a Claude skill cataloging best practices and architectural pitfalls for server-side GTM and Meta CAPI setups. |
 
 ## 3. Operational safety, mutation gates, and quota control
 
@@ -256,7 +212,7 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 
 ### Proactive request rate-pacing and 0.25 QPS quota protection
 
-*1 projects. Enforce request serialization queues with 4.2-second pauses to guarantee agent operations never trigger Google 429 quota exhaustion.*
+*1 project. Enforce request serialization queues with 4.2-second pauses to guarantee agent operations never trigger Google 429 quota exhaustion.*
 
 | Project | What it does |
 |---|---|
@@ -264,7 +220,7 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 
 ### Multi-tiered permission gates and cryptographic MRTR verification
 
-*1 projects. Enforce read/write/destructive privilege tiers and require single-use cryptographic tokens before executing destructive mutations.*
+*1 project. Enforce read/write/destructive privilege tiers and require single-use cryptographic tokens before executing destructive mutations.*
 
 | Project | What it does |
 |---|---|
@@ -277,7 +233,7 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 | Project | What it does |
 |---|---|
 | [**KUHL-HQ/gtm-mcp**](https://github.com/KUHL-HQ/gtm-mcp) | Provides an air-gapped local Node.js stdio server using direct Google Cloud Service Account JSON keys without cloud telemetry. |
-| [**thesyedyahya/gtm-mcp**](https://github.com/thesyedyahya/gtm-mcp) | Provides tooling for Google Tag Manager containers. |
+| [**thesyedyahya/gtm-mcp**](https://github.com/thesyedyahya/gtm-mcp) | Exposes 26 GTM API v2 tools over Python FastMCP authenticated via Google Cloud Service Account credentials. |
 
 ### Container rollback, tag state toggling, and version freezing
 
@@ -285,26 +241,24 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 
 | Project | What it does |
 |---|---|
-| [**gustavomkt/mcp-tagmanager**](https://github.com/gustavomkt/mcp-tagmanager) | Provides tooling for Google Tag Manager containers. |
-| [**Insightful-Pipe/google-tag-manager-mcp-server**](https://github.com/Insightful-Pipe/google-tag-manager-mcp-server) | Provides tooling for Google Tag Manager containers. |
+| [**gustavomkt/mcp-tagmanager**](https://github.com/gustavomkt/mcp-tagmanager) | Provides Spanish-language container tools for auditing and pausing risky web container tags safely. |
+| [**Insightful-Pipe/google-tag-manager-mcp-server**](https://github.com/Insightful-Pipe/google-tag-manager-mcp-server) | Enables granular single-entity rollbacks to restore individual tags or variables without resetting entire workspaces. |
 
 ### Localized read-only guardrails and human-in-the-loop audit gates
 
-*1 projects. Enforce read-only container inspection modes by default with mandatory human confirmation for regional production changes.*
+*1 project. Enforce read-only container inspection modes by default with mandatory human confirmation for regional production changes.*
 
 | Project | What it does |
 |---|---|
-| [**lucasbueno-live/gtm-mcp-liveseo**](https://github.com/lucasbueno-live/gtm-mcp-liveseo) | Provides tooling for Google Tag Manager containers. |
-
----
+| [**lucasbueno-live/gtm-mcp-liveseo**](https://github.com/lucasbueno-live/gtm-mcp-liveseo) | Delivers a localized, read-only GTM container exploration tool for Claude to prevent accidental production mutations. |
 
 ## 4. Testing, QA, dataLayer assertions, and CDN lag bypass
 
-*6 projects. Validation frameworks, WebSocket preview interceptors, and headless browser journeys testing tag firing and bypassing CDN cache lag.*
+*5 projects. Validation frameworks, WebSocket preview interceptors, and headless browser journeys testing tag firing and bypassing CDN cache lag.*
 
 ### Tag Assistant Preview automation and WebSocket debugging
 
-*1 projects. Connect directly to Google Tag Assistant Preview sessions via WebSockets to test draft container configurations without waiting for CDN propagation.*
+*1 project. Connect directly to Google Tag Assistant Preview sessions via WebSockets to test draft container configurations without waiting for CDN propagation.*
 
 | Project | What it does |
 |---|---|
@@ -326,17 +280,7 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 | Project | What it does |
 |---|---|
 | [**dreamfoundryai/gtm-audit-skill**](https://github.com/dreamfoundryai/gtm-audit-skill) | Analyzes container JSON export files to identify unused variables and orphaned trigger configurations. |
-| [**haiqigeng/1-web-analyst-mcp-setup**](https://github.com/haiqigeng/1-web-analyst-mcp-setup) | Provides tooling for Google Tag Manager containers. |
-
-### Scriptless HTML regression testing and clean DOM verification
-
-*1 projects. Verify that web applications render correctly when tracking tags are stripped or isolated in test sandboxes.*
-
-| Project | What it does |
-|---|---|
-| [**naeini123/GTM-MCP-DEMO**](https://github.com/naeini123/GTM-MCP-DEMO) | Provides tooling for Google Tag Manager containers. |
-
----
+| [**haiqigeng/1-web-analyst-mcp-setup**](https://github.com/haiqigeng/1-web-analyst-mcp-setup) | Provides PowerShell and shell setup skills for safely connecting and testing web analytics MCP servers across Codex and Claude. |
 
 ## 5. Governance, compliance, auditing, and linting
 
@@ -344,7 +288,7 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 
 ### Consent Mode v2 policy enforcement and privacy gate auditing
 
-*1 projects. Scan container tags for required consent states, verify Default Consent signals, and detect unconsented tracking tags.*
+*1 project. Scan container tags for required consent states, verify Default Consent signals, and detect unconsented tracking tags.*
 
 | Project | What it does |
 |---|---|
@@ -357,50 +301,47 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 | Project | What it does |
 |---|---|
 | [**ajaxbarcelonacruyff/gtm-auditor**](https://github.com/ajaxbarcelonacruyff/gtm-auditor) | Applies static heuristic audit rules to detect container bloat, unattached triggers, and redundant tags. |
-| [**creativedesignseo/google-tag-manager-mcp**](https://github.com/creativedesignseo/google-tag-manager-mcp) | Provides tooling for Google Tag Manager containers. |
+| [**creativedesignseo/google-tag-manager-mcp**](https://github.com/creativedesignseo/google-tag-manager-mcp) | Audits web container health and exports tag catalogs for compliance verification. |
 
 ### Static container dependency analysis and orphan variable linting
 
-*1 projects. Traverse the entity graph in read-only mode to find unreferenced variables, unreachable trigger groups, and circular references.*
+*1 project. Traverse the entity graph in read-only mode to find unreferenced variables, unreachable trigger groups, and circular references.*
 
 | Project | What it does |
 |---|---|
-| [**tyssejc/gallium**](https://github.com/tyssejc/gallium) | Provides tooling for Google Tag Manager containers. |
+| [**tyssejc/gallium**](https://github.com/tyssejc/gallium) | Provides a read-only container analysis CLI and Claude skill for mapping tag dependencies and container complexity. |
 
 ### Web performance profiling and tracking hygiene monitoring
 
-*1 projects. Evaluate tag execution overhead, measure impact on Core Web Vitals, and identify bloated third-party scripts.*
+*1 project. Evaluate tag execution overhead, measure impact on Core Web Vitals, and identify bloated third-party scripts.*
 
 | Project | What it does |
 |---|---|
-| [**lpecom/webaudit-mcp**](https://github.com/lpecom/webaudit-mcp) | Provides tooling for Google Tag Manager containers. |
+| [**lpecom/webaudit-mcp**](https://github.com/lpecom/webaudit-mcp) | Audits live web pages for tracking hygiene, duplicate pixels, and GTM container loading performance. |
 
 ### Autonomous container health auditing and multi-rule diagnostics
 
-*1 projects. Execute autonomous multi-check diagnostic routines to evaluate container cleanliness, naming conventions, and structural hygiene.*
+*1 project. Execute autonomous multi-check diagnostic routines to evaluate container cleanliness, naming conventions, and structural hygiene.*
 
 | Project | What it does |
 |---|---|
-| [**wonyoungseong/gtmAgent**](https://github.com/wonyoungseong/gtmAgent) | Provides tooling for Google Tag Manager containers. |
-
----
+| [**wonyoungseong/gtmAgent**](https://github.com/wonyoungseong/gtmAgent) | Operates an autonomous Claude Code agent skill that inspects, cleans, and heals container configuration drift. |
 
 ## 6. Hybrid analytics and cross-platform tag synchronization
 
-*29 projects. Cross-platform orchestrators unifying GTM with GA4 event validation, Google Ads conversion tracking, and marketing data stacks.*
+*25 projects. Cross-platform orchestrators unifying GTM with GA4 event validation, Google Ads conversion tracking, and marketing data stacks.*
 
 ### Dual-platform GTM and GA4 configuration and event parameter validation
 
-*6 projects. Synchronize GTM tag parameters with GA4 event definitions, verify custom dimensions, and automate tracking setups across both platforms.*
+*5 projects. Synchronize GTM tag parameters with GA4 event definitions, verify custom dimensions, and automate tracking setups across both platforms.*
 
 | Project | What it does |
 |---|---|
 | [**burhan29ee/google-analytics-gtm-mcp**](https://github.com/burhan29ee/google-analytics-gtm-mcp) | Synchronizes GTM container event tags with downstream GA4 Measurement Protocol custom dimensions and conversion events. |
-| [**mharnett/mcp-gtm-ga4**](https://github.com/mharnett/mcp-gtm-ga4) | Provides safety by structural omission, deliberately omitting live container publish endpoints to mandate human-in-the-loop release gates. |
+| [**mharnett/mcp-gtm-ga4**](https://github.com/mharnett/mcp-gtm-ga4) | Manages Google Tag Manager web and server container configurations. |
 | [**CreativeMetrics/gtm-ga4-mcp**](https://github.com/CreativeMetrics/gtm-ga4-mcp) | Coordinates tag creation in GTM with corresponding event parameter registration in Google Analytics 4 properties. |
 | [**Juce-me/ga4-gtm-config-mcp**](https://github.com/Juce-me/ga4-gtm-config-mcp) | Automates end-to-end event tracking pipelines by creating GTM web tags and verifying GA4 property schemas simultaneously. |
-| [**wonyoungseong/ga4-mcp-server**](https://github.com/wonyoungseong/ga4-mcp-server) | Provides tooling for Google Tag Manager containers. |
-| [**tiojimbo/agent-gtm-ga4**](https://github.com/tiojimbo/agent-gtm-ga4) | Provides tooling for Google Tag Manager containers. |
+| [**tiojimbo/agent-gtm-ga4**](https://github.com/tiojimbo/agent-gtm-ga4) | Orchestrates synchronized configuration workflows across GTM containers and Google Analytics 4 properties. |
 
 ### Google Ads conversion tracking and enhanced conversion setup
 
@@ -408,8 +349,8 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 
 | Project | What it does |
 |---|---|
-| [**bryangoncalvespro-hub/google-tag-manager-mcp-server**](https://github.com/bryangoncalvespro-hub/google-tag-manager-mcp-server) | Provides tooling for Google Tag Manager containers. |
-| [**Organized-AI/openclaw-tracking-setup**](https://github.com/Organized-AI/openclaw-tracking-setup) | Provides tooling for Google Tag Manager containers. |
+| [**bryangoncalvespro-hub/google-tag-manager-mcp-server**](https://github.com/bryangoncalvespro-hub/google-tag-manager-mcp-server) | Exposes 15 GTM API v2 tools tailored for Google Ads conversion tracking and tag deployment. |
+| [**Organized-AI/openclaw-tracking-setup**](https://github.com/Organized-AI/openclaw-tracking-setup) | Deploys autonomous builder plugins for end-to-end tracking infrastructure, conversion tags, and Ads verification. |
 
 ### Full Google marketing stack unified orchestration
 
@@ -417,39 +358,36 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 
 | Project | What it does |
 |---|---|
-| [**generalist-club/google-marketing-stack-mcp**](https://github.com/generalist-club/google-marketing-stack-mcp) | Provides tooling for Google Tag Manager containers. |
+| [**generalist-club/google-marketing-stack-mcp**](https://github.com/generalist-club/google-marketing-stack-mcp) | Combines GTM container management with GA4, Search Console, and Google Sheets in a unified JavaScript MCP server. |
 | [**fourdots/Google-Marketing-MCPs-G.Ads-GA4-GSC-GTM**](https://github.com/fourdots/Google-Marketing-MCPs-G.Ads-GA4-GSC-GTM) | Orchestrates full-funnel tag management across Google Ads, GA4, Search Console, and GTM from a single MCP interface. |
-| [**marwa-mrwan/google-clarity-mcp-codex**](https://github.com/marwa-mrwan/google-clarity-mcp-codex) | Provides tooling for Google Tag Manager containers. |
-| [**andylackie/google-marketing-mcp-servers**](https://github.com/andylackie/google-marketing-mcp-servers) | Provides tooling for Google Tag Manager containers. |
-| [**archievi/climbpast-mcp**](https://github.com/archievi/climbpast-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**skiddgoddamn/google-seo-mcp**](https://github.com/skiddgoddamn/google-seo-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**jabeer4148-ops/google-measurement-mcp**](https://github.com/jabeer4148-ops/google-measurement-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**bypixels/SEO-MCP-PRO**](https://github.com/bypixels/SEO-MCP-PRO) | Provides tooling for Google Tag Manager containers. |
-| [**advisorppc-org/advisorppc-plugin**](https://github.com/advisorppc-org/advisorppc-plugin) | Provides tooling for Google Tag Manager containers. |
-| [**dgtlsunrise/dgtl-connector**](https://github.com/dgtlsunrise/dgtl-connector) | Provides tooling for Google Tag Manager containers. |
-| [**BenJohnston429/gmcp**](https://github.com/BenJohnston429/gmcp) | Provides tooling for Google Tag Manager containers. |
-| [**AINative-Studio/ainative-gtm-mcp**](https://github.com/AINative-Studio/ainative-gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**oqva-digital/oqva-marketing-mcp**](https://github.com/oqva-digital/oqva-marketing-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**RoyAzran/mcp-ads**](https://github.com/RoyAzran/mcp-ads) | Provides tooling for Google Tag Manager containers. |
+| [**marwa-mrwan/google-clarity-mcp-codex**](https://github.com/marwa-mrwan/google-clarity-mcp-codex) | Exposes 213 tools connecting GTM, GA4, Google Ads, Search Console, and Microsoft Clarity for end-to-end marketing ops. |
+| [**andylackie/google-marketing-mcp-servers**](https://github.com/andylackie/google-marketing-mcp-servers) | Provides modular TypeScript MCP servers unifying GTM container deployment with GA4 and Search Console reporting. |
+| [**archievi/climbpast-mcp**](https://github.com/archievi/climbpast-mcp) | Connects Claude and ChatGPT to GTM, GA4, and Search Console with opt-in write gates for container publication. |
+| [**skiddgoddamn/google-seo-mcp**](https://github.com/skiddgoddamn/google-seo-mcp) | Integrates GTM container tagging with Google Search Console indexing and GA4 measurement tools. |
+| [**jabeer4148-ops/google-measurement-mcp**](https://github.com/jabeer4148-ops/google-measurement-mcp) | Exposes an integrated Google measurement stack allowing AI agents to manage GTM tags and query GA4 analytics. |
+| [**bypixels/SEO-MCP-PRO**](https://github.com/bypixels/SEO-MCP-PRO) | Delivers a TypeScript MCP server coordinating GTM tag auditing, Search Console analytics, and indexing status. |
+| [**advisorppc-org/advisorppc-plugin**](https://github.com/advisorppc-org/advisorppc-plugin) | Audits and manages Google Ads conversion actions, GA4 properties, and GTM container tags via browser OAuth. |
+| [**dgtlsunrise/dgtl-connector**](https://github.com/dgtlsunrise/dgtl-connector) | Enables local Cursor and Claude workflows across GTM containers, Search Console properties, and GA4 datasets. |
+| [**BenJohnston429/gmcp**](https://github.com/BenJohnston429/gmcp) | Provides a self-hosted marketing MCP server bridging GTM container updates with Google Ads and analytics reporting. |
+| [**AINative-Studio/ainative-gtm-mcp**](https://github.com/AINative-Studio/ainative-gtm-mcp) | Unifies Google Ads, Analytics, and GTM into a cohesive MCP interface for autonomous marketing agents. |
+| [**oqva-digital/oqva-marketing-mcp**](https://github.com/oqva-digital/oqva-marketing-mcp) | Connects Claude to GTM container assets, Google Ads performance metrics, and Meta marketing campaigns. |
+| [**RoyAzran/mcp-ads**](https://github.com/RoyAzran/mcp-ads) | Integrates GTM container tag triggers with Google Ads and Meta Ads conversion tracking in a Python MCP runtime. |
 
 ### Multi-engine search and performance marketing synchronization
 
-*1 projects. Connect GTM container event pipelines with Yandex Direct, Yandex Metrika, and international webmaster tools.*
+*1 project. Connect GTM container event pipelines with Yandex Direct, Yandex Metrika, and international webmaster tools.*
 
 | Project | What it does |
 |---|---|
-| [**VKirill/ohmy-seo**](https://github.com/VKirill/ohmy-seo) | Provides tooling for Google Tag Manager containers. |
+| [**VKirill/ohmy-seo**](https://github.com/VKirill/ohmy-seo) | Coordinates GTM container tagging with Russian and international ad platforms, including Yandex Direct and Google Ads. |
 
 ### Analytics data warehouse staging, dbt modeling, and BI dashboarding
 
-*4 projects. Stream GTM events into analytical warehouses, orchestrate dbt staging models, and build Looker Studio dashboards.*
+*1 project. Stream GTM events into analytical warehouses, orchestrate dbt staging models, and build Looker Studio dashboards.*
 
 | Project | What it does |
 |---|---|
-| [**rowens2025/gtm_analytics**](https://github.com/rowens2025/gtm_analytics) | Provides tooling for Google Tag Manager containers. |
-| [**hatlem/admirate-skills**](https://github.com/hatlem/admirate-skills) | Provides tooling for Google Tag Manager containers. |
-| [**admirate-skills/admirate-skills**](https://github.com/admirate-skills/admirate-skills) | Provides tooling for Google Tag Manager containers. |
-| [**0xRyanlee/codex-ga4-portfolio-ops**](https://github.com/0xRyanlee/codex-ga4-portfolio-ops) | Provides tooling for Google Tag Manager containers. |
+| [**hatlem/admirate-skills**](https://github.com/hatlem/admirate-skills) | Provides Claude Code skills for automating GTM container edits, GA4 setup, and Looker Studio dashboards. |
 
 ### Agency call-tracking and third-party attribution integration
 
@@ -457,22 +395,20 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 
 | Project | What it does |
 |---|---|
-| [**jayweezy247/tracking-stack-mcp**](https://github.com/jayweezy247/tracking-stack-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**webanalyticsprobd-maker/tracking-mcp-server**](https://github.com/webanalyticsprobd-maker/tracking-mcp-server) | Validates tracking implementations by simulating user actions and capturing outbound measurement beacons. |
-
----
+| [**jayweezy247/tracking-stack-mcp**](https://github.com/jayweezy247/tracking-stack-mcp) | Configures agency tracking stacks across WhatConverts, GA4 Admin, and GTM under a create-only dry-run safety contract. |
+| [**webanalyticsprobd-maker/tracking-mcp-server**](https://github.com/webanalyticsprobd-maker/tracking-mcp-server) | Validates GTM dataLayer schemas and transmits server-side events via GA4 Measurement Protocol and Meta CAPI. |
 
 ## 7. Developer tools, embedded UIs, and caching
 
-*8 projects. Daemons, multi-service plugin bundles, ecosystem registries, and developer tooling streamlining GTM engineering workflows.*
+*4 projects. Daemons, multi-service plugin bundles, ecosystem registries, and developer tooling streamlining GTM engineering workflows.*
 
 ### High-throughput multi-tenant daemon architectures and SSE streaming
 
-*1 projects. Run scalable Starlette and SSE HTTP daemons for cloud-hosted GTM container operations with concurrent client sessions.*
+*1 project. Run scalable Starlette and SSE HTTP daemons for cloud-hosted GTM container operations with concurrent client sessions.*
 
 | Project | What it does |
 |---|---|
-| [**magdamarketinghackers/MCP-GTM**](https://github.com/magdamarketinghackers/MCP-GTM) | Provides tooling for Google Tag Manager containers. |
+| [**magdamarketinghackers/MCP-GTM**](https://github.com/magdamarketinghackers/MCP-GTM) | Runs a 38-tool Starlette and FastMCP server with custom caching for high-throughput container querying. |
 
 ### Curated agent plugin bundles and cross-service automation packs
 
@@ -480,106 +416,65 @@ A screen-optimized decision matrix evaluating key production GTM MCP servers acr
 
 | Project | What it does |
 |---|---|
-| [**henkisdabro/wookstar-claude-plugins**](https://github.com/henkisdabro/wookstar-claude-plugins) | Provides tooling for Google Tag Manager containers. |
-| [**N-O-P-E/nope-marketplace**](https://github.com/N-O-P-E/nope-marketplace) | Provides tooling for Google Tag Manager containers. |
-
-### Ecosystem registries and machine-readable tool catalogs
-
-*1 projects. Catalog, index, and audit the ecosystem of GTM MCP tools, schemas, and endpoints.*
-
-| Project | What it does |
-|---|---|
-| [**andrewcmcguire/gtm-mcp-directory**](https://github.com/andrewcmcguire/gtm-mcp-directory) | Provides tooling for Google Tag Manager containers. |
-
-### Gamified tag management sandboxes and educational simulators
-
-*1 projects. Train marketing and ad ops developers on GTM container concepts through interactive simulated challenges.*
-
-| Project | What it does |
-|---|---|
-| [**bmuller02/gtm-simulator-claude**](https://github.com/bmuller02/gtm-simulator-claude) | Provides tooling for Google Tag Manager containers. |
-
-### Enterprise Microsoft Copilot Studio connector integration
-
-*1 projects. Bridge Google Tag Manager container endpoints into Microsoft Copilot Studio and Power Platform agent runtimes.*
-
-| Project | What it does |
-|---|---|
-| [**assalasArab/gtm-mcp-server**](https://github.com/assalasArab/gtm-mcp-server) | Provides tooling for Google Tag Manager containers. |
+| [**henkisdabro/wookstar-claude-plugins**](https://github.com/henkisdabro/wookstar-claude-plugins) | Packages 33 opinionated Claude Code plugins including specialized skills for GTM container inspection and GA4 workflows. |
+| [**N-O-P-E/nope-marketplace**](https://github.com/N-O-P-E/nope-marketplace) | Automates Google Cloud infrastructure setup and GTM workflows via headless Chrome browser automation. |
 
 ### Self-hosted agency deployment wrappers and environment presets
 
-*2 projects. Provide pre-configured, shareable GTM MCP server wrappers tailored for agency multi-client deployments.*
+*1 project. Provide pre-configured, shareable GTM MCP server wrappers tailored for agency multi-client deployments.*
 
 | Project | What it does |
 |---|---|
-| [**was-member-keramat/was-gtm-mcp**](https://github.com/was-member-keramat/was-gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-| [**mnsmasum62786/was-gtm-mcp**](https://github.com/mnsmasum62786/was-gtm-mcp) | Provides tooling for Google Tag Manager containers. |
-
----
+| [**was-member-keramat/was-gtm-mcp**](https://github.com/was-member-keramat/was-gtm-mcp) | Provides a shareable 19-tool JavaScript GTM MCP server pre-configured for agency client deployments. |
 
 ## 8. Experimental and concept scaffolds
 
-*23 projects. Quarantine domain isolating early-stage prototypes, unverified forks, alternative tag engines, and non-analytics acronym collisions.*
+*12 projects. Quarantine domain isolating early-stage prototypes, unverified forks, alternative tag engines, and non-analytics acronym collisions.*
 
 ### Early-stage experimental container prototypes and unverified servers
 
-*21 projects. Explore early-stage, pre-alpha MCP servers with minimal commit history or unverified tool schemas.*
+*11 projects. Explore early-stage, pre-alpha MCP servers with minimal commit history or unverified tool schemas.*
 
 | Project | What it does |
 |---|---|
-| [**caioldcarvalho/gtm-mcp**](https://github.com/caioldcarvalho/gtm-mcp) | Experimental prototype or early-stage scaffold exploring gtm-mcp tag management. |
-| [**pathtoresiliencebv/gtm-mcp**](https://github.com/pathtoresiliencebv/gtm-mcp) | Experimental prototype or early-stage scaffold exploring gtm-mcp tag management. |
-| [**FrontierAI-Works/vibe-gtm-mcp**](https://github.com/FrontierAI-Works/vibe-gtm-mcp) | Experimental prototype or early-stage scaffold exploring vibe-gtm-mcp tag management. |
-| [**shakibmolla/gtm-mcp**](https://github.com/shakibmolla/gtm-mcp) | Experimental prototype or early-stage scaffold exploring gtm-mcp tag management. |
-| [**ambit1977/GTM-MCP**](https://github.com/ambit1977/GTM-MCP) | Experimental prototype or early-stage scaffold exploring GTM-MCP tag management. |
-| [**adtechnacity/gtm-mcp**](https://github.com/adtechnacity/gtm-mcp) | Experimental prototype or early-stage scaffold exploring gtm-mcp tag management. |
-| [**dnwosu/google-tag-manager-mcp-server**](https://github.com/dnwosu/google-tag-manager-mcp-server) | Experimental prototype or early-stage scaffold exploring google-tag-manager-mcp-server tag management. |
-| [**Synter-Media-AI/google-tag-manager-agent**](https://github.com/Synter-Media-AI/google-tag-manager-agent) | Experimental prototype or early-stage scaffold exploring google-tag-manager-agent tag management. |
-| [**neep305/mcp-for-gtm**](https://github.com/neep305/mcp-for-gtm) | Experimental prototype or early-stage scaffold exploring mcp-for-gtm tag management. |
-| [**chanl-ai/mcp-gtm-demo**](https://github.com/chanl-ai/mcp-gtm-demo) | Experimental prototype or early-stage scaffold exploring mcp-gtm-demo tag management. |
-| [**yonegobv/gtm-mcp**](https://github.com/yonegobv/gtm-mcp) | Experimental prototype or early-stage scaffold exploring gtm-mcp tag management. |
-| [**baptlagae-hue/gtm-mcp**](https://github.com/baptlagae-hue/gtm-mcp) | Experimental prototype or early-stage scaffold exploring gtm-mcp tag management. |
-| [**connorstearns/mcp-gtm**](https://github.com/connorstearns/mcp-gtm) | Experimental prototype or early-stage scaffold exploring mcp-gtm tag management. |
-| [**zaaaato/gtm-mcp**](https://github.com/zaaaato/gtm-mcp) | Experimental prototype or early-stage scaffold exploring gtm-mcp tag management. |
-| [**b-buller/gtm-mcp**](https://github.com/b-buller/gtm-mcp) | Experimental prototype or early-stage scaffold exploring gtm-mcp tag management. |
-| [**ErikTMA/gtm-mcp**](https://github.com/ErikTMA/gtm-mcp) | Experimental prototype or early-stage scaffold exploring gtm-mcp tag management. |
-| [**dylanottinger/gtm-mcp-server**](https://github.com/dylanottinger/gtm-mcp-server) | Experimental prototype or early-stage scaffold exploring gtm-mcp-server tag management. |
-| [**sih3rron/gtm-mcp-client**](https://github.com/sih3rron/gtm-mcp-client) | Experimental prototype or early-stage scaffold exploring gtm-mcp-client tag management. |
-| [**maxhenderson-automatiq/automatiq-gtm-mcp**](https://github.com/maxhenderson-automatiq/automatiq-gtm-mcp) | Experimental prototype or early-stage scaffold exploring automatiq-gtm-mcp tag management. |
-| [**PM-Labs/mcp-gtm**](https://github.com/PM-Labs/mcp-gtm) | Experimental prototype or early-stage scaffold exploring mcp-gtm tag management. |
-| [**chrstphe/gtm-mcp-server**](https://github.com/chrstphe/gtm-mcp-server) | Experimental prototype or early-stage scaffold exploring gtm-mcp-server tag management. |
+| [**shakibmolla/gtm-mcp**](https://github.com/shakibmolla/gtm-mcp) | Implements a lightweight local Python MCP server for exploring GTM web container tags. |
+| [**ambit1977/GTM-MCP**](https://github.com/ambit1977/GTM-MCP) | Provides an early JavaScript prototype connecting AI clients to Google Tag Manager container endpoints. |
+| [**adtechnacity/gtm-mcp**](https://github.com/adtechnacity/gtm-mcp) | Explores Python-based GTM container querying and tag automation for analytics developers. |
+| [**Synter-Media-AI/google-tag-manager-agent**](https://github.com/Synter-Media-AI/google-tag-manager-agent) | Explores managing GTM containers and tags through natural language across Claude Desktop, Cursor, and Amp. |
+| [**neep305/mcp-for-gtm**](https://github.com/neep305/mcp-for-gtm) | Connects Claude to Google Tag Manager API v2 for natural language workspace inspection. |
+| [**yonegobv/gtm-mcp**](https://github.com/yonegobv/gtm-mcp) | Provides a TypeScript MCP interface for exploring container entities and testing agent interactions. |
+| [**baptlagae-hue/gtm-mcp**](https://github.com/baptlagae-hue/gtm-mcp) | Implements a French-documented local Python MCP server for testing conversational GTM management. |
+| [**connorstearns/mcp-gtm**](https://github.com/connorstearns/mcp-gtm) | Packages a standalone 44KB Python application providing full-featured GTM container inspection and tag creation. |
+| [**zaaaato/gtm-mcp**](https://github.com/zaaaato/gtm-mcp) | Provides a TypeScript MCP server prototype allowing LLM clients to read and modify GTM container tags. |
+| [**b-buller/gtm-mcp**](https://github.com/b-buller/gtm-mcp) | Enables LLMs to query and navigate Google Tag Manager workspaces through the Model Context Protocol. |
+| [**ErikTMA/gtm-mcp**](https://github.com/ErikTMA/gtm-mcp) | Provides an early Python MCP implementation enabling Claude to interact with GTM container endpoints. |
 
 ### Framework-scaffolded and auto-generated MCP wrappers
 
-*1 projects. Study auto-generated MCP server wrappers synthesized by MCP generation platforms without manual domain tuning.*
+*1 project. Study auto-generated MCP server wrappers synthesized by MCP generation platforms without manual domain tuning.*
 
 | Project | What it does |
 |---|---|
-| [**ag2-mcp-servers/tag-manager-api**](https://github.com/ag2-mcp-servers/tag-manager-api) | Provides tooling for Google Tag Manager containers. |
-
-### Alternative developer-native tag management engines
-
-*1 projects. Explore open-source developer-centric tag managers offering alternative event collection architectures outside the Google ecosystem.*
-
-| Project | What it does |
-|---|---|
-| [**elbwalker/walkerOS**](https://github.com/elbwalker/walkerOS) | Provides tooling for Google Tag Manager containers. |
-
----
+| [**ag2-mcp-servers/tag-manager-api**](https://github.com/ag2-mcp-servers/tag-manager-api) | Packages an auto-generated Python MCP wrapper for Google Tag Manager API endpoints via mcp.ag2.ai. |
 
 ## Resources
 
-- **[Google Tag Manager API v2 Official Reference](https://developers.google.com/tag-platform/tag-manager/api/v2)**: Complete upstream documentation for accounts, containers, workspaces, tags, triggers, and variables.
-- **[Server-Side GTM Architecture Overview](https://developers.google.com/tag-platform/tag-manager/server-side)**: Google Cloud Run and containerized Docker edge deployment models for sGTM.
-- **[Model Context Protocol Specification](https://modelcontextprotocol.io/)**: Open protocol standard defining client-server JSON-RPC message schemas, tool definitions, and resources.
-- **[Google Tag Assistant Preview Mode Guide](https://support.google.com/tagmanager/answer/6107056)**: Protocol guide for WebSocket-driven live tag inspection and debug bridges.
-- **[European Economic Area Consent Mode v2 Standards](https://developers.google.com/tag-platform/security/guides/consent)**: Compliance requirements for `ad_user_data` and `ad_personalization` tracking signals.
+Authoritative external documentation, specifications, and community resources for Google Tag Manager and the Model Context Protocol.
+
+- [Google Tag Manager API v2 Official Reference](https://developers.google.com/tag-platform/tag-manager/api/v2) - Upstream Google REST API documentation for accounts, containers, workspaces, tags, triggers, and variables.
+- [Model Context Protocol Specification](https://modelcontextprotocol.io) - Official open standard specification for client-server LLM tool interoperability.
+- [GTM Server-Side Edge Architecture Guide](https://developers.google.com/tag-platform/tag-manager/server-side) - Cloud Run and Cloudflare Worker provisioning guidelines for sGTM edge deployments.
+- [Tag Assistant Preview Protocol Guide](https://support.google.com/tagmanager/answer/6107056) - Technical details on GTM's live WebSocket debugging channel.
+- [EEA Consent Mode v2 Guidelines](https://developers.google.com/tag-platform/security/guides/consent) - Mandatory consent parameter contracts (`ad_storage`, `analytics_storage`, `ad_user_data`, `ad_personalization`).
+
+---
 
 ## Reference
 
-- **The 0.25 QPS Project Quota Barrier:** Google Tag Manager strictly enforces a quota of 25 requests per 100 seconds (0.25 QPS). Unthrottled agent loops crash with `HTTP 429 Resource Exhausted` within 5 seconds without serialized pacing queues (e.g. `minIntervalMs = 4200`).
-- **Silent Compiler Errors (`compilerError: true`):** Google's API returns `HTTP 200 OK` on invalid JavaScript inside Custom HTML tags while embedding `{ "compilerError": true }` in the response payload. Naive agents inspect only HTTP status codes, falsely confirming broken container builds.
-- **Edge CDN Cache Invalidation Lag (30–180s):** Container releases on `googletagmanager.com/gtm.js` require 30 to 180 seconds to invalidate edge nodes globally. Post-deployment headless tests must poll CDN versions or automate Tag Assistant Preview over WebSockets to prevent false-negative QA failures.
-- **Model-Requested Two-Phase Review (MRTR):** High-assurance mutation safety architecture requiring coding agents to request cryptographic SHA-256 tokens before triggering destructive container publishes or deletions.
-- **System Prompt Token Taxes:** Granular MCP architectures exposing 70–112 micro-tools consume 16,000 to 29,500 prompt tokens per conversational turn. Consolidated 18-tool action-enum architectures reduce prompt overhead to ~1,850 tokens (an 88–92% efficiency gain).
+Technical glossary and architectural primitives defining GTM API limitations, quotas, and protocol contracts.
+
+- **0.25 QPS Rate Limit:** Google Tag Manager API enforces strict rate pacing limits on container mutations (~1 request every 4 seconds) to protect container compiler pipelines. Servers without request serialization risk HTTP 429 quota exhaustion.
+- **CDN Propagation Lag:** Publishing a GTM container invalidates Google edge caches globally, taking between 30 and 180 seconds to reflect on `googletagmanager.com/gtm.js`. Automated QA tools must account for cache propagation delays.
+- **Model-Requested Two-Phase Review (MRTR):** High-security operational protocol where mutating or publishing operations generate cryptographic tokens and diff summaries, requiring human confirmation before execution.
+- **Server-Side Transformations:** Specialized sGTM sandboxed JavaScript modules executing on edge instances to scrub PII, hash user identifiers, and route event payloads to downstream platforms.
+- **ES5 Sandboxed Execution:** GTM web container tags execute within a restricted ECMAScript 5 sandbox. Modern ES6+ syntax causes silent container execution crashes.
