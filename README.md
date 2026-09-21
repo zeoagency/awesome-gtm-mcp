@@ -8,18 +8,16 @@ Official links: [Google Tag Manager](https://tagmanager.google.com/) · [GTM API
 
 ## Contents
 
-1. [Client-side web container operations (68)](#1-client-side-web-container-operations)
+1. [Client-side web container operations (45)](#1-client-side-web-container-operations)
    - [Canonical and comprehensive GTM API v2 servers (7)](#canonical-and-comprehensive-gtm-api-v2-servers)
-   - [Active community Go and Python runtime distributions (23)](#active-community-go-and-python-runtime-distributions)
    - [Lightweight local stdio container inspection (11)](#lightweight-local-stdio-container-inspection)
    - [Workspace branching, synchronization, and change staging (16)](#workspace-branching-synchronization-and-change-staging)
    - [Custom JavaScript variable generation and ES5 AST validation (1)](#custom-javascript-variable-generation-and-es5-ast-validation)
    - [Declarative Infrastructure-as-Code container provisioning (2)](#declarative-infrastructure-as-code-container-provisioning)
    - [Container snippet injection and website installation (2)](#container-snippet-injection-and-website-installation)
    - [Multi-account hierarchy browsing and container discovery (6)](#multi-account-hierarchy-browsing-and-container-discovery)
-2. [Server-side GTM and edge infrastructure (88)](#2-server-side-gtm-and-edge-infrastructure)
+2. [Server-side GTM and edge infrastructure (13)](#2-server-side-gtm-and-edge-infrastructure)
    - [Hosted edge proxy and managed Cloudflare Worker endpoints (3)](#hosted-edge-proxy-and-managed-cloudflare-worker-endpoints)
-   - [Agency edge deployment forks and multi-client worker environments (75)](#agency-edge-deployment-forks-and-multi-client-worker-environments)
    - [Self-hosted containerized Docker and Cloud Run infrastructure (4)](#self-hosted-containerized-docker-and-cloud-run-infrastructure)
    - [Server-side HTTP client routing and request transformations (2)](#server-side-http-client-routing-and-request-transformations)
    - [Server-side attribution event forwarding and ClickHouse warehousing (2)](#server-side-attribution-event-forwarding-and-clickhouse-warehousing)
@@ -56,12 +54,10 @@ Official links: [Google Tag Manager](https://tagmanager.google.com/) · [GTM API
    - [Gamified tag management sandboxes and educational simulators (1)](#gamified-tag-management-sandboxes-and-educational-simulators)
    - [Enterprise Microsoft Copilot Studio connector integration (1)](#enterprise-microsoft-copilot-studio-connector-integration)
    - [Self-hosted agency deployment wrappers and environment presets (2)](#self-hosted-agency-deployment-wrappers-and-environment-presets)
-8. [Experimental and concept scaffolds (42)](#8-experimental-and-concept-scaffolds)
+8. [Experimental and concept scaffolds (23)](#8-experimental-and-concept-scaffolds)
    - [Early-stage experimental container prototypes and unverified servers (21)](#early-stage-experimental-container-prototypes-and-unverified-servers)
    - [Framework-scaffolded and auto-generated MCP wrappers (1)](#framework-scaffolded-and-auto-generated-mcp-wrappers)
    - [Alternative developer-native tag management engines (1)](#alternative-developer-native-tag-management-engines)
-   - [Quarantined Go-to-Market sales and outbound prospecting pipelines (14)](#quarantined-go-to-market-sales-and-outbound-prospecting-pipelines)
-   - [Non-GTM acronym collisions and external scaffolds (5)](#non-gtm-acronym-collisions-and-external-scaffolds)
 9. [Resources](#resources)
 10. [Reference](#reference)
 
@@ -69,36 +65,33 @@ Official links: [Google Tag Manager](https://tagmanager.google.com/) · [GTM API
 
 ## Developer Comparison Matrix
 
-A multi-dimensional comparison of leading Google Tag Manager MCP implementations across key architectural, security, and operational criteria.
+A screen-optimized decision matrix evaluating key production GTM MCP servers across discriminating architectural, safety, and quota constraints. Click any project name to jump directly to its detailed catalog entry.
 
-- **Two-Stage Linking:** Click any project name to jump directly to its detailed catalog entry in the section below.
-- **Discriminating Dimensions:** Compares runtime transports, container scopes, quota limiters, silent compiler error handling, and mutation safety controls.
-
-| Project | Tier | Runtime | Transport | Containers | API Scope | Tool Model | Token Tax | 0.25 QPS Limiter | Compiler Trap | Mutation Gate | Auth Model | CDN Lag Bypass | dataLayer QA | Registry |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| [**rgellis**](#canonical-and-comprehensive-gtm-api-v2-servers) | Tier 1 | Python 3.12 | stdio | Web + Zones | 106 Methods (100%) | Granular (112 tools) | ~22k tokens | Exponential Backoff | Trapped | Ambient Authority | ADC / OAuth2 | None | None | Source |
-| [**A1-x-Tech**](#proactive-request-rate-pacing-and-025-qps-quota-protection) | Tier 1 | TypeScript | stdio | Web | Domain CRUD | Consolidated (18 tools) | ~1.8k tokens | **4.2s Pacing Queue** | **Trapped (Safe)** | Ambient Authority | In-Chat OAuth2 | None | None | npm (220/wk) |
-| [**stape-io**](#hosted-edge-proxy-and-managed-cloudflare-worker-endpoints) | Tier 1 | TypeScript | Worker URL | Web + sGTM | Core CRUD + sGTM | Modular (24 tools) | ~3.5k tokens | Cloudflare Limiter | Ignored | Ambient Authority | Cloud SaaS Proxy | None | None | npm / SaaS |
-| [**KUHL-HQ**](#enterprise-iam-service-account-isolation-and-write-gated-authentication) | Tier 1 | Node.js | stdio | Web + sGTM | Core CRUD | Modular (24 tools) | ~3.5k tokens | None | Ignored | Write-Gated Auth | **Service Account JSON** | None | None | Source |
-| [**kb223**](#multi-tiered-permission-gates-and-cryptographic-mrtr-verification) | Tier 1 | Python 3.11 | stdio | Web + GA4 | Dual Config | Tiered (12 tools) | ~2.4k tokens | Rate Delayed | Trapped | **MRTR SHA-256 Token** | OAuth2 Client | None | None | Source |
-| [**haiqigeng**](#tag-assistant-preview-automation-and-websocket-debugging) | Tier 1 | Python / Playwright | MCP Stdio | Web Preview | Preview QA | Journey Tools (8 tools) | ~1.6k tokens | N/A (Local QA) | N/A | Read-Only Preview | Chrome Session | **Tag Assistant (0s)** | **Playwright Causal** | Source |
-| [**mharnett**](#enterprise-iam-service-account-isolation-and-write-gated-authentication) | Tier 1 | TypeScript | stdio | Web + GA4 | Dual Config | Consolidated (14 tools) | ~2.1k tokens | None | Ignored | **Structural Omission** | OAuth2 Client | None | None | Source |
-| [**paolobietolini**](#canonical-and-comprehensive-gtm-api-v2-servers) | Tier 1 | Go 1.26 | stdio / SSE | Web | Domain CRUD | Granular (94 tools) | ~16k tokens | None | Ignored | Ambient Authority | OAuth2 Token | None | None | Go / PyPI |
-| [**flockstore**](#server-side-attribution-event-forwarding-and-clickhouse-warehousing) | Tier 2 | Go 1.26 | Streamable HTTP | sGTM Edge | Hit Verification | Sidecar (4 tools) | ~800 tokens | Built-in Go Limiter | N/A | Stateless / Read-Only | Token Bearer | Real-time Edge | Cookie-free Check | Source |
-| [**digitalXperiments**](#synthetic-browser-journey-execution-and-datalayer-event-assertion) | Tier 2 | Python | stdio | Web | Testing / Assert | QA Tools (10 tools) | ~2.2k tokens | None | N/A | Safe Testing | Local DevTools | None (Immediate) | **Monkey-Patching** | Source |
-| [**samarthanalytics**](#consent-mode-v2-policy-enforcement-and-privacy-gate-auditing) | Tier 2 | Python | stdio | Web | Audit / Consent | Rules Engine (16 tools) | ~7.8k tokens | None | Trapped | Read-Only Audit | OAuth2 Client | None | None | Source |
-| [**burhan29ee**](#dual-platform-gtm-and-ga4-configuration-and-event-parameter-validation) | Tier 2 | Python | stdio | Web + GA4 | Dual Config | Hybrid (18 tools) | ~3.2k tokens | None | Ignored | Ambient Authority | OAuth2 Client | None | Event Verification | Source |
-| [**jinchliu**](#lightweight-local-stdio-container-inspection) | Tier 2 | Python | stdio | Web | Container Inspect | Stdio (12 tools) | ~1.9k tokens | None | Ignored | Read-Only | Google Cloud ADC | None | None | Source |
-| [**VasthavM**](#lightweight-local-stdio-container-inspection) | Tier 2 | TypeScript | stdio | Web | Workspace CRUD | Stdio (16 tools) | ~2.5k tokens | None | Ignored | Workspace Staging | OAuth2 Client | None | None | npm |
-| [**insightful-pipe**](#container-rollback-tag-state-toggling-and-version-freezing) | Tier 2 | TypeScript | Remote SaaS | Web | Entity Rollback | Managed (14 tools) | ~2.2k tokens | SaaS Pacing | Trapped | Single-Entity Revert | Managed SaaS Key | None | None | SaaS ($29.99/mo) |
-| [**acamolese**](#static-container-dependency-analysis-and-orphan-variable-linting) | Tier 2 | Python | stdio | Web | Static Audit | Lint Engine (8 tools) | ~1.4k tokens | N/A (Static JSON) | N/A | **Mathematical Read-Only** | None (JSON Export) | N/A | None | Source |
-| [**pouyanafisi**](#workspace-branching-synchronization-and-change-staging) | Tier 4 | TypeScript | stdio | Web | Container CRUD | Granular (104 tools) | ~29k tokens | None (Crashes) | Ignored | Ambient Authority | OAuth2 Client | None | None | Source |
+| Project | Scope | Runtime | Transport | 0.25 QPS Pacing | Compiler Trap | Safety Gate | CDN QA |
+|---|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| [**rgellis**](#canonical-and-comprehensive-gtm-api-v2-servers) | Web (106 API) | Python | stdio | ⚡ Backoff | ✅ Trapped | Ambient | ❌ None |
+| [**A1-x-Tech**](#proactive-request-rate-pacing-and-025-qps-quota-protection) | Web CRUD | TypeScript | stdio | **✅ 4.2s Queue** | **✅ Trapped** | Ambient | ❌ None |
+| [**stape-io**](#hosted-edge-proxy-and-managed-cloudflare-worker-endpoints) | Web + sGTM | Worker | Worker URL | ⚡ Cloudflare | ❌ Ignored | Ambient | ❌ None |
+| [**KUHL-HQ**](#enterprise-iam-service-account-isolation-and-write-gated-authentication) | Web + sGTM | Node.js | stdio | ❌ None | ❌ Ignored | **Service Account** | ❌ None |
+| [**kb223**](#multi-tiered-permission-gates-and-cryptographic-mrtr-verification) | Web + GA4 | Python | stdio | ⚡ Delayed | ✅ Trapped | **MRTR Token** | ❌ None |
+| [**haiqigeng**](#tag-assistant-preview-automation-and-websocket-debugging) | Web Preview | Playwright | stdio | N/A | N/A | Read-Only | **Tag Assist (0s)** |
+| [**mharnett**](#dual-platform-gtm-and-ga4-configuration-and-event-parameter-validation) | Web + GA4 | TypeScript | stdio | ❌ None | ❌ Ignored | **No-Publish** | ❌ None |
+| [**paolobietolini**](#canonical-and-comprehensive-gtm-api-v2-servers) | Web (94 Tools) | Go | stdio / SSE | ❌ None | ❌ Ignored | Ambient | ❌ None |
+| [**flockstore**](#self-hosted-containerized-docker-and-cloud-run-infrastructure) | sGTM Edge | Go | HTTP | ✅ Go Limiter | N/A | Read-Only | Real-time Edge |
+| [**digitalXperiments**](#synthetic-browser-journey-execution-and-datalayer-event-assertion) | Web Assert | Python | stdio | ❌ None | N/A | Safe Testing | **dataLayer QA** |
+| [**samarthanalytics**](#server-side-http-client-routing-and-request-transformations) | Web Audit | Python | stdio | ❌ None | ✅ Trapped | Read-Only | ❌ None |
+| [**burhan29ee**](#dual-platform-gtm-and-ga4-configuration-and-event-parameter-validation) | Web + GA4 | Python | stdio | ❌ None | ❌ Ignored | Ambient | Event Check |
+| [**jinchliu**](#lightweight-local-stdio-container-inspection) | Web Inspect | Python | stdio | ❌ None | ❌ Ignored | Read-Only (ADC) | ❌ None |
+| [**VasthavM**](#lightweight-local-stdio-container-inspection) | Web Branching | TypeScript | stdio | ❌ None | ❌ Ignored | Workspace Staging | ❌ None |
+| [**insightful-pipe**](#container-rollback-tag-state-toggling-and-version-freezing) | Web Rollback | TypeScript | Remote SaaS | ⚡ SaaS Pacing | ✅ Trapped | **Single-Entity** | ❌ None |
+| [**acamolese**](#consent-mode-v2-policy-enforcement-and-privacy-gate-auditing) | Web AST Lint | Python | stdio | N/A | N/A | **Read-Only** | ❌ None |
+| [**pouyanafisi**](#workspace-branching-synchronization-and-change-staging) | Web (104 Tools) | TypeScript | stdio | ❌ None (429) | ❌ Ignored | Ambient | ❌ None |
 
 ---
 
 ## 1. Client-side web container operations
 
-*68 projects. MCP servers and agent skills executing client-side Google Tag Manager web container operations, entity CRUD, and workspace synchronization.*
+*45 projects. MCP servers and agent skills executing client-side Google Tag Manager web container operations, entity CRUD, and workspace synchronization.*
 
 ### Canonical and comprehensive GTM API v2 servers
 
@@ -107,42 +100,12 @@ A multi-dimensional comparison of leading Google Tag Manager MCP implementations
 | Project | What it does |
 |---|---|
 | [**rgellis/google-tag-manager-mcp**](https://github.com/rgellis/google-tag-manager-mcp) | Provides complete, typed FastMCP coverage across all 106 GTM API v2 methods with 383 unit tests and strict Pyright verification. |
-| [**paolobietolini/gtm-mcp-server**](https://github.com/paolobietolini/gtm-mcp-server) | Runs a high-throughput Go daemon exposing 94 GTM API v2 tools with an integrated FastMCP agent orchestration client. |
+| [**paolobietolini/gtm-mcp-server**](https://github.com/paolobietolini/gtm-mcp-server) | Runs a high-throughput Go daemon exposing 94 GTM API v2 tools with an integrated FastMCP agent orchestration client (distributed across 20+ community builds). |
 | [**valentineffi/zenda-tag-manager-mcp**](https://github.com/valentineffi/zenda-tag-manager-mcp) | Exposes 42 typed GTM API v2 tools over local stdio with TypeScript schemas covering accounts, containers, workspaces, tags, and triggers. |
 | [**AlexStansfield/gtm-mcp-server**](https://github.com/AlexStansfield/gtm-mcp-server) | Provides lightweight TypeScript stdio tools for inspecting and updating container configurations directly within coding agent chats. |
 | [**Gatescrispy/mcp-gtm-ultimate**](https://github.com/Gatescrispy/mcp-gtm-ultimate) | Exposes 70+ GTM API tools over local stdio with custom Python wrappers for container and workspace automation. |
 | [**jamestomasino/mcp-gtm**](https://github.com/jamestomasino/mcp-gtm) | Implements a modular TypeScript stdio MCP server for managing GTM container entities and tracking tags. |
 | [**hedayetulislamhadi/genius-gtm-mcp**](https://github.com/hedayetulislamhadi/genius-gtm-mcp) | Provides an automated JavaScript MCP bridge for managing web container tags, triggers, and variables. |
-
-### Active community Go and Python runtime distributions
-
-*23 projects. Maintain distributed Go and Python server runtimes exposing multi-tool API surfaces for enterprise environments.*
-
-| Project | What it does |
-|---|---|
-| [**Klartika/gtm-mcp-server**](https://github.com/Klartika/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**Zingstack/gtm-mcp-server**](https://github.com/Zingstack/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**benitomusolini/gtm-mcp-server**](https://github.com/benitomusolini/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**jsarmedia/gtm-mcp-server**](https://github.com/jsarmedia/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**romangazarek/gtm-mcp-server**](https://github.com/romangazarek/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**redpointgroup/gtm-mcp-server**](https://github.com/redpointgroup/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**lemoswilson/gtm-mcp-server**](https://github.com/lemoswilson/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**gith-ship-it/gtm-mcp-server**](https://github.com/gith-ship-it/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**ErikTMA/gtm-mcp-server**](https://github.com/ErikTMA/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**YerayRodri/gtm-mcp**](https://github.com/YerayRodri/gtm-mcp) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**shbhnkr-sg/gtm-mcp-server**](https://github.com/shbhnkr-sg/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**blievens89/gtm-mcp-server**](https://github.com/blievens89/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**oldrvn/gtm-mcp-server**](https://github.com/oldrvn/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**Paulaa111/gtm-mcp-server**](https://github.com/Paulaa111/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**jsn789/gtm-mcp-server**](https://github.com/jsn789/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**abubakarjamils/gtm-mcp-server**](https://github.com/abubakarjamils/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**ericktai/gtm-mcp-server**](https://github.com/ericktai/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**git-tiagovaz/gtm-mcp-server**](https://github.com/git-tiagovaz/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**iflow-mcp/paolobietolini-gtm-mcp-server**](https://github.com/iflow-mcp/paolobietolini-gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**Krossings/gtm-mcp-server**](https://github.com/Krossings/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**AlfredoJF/gtm-mcp-server**](https://github.com/AlfredoJF/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**Secure-Code-Zyloch-Basic/gtm-mcp-server**](https://github.com/Secure-Code-Zyloch-Basic/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
-| [**schoeppe/gtm-mcp-server**](https://github.com/schoeppe/gtm-mcp-server) | Distributes a containerized Go runtime build of the GTM MCP server for enterprise workspace and tag management. |
 
 ### Lightweight local stdio container inspection
 
@@ -228,7 +191,7 @@ A multi-dimensional comparison of leading Google Tag Manager MCP implementations
 
 ## 2. Server-side GTM and edge infrastructure
 
-*88 projects. MCP servers and edge tools configuring server-side GTM containers, Cloudflare Workers, Cloud Run, and event transformations.*
+*13 projects. MCP servers and edge tools configuring server-side GTM containers, Cloudflare Workers, Cloud Run, and event transformations.*
 
 ### Hosted edge proxy and managed Cloudflare Worker endpoints
 
@@ -236,91 +199,9 @@ A multi-dimensional comparison of leading Google Tag Manager MCP implementations
 
 | Project | What it does |
 |---|---|
-| [**stape-io/google-tag-manager-mcp-server**](https://github.com/stape-io/google-tag-manager-mcp-server) | Deploys a Cloudflare Worker edge proxy providing native Server-Side GTM client, transformation, and container management. |
+| [**stape-io/google-tag-manager-mcp-server**](https://github.com/stape-io/google-tag-manager-mcp-server) | Deploys a Cloudflare Worker edge proxy providing native Server-Side GTM client, transformation, and container management (adopted across 75+ agency forks on GitHub). |
 | [**stape-io/stape-mcp-server**](https://github.com/stape-io/stape-mcp-server) | Integrates Stape Cloud hosting with GTM container management, provisioning sGTM custom domains and monitoring edge instances. |
 | [**tijevlam/unboundai-google-tag-manager-mcp-server**](https://github.com/tijevlam/unboundai-google-tag-manager-mcp-server) | Provides tooling for Google Tag Manager containers. |
-
-### Agency edge deployment forks and multi-client worker environments
-
-*75 projects. Deploy self-hosted Cloudflare Worker proxy instances customized for agency multi-client tagging infrastructure.*
-
-| Project | What it does |
-|---|---|
-| [**jrodeiro5/gtm-mcp-server**](https://github.com/jrodeiro5/gtm-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**naimbic/gtm-mcp-server**](https://github.com/naimbic/gtm-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**yacine123bain/gtm-mcp-server**](https://github.com/yacine123bain/gtm-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**Feisalgro/gtm-mcp-server**](https://github.com/Feisalgro/gtm-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**Perry0077/gtm-mcp-server**](https://github.com/Perry0077/gtm-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**jacobgaehringambit/gtm-mcp-server**](https://github.com/jacobgaehringambit/gtm-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**pattitudez/gtm-mcp-server**](https://github.com/pattitudez/gtm-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**hey-rootedranked/gtm-mcp**](https://github.com/hey-rootedranked/gtm-mcp) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**gigantsc/gtm-mcp-server**](https://github.com/gigantsc/gtm-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**borogz/gtm-mcp-server**](https://github.com/borogz/gtm-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**designconverte/gtm-mcp-server**](https://github.com/designconverte/gtm-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**aj-data-analyst/gtm-mcp-server**](https://github.com/aj-data-analyst/gtm-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**hmuvvala/gtm-mcp-server**](https://github.com/hmuvvala/gtm-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**SAY-5/google-tag-manager-mcp-server**](https://github.com/SAY-5/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**akhileshMplus/google-tag-manager-mcp-server**](https://github.com/akhileshMplus/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**Secure-Code-Zyloch-Basic/google-tag-manager-mcp-server**](https://github.com/Secure-Code-Zyloch-Basic/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**realroboto/google-tag-manager-mcp-server**](https://github.com/realroboto/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**gabriel-herencia/google-tag-manager-mcp-server**](https://github.com/gabriel-herencia/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**Softeo-Tecnologia/google-tag-manager-mcp-server**](https://github.com/Softeo-Tecnologia/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**ondigisolutions/google-tag-manager-mcp-server**](https://github.com/ondigisolutions/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**guipmilek/google-tag-manager-mcp-server**](https://github.com/guipmilek/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**piiiiiiiiiita/google-tag-manager-mcp-server**](https://github.com/piiiiiiiiiita/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**purple-elephant-77/google-tag-manager-mcp-server**](https://github.com/purple-elephant-77/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**ludvig-e-w/google-tag-manager-mcp-server**](https://github.com/ludvig-e-w/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**ANALYGO/google-tag-manager-mcp-server-1**](https://github.com/ANALYGO/google-tag-manager-mcp-server-1) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**ANALYGO/analygo-gtm-mcp**](https://github.com/ANALYGO/analygo-gtm-mcp) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**danishashko/google-tag-manager-mcp-server**](https://github.com/danishashko/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**clxgrowthops/google-tag-manager-mcp-server**](https://github.com/clxgrowthops/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**abrahamprinceramarosandy-code/google-tag-manager-mcp-server**](https://github.com/abrahamprinceramarosandy-code/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**Fourteen10-Advertising/google-tag-manager-mcp-server**](https://github.com/Fourteen10-Advertising/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**joacoc2020/google-tag-manager-mcp-server**](https://github.com/joacoc2020/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**HandelBR/google-tag-manager-mcp-server**](https://github.com/HandelBR/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**rodfchaves/google-tag-manager-mcp-server**](https://github.com/rodfchaves/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**Gerico90/google-tag-manager-mcp-server**](https://github.com/Gerico90/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**ElishaKay/google-tag-manager-mcp-server**](https://github.com/ElishaKay/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**serkanhaslak/gtm-mcp**](https://github.com/serkanhaslak/gtm-mcp) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**itayshmool/google-tag-manager-mcp-server**](https://github.com/itayshmool/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**iflow-mcp/stape-io-google-tag-manager-mcp-server**](https://github.com/iflow-mcp/stape-io-google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**bit-of-a-shambles/google-tag-manager-mcp-server**](https://github.com/bit-of-a-shambles/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**martinduncanson/google-tag-manager-mcp-server**](https://github.com/martinduncanson/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**chrishart0/google-tag-manager-mcp-server**](https://github.com/chrishart0/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**AlfredoJF/google-tag-manager-mcp-server**](https://github.com/AlfredoJF/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**loviaistar/google-tag-manager-mcp-server**](https://github.com/loviaistar/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**abn-digital/google-tag-manager-mcp-server**](https://github.com/abn-digital/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**abn-digital/gtm-mcp-server**](https://github.com/abn-digital/gtm-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**nadia318/google-tag-manager-mcp-server**](https://github.com/nadia318/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**lucamartello73/google-tag-manager-mcp-server**](https://github.com/lucamartello73/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**schoeppe/google-tag-manager-mcp-server**](https://github.com/schoeppe/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**convertivio-design/google-tag-manager-mcp-server**](https://github.com/convertivio-design/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**milkyway90ly/google-tag-manager-mcp-server**](https://github.com/milkyway90ly/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**nc2digital/google-tag-manager-mcp-server**](https://github.com/nc2digital/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**lucianfialho/google-tag-manager-mcp-server**](https://github.com/lucianfialho/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**AdamGustavsson/google-tag-manager-mcp-server**](https://github.com/AdamGustavsson/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**reveliio/google-tag-manager-mcp-server**](https://github.com/reveliio/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**NeuroClusterAI/google-tag-manager-mcp-server**](https://github.com/NeuroClusterAI/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**errinundra/google-tag-manager-mcp**](https://github.com/errinundra/google-tag-manager-mcp) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**TuggleDigital/google-tag-manager-mcp-server**](https://github.com/TuggleDigital/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**chris-amor/google-tag-manager-mcp-server**](https://github.com/chris-amor/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**e-sigma/google-tag-manager-mcp-server**](https://github.com/e-sigma/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**hablapro/google-tag-manager-mcp-server**](https://github.com/hablapro/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**LuisRivero021298/google-tag-manager-mcp-server**](https://github.com/LuisRivero021298/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**damonshen17/google-tag-manager-mcp-server**](https://github.com/damonshen17/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**Raphamotion/google-tag-manager-mcp-server**](https://github.com/Raphamotion/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**Matvey-Kuk/google-tag-manager-mcp-server**](https://github.com/Matvey-Kuk/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**erickOz/google-tag-manager-mcp-server**](https://github.com/erickOz/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**sinancan34/google-tag-manager-mcp-server**](https://github.com/sinancan34/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**imohamed-godaddy/google-tag-manager-mcp-server**](https://github.com/imohamed-godaddy/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**mcp-research/stape-io__google-tag-manager-mcp-server**](https://github.com/mcp-research/stape-io__google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**Clinteastman/google-tag-manager-mcp-server**](https://github.com/Clinteastman/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**crialabs/google-tag-manager-mcp-server**](https://github.com/crialabs/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**LevelInteractive/google-tag-manager-mcp-server**](https://github.com/LevelInteractive/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**hheitzdata/google-tag-manager-mcp-server**](https://github.com/hheitzdata/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**webdagger/google-tag-manager-mcp-server**](https://github.com/webdagger/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**lwsinclair/google-tag-manager-mcp-server**](https://github.com/lwsinclair/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
-| [**ionut85/google-tag-manager-mcp-server**](https://github.com/ionut85/google-tag-manager-mcp-server) | Maintains an agency-specific edge deployment fork of Stape's Cloudflare Worker server for multi-client container administration. |
 
 ### Self-hosted containerized Docker and Cloud Run infrastructure
 
@@ -639,7 +520,7 @@ A multi-dimensional comparison of leading Google Tag Manager MCP implementations
 
 ## 8. Experimental and concept scaffolds
 
-*42 projects. Quarantine domain isolating early-stage prototypes, unverified forks, alternative tag engines, and non-analytics acronym collisions.*
+*23 projects. Quarantine domain isolating early-stage prototypes, unverified forks, alternative tag engines, and non-analytics acronym collisions.*
 
 ### Early-stage experimental container prototypes and unverified servers
 
@@ -684,39 +565,6 @@ A multi-dimensional comparison of leading Google Tag Manager MCP implementations
 | Project | What it does |
 |---|---|
 | [**elbwalker/walkerOS**](https://github.com/elbwalker/walkerOS) | Provides tooling for Google Tag Manager containers. |
-
-### Quarantined Go-to-Market sales and outbound prospecting pipelines
-
-*14 projects. Isolate B2B cold outreach, lead scoring, and sales prospecting pipelines caught by 'gtm' acronym collisions.*
-
-| Project | What it does |
-|---|---|
-| [**impecablemee/gtm-mcp**](https://github.com/impecablemee/gtm-mcp) | Quarantined B2B Go-to-Market sales and outbound CRM prospecting tool matching the GTM acronym. |
-| [**aleprieto790-alt/gtm-mcp**](https://github.com/aleprieto790-alt/gtm-mcp) | Quarantined B2B Go-to-Market sales and outbound CRM prospecting tool matching the GTM acronym. |
-| [**mambalabsdev/mcp-gtm-suite**](https://github.com/mambalabsdev/mcp-gtm-suite) | Quarantined B2B Go-to-Market sales and outbound CRM prospecting tool matching the GTM acronym. |
-| [**texauhq/texau-gtm-skills**](https://github.com/texauhq/texau-gtm-skills) | Quarantined B2B Go-to-Market sales and outbound CRM prospecting tool matching the GTM acronym. |
-| [**matteotitta/awesome-gtm-mcp-servers**](https://github.com/matteotitta/awesome-gtm-mcp-servers) | Quarantined B2B Go-to-Market sales and outbound CRM prospecting tool matching the GTM acronym. |
-| [**shashwatgtm/craft-gtm-mcp**](https://github.com/shashwatgtm/craft-gtm-mcp) | Quarantined B2B Go-to-Market sales and outbound CRM prospecting tool matching the GTM acronym. |
-| [**ImranIzham/gtm-mcp-servers**](https://github.com/ImranIzham/gtm-mcp-servers) | Quarantined B2B Go-to-Market sales and outbound CRM prospecting tool matching the GTM acronym. |
-| [**vivz-git/Gtm-Mcp-Server**](https://github.com/vivz-git/Gtm-Mcp-Server) | Quarantined B2B Go-to-Market sales and outbound CRM prospecting tool matching the GTM acronym. |
-| [**mindofhenry/beacon**](https://github.com/mindofhenry/beacon) | Quarantined B2B Go-to-Market sales and outbound CRM prospecting tool matching the GTM acronym. |
-| [**lan-club-live/startup-gtm-skill**](https://github.com/lan-club-live/startup-gtm-skill) | Quarantined B2B Go-to-Market sales and outbound CRM prospecting tool matching the GTM acronym. |
-| [**mambalabsdev/mcp-gtm-signals-aggregator**](https://github.com/mambalabsdev/mcp-gtm-signals-aggregator) | Quarantined B2B Go-to-Market sales and outbound CRM prospecting tool matching the GTM acronym. |
-| [**mambalabsdev/mcp-gtm-job-discovery**](https://github.com/mambalabsdev/mcp-gtm-job-discovery) | Quarantined B2B Go-to-Market sales and outbound CRM prospecting tool matching the GTM acronym. |
-| [**mambalabsdev/mcp-gtm-hiring-signal-scraper**](https://github.com/mambalabsdev/mcp-gtm-hiring-signal-scraper) | Quarantined B2B Go-to-Market sales and outbound CRM prospecting tool matching the GTM acronym. |
-| [**mambalabsdev/mcp-gtm-tech-stack-signal-scraper**](https://github.com/mambalabsdev/mcp-gtm-tech-stack-signal-scraper) | Quarantined B2B Go-to-Market sales and outbound CRM prospecting tool matching the GTM acronym. |
-
-### Non-GTM acronym collisions and external scaffolds
-
-*5 projects. Quarantine unrelated networking tools, note-tagging CLIs, and personal candidate scaffolds matching the tag manager naming pattern.*
-
-| Project | What it does |
-|---|---|
-| [**theloadbalancercrew/cute-bigip-gtm-mcp**](https://github.com/theloadbalancercrew/cute-bigip-gtm-mcp) | Quarantined external infrastructure or network routing tool matching the GTM acronym. |
-| [**thrawn01/tag-manager**](https://github.com/thrawn01/tag-manager) | Quarantined external infrastructure or network routing tool matching the GTM acronym. |
-| [**Parda11/Bug-froge**](https://github.com/Parda11/Bug-froge) | Quarantined external infrastructure or network routing tool matching the GTM acronym. |
-| [**vijay-kalyan-28/portfolio-website**](https://github.com/vijay-kalyan-28/portfolio-website) | Quarantined external infrastructure or network routing tool matching the GTM acronym. |
-| [**erinkolsen-mktg/gtm-mcp**](https://github.com/erinkolsen-mktg/gtm-mcp) | Quarantined external infrastructure or network routing tool matching the GTM acronym. |
 
 ---
 
