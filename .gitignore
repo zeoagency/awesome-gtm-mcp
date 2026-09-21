@@ -1,0 +1,22 @@
+# Inner research artifacts & specs
+specs/
+scratch/
+evidence/
+
+# Python scripts & byte code
+*.py
+*.pyc
+__pycache__/
+
+# Data dumps & temporary caches
+*.json
+*.yaml
+*.yml
+!*.markdownlint.yml
+!.github/workflows/*.yml
+
+# OS & Editor artifacts
+.DS_Store
+.tmp/
+node_modules/
+CLAUDE.md
