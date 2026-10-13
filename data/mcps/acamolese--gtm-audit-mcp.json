@@ -1,0 +1,508 @@
+{
+  "repo": "acamolese/gtm-audit-mcp",
+  "url": "https://github.com/acamolese/gtm-audit-mcp",
+  "commit": "040ebb7891a3ac8fd5deefaba1fa0be562c416de",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Ten registered tools implement GTM inventory, configuration audit, snapshot diff and tracking inspection through read-only GTM REST calls; audit additionally writes local reports.",
+  "method": "mixed",
+  "server": "src/mcp_gtm_audit/server.py (CLI src/mcp_gtm_audit/__main__.py)",
+  "exposure": "All ten tools are registered unconditionally; API handlers require OAuth credentials when called.",
+  "sources": [
+    "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/server.py#L18-L282",
+    "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/client.py#L12-L142",
+    "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/audit.py#L92-L268",
+    "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/diff.py#L25-L79",
+    "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/tracking.py#L56-L176"
+  ],
+  "limitations": [
+    "Offline FastMCP list_tools ran only the original decorated function definitions, excluding client/auth imports; no handler or GTM API operation was executed.",
+    "The dependency mcp>=1.0.0 is unpinned; exact generated schema formatting/outputSchema can vary with installed MCP/Pydantic versions, recorded in work/versions.json.",
+    "Tracking validation inspects configuration heuristically, rather than executing browser events or verifying event delivery; version listing does not filter unpublished/deleted headers despite its description."
+  ],
+  "tools": [
+    {
+      "name": "list_accounts",
+      "description": "Elenca gli account GTM accessibili con l'utente OAuth corrente.",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_accountsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/server.py#L51-L59",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Reads accessible GTM accounts through paginated REST GET requests.",
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_accountsOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_containers",
+      "description": "Elenca i container GTM di un account.\n\nArgs:\n    account_id: ID account GTM (numerico).\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "list_containersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/server.py#L62-L79",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Reads containers for a GTM account and returns selected metadata.",
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_containersOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_workspaces",
+      "description": "Elenca i workspace di un container.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_workspacesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/server.py#L82-L89",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Reads workspaces for a GTM container and returns IDs, names and descriptions.",
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_workspacesOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_versions",
+      "description": "Elenca gli header delle versioni pubblicate del container.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_versionsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/server.py#L92-L106",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Reads container version headers, including headers marked deleted.",
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_versionsOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_tags",
+      "description": "Elenca i tag di un workspace (default: Default Workspace).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "default": "",
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_tagsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/server.py#L109-L125",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Reads selected tag metadata from the specified workspace or the resolved default workspace.",
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_tagsOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_triggers",
+      "description": "Elenca i trigger di un workspace.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "default": "",
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_triggersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/server.py#L128-L137",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Reads trigger IDs, names and types from the specified or default workspace.",
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_triggersOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_variables",
+      "description": "Elenca le variabili custom di un workspace.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "default": "",
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_variablesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/server.py#L140-L149",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Reads custom variable IDs, names and types from the specified or default workspace.",
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_variablesOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "gtm_audit",
+      "description": "Esegue l'audit completo del container e genera report HTML + JSON.\n\nArgs:\n    account_id: ID account GTM.\n    container_id: ID container GTM (numerico interno, NON il GTM-XXXX).\n    workspace_id: ID workspace; vuoto = Default Workspace.\n    use_live_version: Se True ignora il workspace e analizza la versione pubblicata.\n    output_dir: Directory destinazione; default ~/Reports/<client_slug or container>/.\n    client_slug: Slug cliente per cartella report; default = nome container.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "default": "",
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "use_live_version": {
+            "default": false,
+            "title": "Use Live Version",
+            "type": "boolean"
+          },
+          "output_dir": {
+            "default": "",
+            "title": "Output Dir",
+            "type": "string"
+          },
+          "client_slug": {
+            "default": "",
+            "title": "Client Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "gtm_auditArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/server.py#L157-L211",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "audit"
+      ],
+      "behavior": "Reads a workspace or live version, runs configuration and tracking checks, and writes local HTML and JSON reports.",
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "gtm_auditOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "gtm_diff",
+      "description": "Confronta due snapshot del container.\n\nArgs:\n    account_id: ID account GTM.\n    container_id: ID container.\n    base_ref: 'live' oppure ID di una versione pubblicata.\n    head_ref: 'workspace' (usa workspace_id) oppure ID di una versione.\n    workspace_id: ID workspace per head_ref='workspace' (default: Default Workspace).\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "base_ref": {
+            "default": "live",
+            "title": "Base Ref",
+            "type": "string"
+          },
+          "head_ref": {
+            "default": "workspace",
+            "title": "Head Ref",
+            "type": "string"
+          },
+          "workspace_id": {
+            "default": "",
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "gtm_diffArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/server.py#L219-L253",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "audit"
+      ],
+      "behavior": "Reads two workspace/version snapshots and compares tags, triggers and custom variables after omitting volatile metadata.",
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "gtm_diffOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "gtm_tracking_validation",
+      "description": "Restituisce la mappa eventi GA4/Ads/Meta e i finding di tracciamento.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "default": "",
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "use_live_version": {
+            "default": false,
+            "title": "Use Live Version",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "gtm_tracking_validationArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/acamolese/gtm-audit-mcp/blob/040ebb7891a3ac8fd5deefaba1fa0be562c416de/src/mcp_gtm_audit/server.py#L261-L278",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "audit"
+      ],
+      "behavior": "Reads a workspace or live version and heuristically maps GA4, Ads and Meta configuration with tracking findings and server-side URL hints.",
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "gtm_tracking_validationOutput",
+        "type": "object"
+      }
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "audit",
+    "summary": "Audits container configuration, maps tracking setups, compares snapshots, and writes local reports.",
+    "examples": [
+      "gtm_audit",
+      "gtm_diff",
+      "gtm_tracking_validation"
+    ]
+  }
+}

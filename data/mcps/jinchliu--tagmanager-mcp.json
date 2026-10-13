@@ -1,0 +1,1675 @@
+{
+  "repo": "jinchliu/tagmanager-mcp",
+  "url": "https://github.com/jinchliu/tagmanager-mcp",
+  "commit": "35ec81596ed0f091176ec67370aee8be8a98c6dd",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "All 24 registered tools implement Tag Manager v2 hierarchy inspection, workspace entity CRUD or container version release operations; no stubs found.",
+  "method": "tools/list",
+  "server": "tagmanager_mcp/server.py:run_server (stdio)",
+  "exposure": "All 24 tools are registered unconditionally by importing structure, tags, triggers, variables and versions. Deletes and publication require confirm=true; this is handler gating, not conditional registration.",
+  "sources": [
+    "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/server.py#L1-L24",
+    "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/coordinator.py#L1-L7",
+    "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/client.py#L96-L130",
+    "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/utils.py#L40-L191"
+  ],
+  "limitations": [
+    "Offline MCPServer.list_tools registration extraction used locked MCP 2.0.0; Google API requests and credential loading were never executed, so live permissions and remote behavior are unverified.",
+    "Resource body and changes parameters intentionally expose unrestricted dictionaries; documented body examples do not impose JSON Schema constraints."
+  ],
+  "tools": [
+    {
+      "name": "list_accounts",
+      "description": "Lists all Google Tag Manager accounts accessible to the caller.\n\nArgs:\n    include_google_tags: Also include Google Tag accounts in the\n        results.\n",
+      "inputSchema": {
+        "properties": {
+          "include_google_tags": {
+            "default": false,
+            "title": "Include Google Tags",
+            "type": "boolean"
+          }
+        },
+        "title": "list_accountsArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "list_accountsDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/structure.py#L14-L35",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists accessible GTM accounts with optional Google Tag accounts using paginated Tag Manager v2 account requests."
+    },
+    {
+      "name": "list_containers",
+      "description": "Lists all containers in a Google Tag Manager account.\n\nArgs:\n    account_id: Numeric GTM account ID (e.g. 6000000000) or a full\n        path like 'accounts/6000000000'.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "list_containersArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "list_containersDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/structure.py#L38-L58",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists all containers for an account using paginated Tag Manager v2 requests."
+    },
+    {
+      "name": "list_workspaces",
+      "description": "Lists workspaces in a container.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID (e.g. 200001) or a full path\n        like 'accounts/123/containers/200001'.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_workspacesArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "list_workspacesDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/structure.py#L61-L91",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists all workspaces in a container using paginated Tag Manager v2 requests."
+    },
+    {
+      "name": "get_workspace_status",
+      "description": "Shows unpublished changes and merge conflicts in a workspace.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "get_workspace_statusArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_workspace_statusDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/structure.py#L94-L127",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "audit"
+      ],
+      "behavior": "Reads workspace changes and merge conflicts with the Tag Manager v2 getStatus endpoint."
+    },
+    {
+      "name": "list_tags",
+      "description": "Lists tags in a workspace, skeleton fields only.\n\nReturns tagId, name, type, firingTriggerId, blockingTriggerId,\npaused and fingerprint per tag. Use get_tag for the full\nconfiguration of a specific tag.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_tagsArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "list_tagsDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/tags.py#L16-L57",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists paginated workspace tags and returns selected skeleton fields."
+    },
+    {
+      "name": "get_tag",
+      "description": "Gets the full configuration of one tag, including parameters.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n    tag_id: Numeric tag ID; find it via list_tags.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          },
+          "tag_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Tag Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id"
+        ],
+        "title": "get_tagArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_tagDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/tags.py#L60-L92",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Gets the full workspace tag configuration from Tag Manager v2."
+    },
+    {
+      "name": "create_tag",
+      "description": "Creates a tag in the workspace draft.\n\nChanges stay in the workspace until a version is published; nothing\ngoes live. Returns the created tag including its tagId.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n    tag: Tag resource body. Requires 'name' and 'type'; most types\n        also need 'parameter' (list of {'type', 'key', 'value'}\n        dicts) and 'firingTriggerId' (list of trigger ID strings).\n        Minimal example: {'name': 'Hello', 'type': 'html',\n        'parameter': [{'type': 'template', 'key': 'html', 'value':\n        '<script>...</script>'}], 'firingTriggerId': ['2147479553']}\n        (2147479553 is the built-in All Pages trigger; built-in\n        triggers do not appear in list_triggers).\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          },
+          "tag": {
+            "additionalProperties": true,
+            "title": "Tag",
+            "type": "object"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag"
+        ],
+        "title": "create_tagArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "create_tagDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/tags.py#L95-L142",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a workspace tag using the unrestricted caller-supplied resource body."
+    },
+    {
+      "name": "update_tag",
+      "description": "Updates a tag by merging changes into its current configuration.\n\nThe merge is shallow: each top-level key in changes replaces the\ncurrent value, a null value removes the key, and lists are replaced\nwhole (e.g. firingTriggerId must be the complete new list). The\ncurrent config is re-read in the same call and its fingerprint sent\nalong, so concurrent edits fail cleanly instead of being clobbered.\nChanges stay in the workspace draft until a version is published.\nReturns the updated tag.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n    tag_id: Numeric tag ID; find it via list_tags.\n    changes: Partial tag body, e.g. {'paused': True} or\n        {'firingTriggerId': ['5', '7']}.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          },
+          "tag_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Tag Id"
+          },
+          "changes": {
+            "additionalProperties": true,
+            "title": "Changes",
+            "type": "object"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id",
+          "changes"
+        ],
+        "title": "update_tagArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "update_tagDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/tags.py#L145-L200",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Reads the current tag, shallow-merges caller changes with null-key removal, and updates with its current fingerprint when present."
+    },
+    {
+      "name": "delete_tag",
+      "description": "Deletes a tag from the workspace draft.\n\nRequires explicit confirmation: ask the user first, then call again\nwith confirm=True. The removal stays in the workspace until a\nversion is published.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n    tag_id: Numeric tag ID; find it via list_tags.\n    confirm: Must be True to actually delete.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          },
+          "tag_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Tag Id"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id"
+        ],
+        "title": "delete_tagArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "delete_tagDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/tags.py#L203-L248",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Requires confirm=true, deletes the workspace tag and returns its deleted resource path."
+    },
+    {
+      "name": "list_triggers",
+      "description": "Lists triggers in a workspace, skeleton fields only.\n\nReturns triggerId, name, type and fingerprint per trigger. Use\nget_trigger for the full configuration of a specific trigger.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_triggersArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "list_triggersDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/triggers.py#L16-L56",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists paginated workspace triggers and returns selected skeleton fields."
+    },
+    {
+      "name": "get_trigger",
+      "description": "Gets the full configuration of one trigger, including filters.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n    trigger_id: Numeric trigger ID; find it via list_triggers.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          },
+          "trigger_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Trigger Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger_id"
+        ],
+        "title": "get_triggerArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_triggerDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/triggers.py#L59-L91",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Gets the full workspace trigger configuration from Tag Manager v2."
+    },
+    {
+      "name": "create_trigger",
+      "description": "Creates a trigger in the workspace draft.\n\nChanges stay in the workspace until a version is published; nothing\ngoes live. Returns the created trigger including its triggerId.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n    trigger: Trigger resource body. Requires 'name' and 'type'\n        (e.g. 'pageview', 'domReady', 'click', 'customEvent').\n        Minimal example: {'name': 'DOM Ready', 'type': 'domReady'}.\n        A customEvent trigger also needs 'customEventFilter', e.g.\n        [{'type': 'equals', 'parameter': [{'type': 'template',\n        'key': 'arg0', 'value': '{{_event}}'}, {'type': 'template',\n        'key': 'arg1', 'value': 'my_event'}]}].\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          },
+          "trigger": {
+            "additionalProperties": true,
+            "title": "Trigger",
+            "type": "object"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger"
+        ],
+        "title": "create_triggerArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "create_triggerDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/triggers.py#L94-L140",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a workspace trigger using the unrestricted caller-supplied resource body."
+    },
+    {
+      "name": "update_trigger",
+      "description": "Updates a trigger by merging changes into its current config.\n\nThe merge is shallow: each top-level key in changes replaces the\ncurrent value, a null value removes the key, and lists are replaced\nwhole (e.g. a filter list must be passed complete). The current\nconfig is re-read in the same call and its fingerprint sent along,\nso concurrent edits fail cleanly instead of being clobbered.\nChanges stay in the workspace draft until a version is published.\nReturns the updated trigger.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n    trigger_id: Numeric trigger ID; find it via list_triggers.\n    changes: Partial trigger body, e.g. {'name': 'New name'}.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          },
+          "trigger_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Trigger Id"
+          },
+          "changes": {
+            "additionalProperties": true,
+            "title": "Changes",
+            "type": "object"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger_id",
+          "changes"
+        ],
+        "title": "update_triggerArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "update_triggerDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/triggers.py#L143-L197",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Reads the current trigger, shallow-merges caller changes with null-key removal, and updates with its current fingerprint when present."
+    },
+    {
+      "name": "delete_trigger",
+      "description": "Deletes a trigger from the workspace draft.\n\nRequires explicit confirmation: ask the user first, then call again\nwith confirm=True. Check first (via list_tags) that no tag still\nreferences the trigger. The removal stays in the workspace until a\nversion is published.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n    trigger_id: Numeric trigger ID; find it via list_triggers.\n    confirm: Must be True to actually delete.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          },
+          "trigger_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Trigger Id"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger_id"
+        ],
+        "title": "delete_triggerArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "delete_triggerDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/triggers.py#L200-L255",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Requires confirm=true, deletes the workspace trigger and returns its deleted resource path."
+    },
+    {
+      "name": "list_variables",
+      "description": "Lists variables in a workspace, skeleton fields only.\n\nReturns variableId, name, type and fingerprint per variable. Use\nget_variable for the full configuration of a specific variable.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_variablesArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "list_variablesDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/variables.py#L16-L58",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists paginated workspace variables and returns selected skeleton fields."
+    },
+    {
+      "name": "get_variable",
+      "description": "Gets the full configuration of one variable.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n    variable_id: Numeric variable ID; find it via list_variables.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          },
+          "variable_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Variable Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable_id"
+        ],
+        "title": "get_variableArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_variableDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/variables.py#L61-L97",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Gets the full workspace variable configuration from Tag Manager v2."
+    },
+    {
+      "name": "create_variable",
+      "description": "Creates a variable in the workspace draft.\n\nChanges stay in the workspace until a version is published; nothing\ngoes live. Returns the created variable including its variableId.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n    variable: Variable resource body. Requires 'name' and 'type';\n        most types also need 'parameter' (list of {'type', 'key',\n        'value'} dicts). Data layer variable example: {'name':\n        'DL - user_id', 'type': 'v', 'parameter': [{'type':\n        'integer', 'key': 'dataLayerVersion', 'value': '2'},\n        {'type': 'template', 'key': 'name', 'value': 'user_id'}]}.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          },
+          "variable": {
+            "additionalProperties": true,
+            "title": "Variable",
+            "type": "object"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable"
+        ],
+        "title": "create_variableArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "create_variableDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/variables.py#L100-L149",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a workspace variable using the unrestricted caller-supplied resource body."
+    },
+    {
+      "name": "update_variable",
+      "description": "Updates a variable by merging changes into its current config.\n\nThe merge is shallow: each top-level key in changes replaces the\ncurrent value, a null value removes the key, and lists are replaced\nwhole (e.g. the parameter list must be passed complete). The\ncurrent config is re-read in the same call and its fingerprint sent\nalong, so concurrent edits fail cleanly instead of being clobbered.\nChanges stay in the workspace draft until a version is published.\nReturns the updated variable.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n    variable_id: Numeric variable ID; find it via list_variables.\n    changes: Partial variable body, e.g. {'name': 'New name'}.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          },
+          "variable_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Variable Id"
+          },
+          "changes": {
+            "additionalProperties": true,
+            "title": "Changes",
+            "type": "object"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable_id",
+          "changes"
+        ],
+        "title": "update_variableArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "update_variableDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/variables.py#L152-L206",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Reads the current variable, shallow-merges caller changes with null-key removal, and updates with its current fingerprint when present."
+    },
+    {
+      "name": "delete_variable",
+      "description": "Deletes a variable from the workspace draft.\n\nRequires explicit confirmation: ask the user first, then call again\nwith confirm=True. Check first that no tag, trigger or variable\nstill references it as {{Variable Name}}. The removal stays in the\nworkspace until a version is published.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n    variable_id: Numeric variable ID; find it via list_variables.\n    confirm: Must be True to actually delete.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          },
+          "variable_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Variable Id"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable_id"
+        ],
+        "title": "delete_variableArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "delete_variableDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/variables.py#L209-L264",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Requires confirm=true, deletes the workspace variable and returns its deleted resource path."
+    },
+    {
+      "name": "list_versions",
+      "description": "Lists container version headers, skeleton fields only.\n\nReturns containerVersionId, name, deleted and entity counts per\nversion. Use get_version for the full contents of one version, or\nget_live_version for the one currently published.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_versionsArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "list_versionsDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/versions.py#L21-L56",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Lists paginated container version headers and reduces them to selected metadata and counts."
+    },
+    {
+      "name": "get_version",
+      "description": "Gets one container version: metadata plus slimmed contents.\n\nThe embedded tags, triggers and variables are reduced to their\nskeleton (name + id); a full version can otherwise run to thousands\nof lines. Use get_tag/get_trigger/get_variable for full entity\nconfigs, but note those read the workspace draft, not this version.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    version_id: Numeric version ID; find it via list_versions.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "version_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Version Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "version_id"
+        ],
+        "title": "get_versionArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_versionDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/versions.py#L59-L92",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Gets a container version and returns metadata with slimmed embedded tags, triggers and variables."
+    },
+    {
+      "name": "get_live_version",
+      "description": "Gets the container version currently published (live).\n\nReturns metadata plus slimmed contents, like get_version. Useful to\nsee what is live before publishing a new version.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "get_live_versionArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_live_versionDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/versions.py#L95-L123",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Gets the live container version and returns metadata with slimmed embedded entities."
+    },
+    {
+      "name": "create_version",
+      "description": "Snapshots a workspace into a new container version.\n\nWARNING: this consumes the workspace. The workspace is deleted and a\nfresh empty one is created; its path is returned as newWorkspacePath.\nUse that path for any further edits — the workspace_id passed here is\ngone afterwards. Nothing goes live yet; publish_version does that.\n\nCheck the result before publishing: if compilerError is true or\nsyncStatus reports a conflict, the version has problems. Fix them in\nthe new workspace and create another version rather than publishing.\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    workspace_id: Numeric workspace ID; find it via list_workspaces.\n    name: Optional name for the version.\n    notes: Optional notes describing the version.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Workspace Id"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Name"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Notes"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "create_versionArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "create_versionDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/versions.py#L126-L192",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release",
+        "workspace"
+      ],
+      "behavior": "Snapshots a workspace with optional name and notes through create_version and returns version, compiler, sync and new workspace information."
+    },
+    {
+      "name": "publish_version",
+      "description": "Publishes a container version, making it live on the site.\n\nThis is the only operation that changes what runs on the live site.\nRequires explicit confirmation: ask the user first, then call again\nwith confirm=True. Publish a version you have already checked for\ncompiler errors (see create_version).\n\nArgs:\n    account_id: Numeric account ID or full resource path.\n    container_id: Numeric container ID or full resource path.\n    version_id: Numeric version ID; find it via list_versions.\n    confirm: Must be True to actually publish.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "container_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Container Id"
+          },
+          "version_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Version Id"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "version_id"
+        ],
+        "title": "publish_versionArguments",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "publish_versionDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/tagmanager-mcp/blob/35ec81596ed0f091176ec67370aee8be8a98c6dd/tagmanager_mcp/tools/versions.py#L195-L242",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "behavior": "Requires confirm=true, publishes the selected version through the v2 publish endpoint and returns version and compiler information."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "manage",
+    "summary": "Paginated resource browsing, draft edits with current fingerprints, and explicit version publication.",
+    "examples": [
+      "update_tag",
+      "get_workspace_status",
+      "publish_version"
+    ]
+  }
+}

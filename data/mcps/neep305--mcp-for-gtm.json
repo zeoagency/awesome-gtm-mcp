@@ -1,0 +1,639 @@
+{
+  "repo": "neep305/mcp-for-gtm",
+  "url": "https://github.com/neep305/mcp-for-gtm",
+  "commit": "c40aa2ae454e9fbe33eabe0675212f65f5a09f23",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Real GTM v2 reads and component writes exist, but shipped default entrypoint is missing; workflow tags have no firing-trigger linkage and publishing mishandles the version response/scopes. Alternate server is local SQLite with unrelated chatter CRUD.",
+  "method": "tools/list",
+  "server": "fastmcp_gtm_server.py; alternate mcp_server.py",
+  "exposure": "Two separate executable FastMCP entrypoints, not one merged server: 7 tools in fastmcp_gtm_server.py and 12 tools in mcp_server.py. All decorators register unconditionally; component library import failure produces handler errors, not hidden tools. README/config/run script/package point at absent server.py. Separate simple_test_server.py and test_mcp_server.py are diagnostic test servers and excluded.",
+  "sources": [
+    "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/fastmcp_gtm_server.py",
+    "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/mcp_server.py",
+    "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/gtm_client_fixed.py",
+    "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/gtm_components.py",
+    "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/config.json",
+    "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/run_server.sh",
+    "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/pyproject.toml"
+  ],
+  "limitations": [
+    "Offline tool registration/listing used installed mcp 1.30.0 and Pydantic 2.13.5; upstream mcp>=1.0.0 is unpinned, so output schema/title details may vary with installed versions. No handlers, Google authentication, or API operations were invoked.",
+    "README, config.json, run_server.sh and package script reference server.py, which is absent at this commit. Both actual production entrypoint catalogs are preserved with explicit exposure; they are not simultaneously exposed by one server.",
+    "gtm_client_fixed.py hardcodes workspace 1, converts every parameter to template type, and never sets firingTriggerId. Setup workflows consequently do not implement working linked tracking; fbpixel is assumed without provisioning a template.",
+    "Publishing extracts create_result[\"path\"] rather than containerVersion.path, and configured OAuth scopes include only tagmanager.edit.containers, omitting publication/version privileges.",
+    "test_gtm_connection/list_gtm_containers read one response page only; all creation tools can return overall success despite per-component failures."
+  ],
+  "tools": [
+    {
+      "name": "test_gtm_connection",
+      "description": "Test GTM API connection and authentication",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "test_gtm_connectionArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/fastmcp_gtm_server.py#L52-L76",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "test"
+      ],
+      "behavior": "Lists account containers through GTM v2 and returns connection status and up to five container summaries.",
+      "exposure": "All registered by fastmcp_gtm_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "list_gtm_containers",
+      "description": "List all GTM containers in an account",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "list_gtm_containersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/fastmcp_gtm_server.py#L78-L100",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists the first GTM API response page of containers for an account; does not follow pagination.",
+      "exposure": "All registered by fastmcp_gtm_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "create_ga4_setup",
+      "description": "Create complete GA4 setup in GTM (실제 GTM에 생성)",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "measurement_id": {
+            "title": "Measurement Id",
+            "type": "string"
+          },
+          "enhanced_ecommerce": {
+            "default": false,
+            "title": "Enhanced Ecommerce",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "measurement_id"
+        ],
+        "title": "create_ga4_setupArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/fastmcp_gtm_server.py#L102-L202",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates GA4 template variables, triggers and tags in hardcoded workspace 1; does not attach created triggers to tags and reports component errors individually.",
+      "exposure": "All registered by fastmcp_gtm_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "create_facebook_pixel_setup",
+      "description": "Create Facebook Pixel setup in GTM (실제 GTM에 생성)",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "pixel_id": {
+            "title": "Pixel Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "pixel_id"
+        ],
+        "title": "create_facebook_pixel_setupArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/fastmcp_gtm_server.py#L204-L279",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Attempts to create a page-view trigger and fbpixel tag in hardcoded workspace 1; no trigger attachment or custom-template installation is implemented.",
+      "exposure": "All registered by fastmcp_gtm_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "create_complete_ecommerce_setup",
+      "description": "Create complete ecommerce tracking setup in GTM (실제 GTM에 생성)",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "ga4_measurement_id": {
+            "title": "Ga4 Measurement Id",
+            "type": "string"
+          },
+          "facebook_pixel_id": {
+            "default": null,
+            "title": "Facebook Pixel Id",
+            "type": "string"
+          },
+          "include_conversion_tracking": {
+            "default": true,
+            "title": "Include Conversion Tracking",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "ga4_measurement_id"
+        ],
+        "title": "create_complete_ecommerce_setupArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/fastmcp_gtm_server.py#L281-L370",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Attempts template-based GA4, optional Facebook, conversion, form and click components in workspace 1 without attaching triggers to tags; component failures may coexist with overall success.",
+      "exposure": "All registered by fastmcp_gtm_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "publish_gtm_container",
+      "description": "Publish GTM container version (실제 배포)",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "version_name": {
+            "title": "Version Name",
+            "type": "string"
+          },
+          "version_notes": {
+            "default": "Published via MCP",
+            "title": "Version Notes",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "version_name"
+        ],
+        "title": "publish_gtm_containerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/fastmcp_gtm_server.py#L372-L397",
+      "scope": "gtm",
+      "tags": [
+        "release"
+      ],
+      "behavior": "Attempts to create and publish a version from hardcoded workspace 1, but reads create_result[\"path\"] instead of nested containerVersion.path and OAuth scopes omit publish/manage-versions privileges.",
+      "exposure": "All registered by fastmcp_gtm_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "generate_ga4_template",
+      "description": "Generate GA4 tag template (JSON only)",
+      "inputSchema": {
+        "properties": {
+          "measurement_id": {
+            "title": "Measurement Id",
+            "type": "string"
+          },
+          "config_parameters": {
+            "additionalProperties": true,
+            "default": null,
+            "title": "Config Parameters",
+            "type": "object"
+          }
+        },
+        "required": [
+          "measurement_id"
+        ],
+        "title": "generate_ga4_templateArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/fastmcp_gtm_server.py#L399-L424",
+      "scope": "gtm",
+      "tags": [
+        "offline"
+      ],
+      "behavior": "Returns a locally generated GA4 component JSON object without calling Google; this component is not a complete GTM container export.",
+      "exposure": "All registered by fastmcp_gtm_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "get_top_chatters",
+      "description": "Retrieve top chatters sorted by number of messages",
+      "inputSchema": {
+        "properties": {
+          "limit": {
+            "default": 10,
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "title": "get_top_chattersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/mcp_server.py#L105-L127",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Reads local SQLite chatter records ordered by message count (unrelated chatter product).",
+      "exposure": "All registered by mcp_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "add_chatter",
+      "description": "Add a new chatter to the database",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "messages": {
+            "default": 0,
+            "title": "Messages",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "add_chatterArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/mcp_server.py#L129-L157",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Inserts a local SQLite chatter name and message count (unrelated chatter product).",
+      "exposure": "All registered by mcp_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "update_chatter_messages",
+      "description": "Update message count for a chatter",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "messages": {
+            "title": "Messages",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "messages"
+        ],
+        "title": "update_chatter_messagesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/mcp_server.py#L159-L188",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Updates a local SQLite chatter message count (unrelated chatter product).",
+      "exposure": "All registered by mcp_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "delete_chatter",
+      "description": "Delete a chatter from the database",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "delete_chatterArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/mcp_server.py#L190-L217",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Deletes a local SQLite chatter record (unrelated chatter product).",
+      "exposure": "All registered by mcp_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "search_chatters",
+      "description": "Search chatters by name",
+      "inputSchema": {
+        "properties": {
+          "search_term": {
+            "title": "Search Term",
+            "type": "string"
+          }
+        },
+        "required": [
+          "search_term"
+        ],
+        "title": "search_chattersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/mcp_server.py#L219-L242",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Searches local SQLite chatter names with SQL LIKE (unrelated chatter product).",
+      "exposure": "All registered by mcp_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "save_gtm_config",
+      "description": "Save GTM configuration to database",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "config_type": {
+            "title": "Config Type",
+            "type": "string"
+          },
+          "config_data": {
+            "additionalProperties": true,
+            "title": "Config Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "name",
+          "config_type",
+          "config_data"
+        ],
+        "title": "save_gtm_configArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/mcp_server.py#L246-L277",
+      "scope": "auxiliary",
+      "tags": [
+        "edit",
+        "offline"
+      ],
+      "behavior": "Serializes arbitrary GTM configuration data into the local SQLite database; does not update Google Tag Manager.",
+      "exposure": "All registered by mcp_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "get_gtm_configs",
+      "description": "Get GTM configurations with optional filtering",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "default": null,
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "default": null,
+            "title": "Container Id",
+            "type": "string"
+          },
+          "config_type": {
+            "default": null,
+            "title": "Config Type",
+            "type": "string"
+          }
+        },
+        "title": "get_gtm_configsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/mcp_server.py#L279-L333",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "offline"
+      ],
+      "behavior": "Lists local SQLite configuration metadata with optional account, container and type filters.",
+      "exposure": "All registered by mcp_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "get_gtm_config_details",
+      "description": "Get detailed GTM configuration by ID",
+      "inputSchema": {
+        "properties": {
+          "config_id": {
+            "title": "Config Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "config_id"
+        ],
+        "title": "get_gtm_config_detailsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/mcp_server.py#L335-L375",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "offline"
+      ],
+      "behavior": "Reads a local SQLite configuration by numeric ID and deserializes its stored JSON.",
+      "exposure": "All registered by mcp_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "delete_gtm_config",
+      "description": "Delete GTM configuration by ID",
+      "inputSchema": {
+        "properties": {
+          "config_id": {
+            "title": "Config Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "config_id"
+        ],
+        "title": "delete_gtm_configArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/mcp_server.py#L377-L404",
+      "scope": "auxiliary",
+      "tags": [
+        "edit",
+        "offline"
+      ],
+      "behavior": "Deletes a configuration record from local SQLite; does not delete any GTM API resource.",
+      "exposure": "All registered by mcp_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "track_gtm_component",
+      "description": "Track a GTM component that was created",
+      "inputSchema": {
+        "properties": {
+          "component_id": {
+            "title": "Component Id",
+            "type": "string"
+          },
+          "component_type": {
+            "title": "Component Type",
+            "type": "string"
+          },
+          "component_name": {
+            "title": "Component Name",
+            "type": "string"
+          },
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id",
+          "component_type",
+          "component_name",
+          "account_id",
+          "container_id"
+        ],
+        "title": "track_gtm_componentArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/mcp_server.py#L408-L436",
+      "scope": "auxiliary",
+      "tags": [
+        "edit",
+        "offline"
+      ],
+      "behavior": "Records supplied GTM component identifiers and metadata in local SQLite without verifying remote existence.",
+      "exposure": "All registered by mcp_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "get_gtm_components",
+      "description": "Get tracked GTM components with optional filtering",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "default": null,
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "default": null,
+            "title": "Container Id",
+            "type": "string"
+          },
+          "component_type": {
+            "default": null,
+            "title": "Component Type",
+            "type": "string"
+          }
+        },
+        "title": "get_gtm_componentsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/mcp_server.py#L438-L496",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "offline"
+      ],
+      "behavior": "Lists locally tracked component metadata with optional account, container and component type filters.",
+      "exposure": "All registered by mcp_server.py; not exposed by the other production entrypoint."
+    },
+    {
+      "name": "get_database_stats",
+      "description": "Get database statistics",
+      "inputSchema": {
+        "properties": {},
+        "title": "get_database_statsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/neep305/mcp-for-gtm/blob/c40aa2ae454e9fbe33eabe0675212f65f5a09f23/mcp_server.py#L500-L556",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "offline"
+      ],
+      "behavior": "Counts local chatter/configuration/component rows and returns ten recent stored records.",
+      "exposure": "All registered by mcp_server.py; not exposed by the other production entrypoint."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "manage",
+    "summary": "Browse live containers and generate local GA4 components; a separate entrypoint stores configuration metadata in SQLite.",
+    "examples": [
+      "list_gtm_containers",
+      "test_gtm_connection",
+      "generate_ga4_template"
+    ]
+  }
+}

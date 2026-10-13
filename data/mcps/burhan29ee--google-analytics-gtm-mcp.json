@@ -1,0 +1,1539 @@
+{
+  "repo": "burhan29ee/google-analytics-gtm-mcp",
+  "url": "https://github.com/burhan29ee/google-analytics-gtm-mcp",
+  "commit": "c163c78f04c70144ef39e2e79dc64e93b74ccf10",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Implements GTM v2 account/container/workspace inspection, tag/trigger/variable CRUD, saved version creation and publishing alongside GA4 tools.",
+  "method": "reconstructed",
+  "server": "src/google_analytics_gtm_mcp/server.py:main (FastMCP stdio)",
+  "exposure": "All 40 decorated tools register unconditionally; clients and credentials are initialized lazily when handlers run.",
+  "sources": [
+    "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L72-L90",
+    "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L516-L853"
+  ],
+  "limitations": [
+    "Offline FastMCP registration executes only source function definitions; original third-party Google imports and authenticated handlers were not executed. Schemas reflect the installed MCP/Pydantic versions; upstream dependency ranges are not locked.",
+    "GTM list handlers return one API response and do not follow pagination tokens. JSON resource parameters are strings, with no nested GTM resource validation in the public schema."
+  ],
+  "tools": [
+    {
+      "name": "list_account_summaries",
+      "description": "List every GA4 account and its properties the service account can see.\nReturns account name/id plus each property's display name and numeric id.\nCall this first to discover property ids for the other GA4 tools.",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_account_summariesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_account_summariesOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L144-L165",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: List every GA4 account and its properties the service account can see."
+    },
+    {
+      "name": "get_property_details",
+      "description": "Get configuration details for one GA4 property (name, time zone,\ncurrency, industry, create time).",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id"
+        ],
+        "title": "get_property_detailsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L168-L180",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: Get configuration details for one GA4 property (name, time zone,"
+    },
+    {
+      "name": "list_data_streams",
+      "description": "List the data streams (web/app) on a GA4 property. The stream id (last\npath segment of 'name') is needed by the Measurement Protocol secret tools.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id"
+        ],
+        "title": "list_data_streamsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_data_streamsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L183-L198",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: List the data streams (web/app) on a GA4 property. The stream id (last"
+    },
+    {
+      "name": "run_report",
+      "description": "Run a GA4 report. metrics/dimensions are GA4 API names (e.g. metrics\n['activeUsers','conversions'], dimensions ['date','sessionDefaultChannelGroup']).\nDates accept YYYY-MM-DD or relative forms like '28daysAgo' / 'today'.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "metrics": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Metrics",
+            "type": "array"
+          },
+          "dimensions": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dimensions"
+          },
+          "start_date": {
+            "default": "28daysAgo",
+            "title": "Start Date",
+            "type": "string"
+          },
+          "end_date": {
+            "default": "today",
+            "title": "End Date",
+            "type": "string"
+          },
+          "limit": {
+            "default": 100,
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "property_id",
+          "metrics"
+        ],
+        "title": "run_reportArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L201-L235",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: Run a GA4 report. metrics/dimensions are GA4 API names (e.g. metrics"
+    },
+    {
+      "name": "run_realtime_report",
+      "description": "Run a GA4 realtime report (last ~30 minutes). Example: metrics\n['activeUsers'], dimensions ['country','unifiedScreenName'].",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "metrics": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Metrics",
+            "type": "array"
+          },
+          "dimensions": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dimensions"
+          },
+          "limit": {
+            "default": 100,
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "property_id",
+          "metrics"
+        ],
+        "title": "run_realtime_reportArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L238-L263",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: Run a GA4 realtime report (last ~30 minutes). Example: metrics"
+    },
+    {
+      "name": "list_custom_dimensions",
+      "description": "List custom dimensions defined on a GA4 property.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id"
+        ],
+        "title": "list_custom_dimensionsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_custom_dimensionsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L266-L278",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: List custom dimensions defined on a GA4 property."
+    },
+    {
+      "name": "create_custom_dimension",
+      "description": "Create a custom dimension. parameter_name is the event parameter / user\nproperty key; scope is 'EVENT', 'USER' or 'ITEM'. display_name may contain\nonly letters, numbers, underscores and spaces.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "parameter_name": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "scope": {
+            "default": "EVENT",
+            "title": "Scope",
+            "type": "string"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id",
+          "parameter_name",
+          "display_name"
+        ],
+        "title": "create_custom_dimensionArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L281-L304",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: Create a custom dimension. parameter_name is the event parameter / user"
+    },
+    {
+      "name": "archive_custom_dimension",
+      "description": "Archive (delete) a custom dimension. custom_dimension_id may be the\nnumeric id or the full 'properties/NNN/customDimensions/MMM' name.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "custom_dimension_id": {
+            "title": "Custom Dimension Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id",
+          "custom_dimension_id"
+        ],
+        "title": "archive_custom_dimensionArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L307-L314",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: Archive (delete) a custom dimension. custom_dimension_id may be the"
+    },
+    {
+      "name": "list_custom_metrics",
+      "description": "List custom metrics defined on a GA4 property.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id"
+        ],
+        "title": "list_custom_metricsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_custom_metricsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L317-L330",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: List custom metrics defined on a GA4 property."
+    },
+    {
+      "name": "create_custom_metric",
+      "description": "Create a custom metric. measurement_unit is one of STANDARD, CURRENCY,\nFEET, METERS, KILOMETERS, MILES, MILLISECONDS, SECONDS, MINUTES, HOURS.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "parameter_name": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "measurement_unit": {
+            "default": "STANDARD",
+            "title": "Measurement Unit",
+            "type": "string"
+          },
+          "scope": {
+            "default": "EVENT",
+            "title": "Scope",
+            "type": "string"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id",
+          "parameter_name",
+          "display_name"
+        ],
+        "title": "create_custom_metricArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L333-L357",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: Create a custom metric. measurement_unit is one of STANDARD, CURRENCY,"
+    },
+    {
+      "name": "list_key_events",
+      "description": "List key events (conversions) on a GA4 property.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id"
+        ],
+        "title": "list_key_eventsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_key_eventsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L360-L372",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: List key events (conversions) on a GA4 property."
+    },
+    {
+      "name": "create_key_event",
+      "description": "Mark an event as a key event (conversion). counting_method is\n'ONCE_PER_EVENT' or 'ONCE_PER_SESSION'.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "event_name": {
+            "title": "Event Name",
+            "type": "string"
+          },
+          "counting_method": {
+            "default": "ONCE_PER_EVENT",
+            "title": "Counting Method",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id",
+          "event_name"
+        ],
+        "title": "create_key_eventArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L375-L385",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: Mark an event as a key event (conversion). counting_method is"
+    },
+    {
+      "name": "list_audiences",
+      "description": "List audiences defined on a GA4 property.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id"
+        ],
+        "title": "list_audiencesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_audiencesOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L388-L399",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: List audiences defined on a GA4 property."
+    },
+    {
+      "name": "create_event_audience",
+      "description": "Create a GA4 audience of users who triggered a given event (e.g.\n'purchase', 'generate_lead') — useful for remarketing lists that can be\nshared to Google Ads. membership_duration_days is how long a user stays in\nthe audience (max 540).",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "event_name": {
+            "title": "Event Name",
+            "type": "string"
+          },
+          "membership_duration_days": {
+            "default": 30,
+            "title": "Membership Duration Days",
+            "type": "integer"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id",
+          "display_name",
+          "event_name"
+        ],
+        "title": "create_event_audienceArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L402-L437",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: Create a GA4 audience of users who triggered a given event (e.g."
+    },
+    {
+      "name": "archive_audience",
+      "description": "Archive a GA4 audience. audience_id may be the numeric id or the full\n'properties/NNN/audiences/MMM' name.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "audience_id": {
+            "title": "Audience Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id",
+          "audience_id"
+        ],
+        "title": "archive_audienceArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L440-L447",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: Archive a GA4 audience. audience_id may be the numeric id or the full"
+    },
+    {
+      "name": "list_measurement_protocol_secrets",
+      "description": "List Measurement Protocol API secrets for a data stream. stream_id is\nthe numeric id from list_data_streams.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "stream_id": {
+            "title": "Stream Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id",
+          "stream_id"
+        ],
+        "title": "list_measurement_protocol_secretsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_measurement_protocol_secretsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L450-L458",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: List Measurement Protocol API secrets for a data stream. stream_id is"
+    },
+    {
+      "name": "create_measurement_protocol_secret",
+      "description": "Create a Measurement Protocol API secret on a data stream. Returns the\nsecret_value (api_secret) needed by send_ga4_event. Treat it as sensitive.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "stream_id": {
+            "title": "Stream Id",
+            "type": "string"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id",
+          "stream_id",
+          "display_name"
+        ],
+        "title": "create_measurement_protocol_secretArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L461-L469",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: Create a Measurement Protocol API secret on a data stream. Returns the"
+    },
+    {
+      "name": "delete_measurement_protocol_secret",
+      "description": "Delete a Measurement Protocol API secret. secret_id may be the numeric\nid or the full resource name.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "title": "Property Id",
+            "type": "string"
+          },
+          "stream_id": {
+            "title": "Stream Id",
+            "type": "string"
+          },
+          "secret_id": {
+            "title": "Secret Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id",
+          "stream_id",
+          "secret_id"
+        ],
+        "title": "delete_measurement_protocol_secretArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L472-L479",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: Delete a Measurement Protocol API secret. secret_id may be the numeric"
+    },
+    {
+      "name": "send_ga4_event",
+      "description": "Send an event into a GA4 property via the Measurement Protocol.\nmeasurement_id is the stream's 'G-XXXXXXX'; api_secret comes from a\nMeasurement Protocol secret; client_id identifies the user/device. Set\nvalidate=True to hit GA4's debug/validation endpoint (checks the payload\nWITHOUT ingesting it) — recommended before real sends.",
+      "inputSchema": {
+        "properties": {
+          "measurement_id": {
+            "title": "Measurement Id",
+            "type": "string"
+          },
+          "api_secret": {
+            "title": "Api Secret",
+            "type": "string"
+          },
+          "client_id": {
+            "title": "Client Id",
+            "type": "string"
+          },
+          "event_name": {
+            "title": "Event Name",
+            "type": "string"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Params"
+          },
+          "validate": {
+            "default": false,
+            "title": "Validate",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "measurement_id",
+          "api_secret",
+          "client_id",
+          "event_name"
+        ],
+        "title": "send_ga4_eventArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L482-L514",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: Send an event into a GA4 property via the Measurement Protocol."
+    },
+    {
+      "name": "gtm_whoami",
+      "description": "Show which service-account identity and scopes this server uses for GTM,\nand how many GTM accounts it can currently see. Use this to verify access\nafter granting the service account permission in Tag Manager.",
+      "inputSchema": {
+        "properties": {},
+        "title": "gtm_whoamiArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L577-L598",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "access"
+      ],
+      "behavior": "Reads service-account identity and configured scopes and lists accessible GTM accounts."
+    },
+    {
+      "name": "gtm_list_accounts",
+      "description": "List all GTM accounts the service account can access.",
+      "inputSchema": {
+        "properties": {},
+        "title": "gtm_list_accountsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L601-L604",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "List all GTM accounts the service account can access."
+    },
+    {
+      "name": "gtm_list_containers",
+      "description": "List containers in a GTM account.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "gtm_list_containersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L607-L612",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "List containers in a GTM account."
+    },
+    {
+      "name": "gtm_list_workspaces",
+      "description": "List workspaces in a container.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "gtm_list_workspacesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L615-L625",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "List workspaces in a container."
+    },
+    {
+      "name": "gtm_list_tags",
+      "description": "List tags in a workspace.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "gtm_list_tagsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L628-L635",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "List tags in a workspace."
+    },
+    {
+      "name": "gtm_list_triggers",
+      "description": "List triggers in a workspace.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "gtm_list_triggersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L638-L645",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "List triggers in a workspace."
+    },
+    {
+      "name": "gtm_list_variables",
+      "description": "List variables in a workspace.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "gtm_list_variablesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L648-L655",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "List variables in a workspace."
+    },
+    {
+      "name": "gtm_get_tag",
+      "description": "Get a single tag by id.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id"
+        ],
+        "title": "gtm_get_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L658-L662",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Get a single tag by id."
+    },
+    {
+      "name": "gtm_list_versions",
+      "description": "List container version headers (published + saved versions).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "gtm_list_versionsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L665-L675",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "List container version headers (published + saved versions)."
+    },
+    {
+      "name": "gtm_get_live_version",
+      "description": "Get the currently live (published) container version.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "gtm_get_live_versionArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L678-L688",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Get the currently live (published) container version."
+    },
+    {
+      "name": "gtm_create_tag",
+      "description": "Create a tag. tag_json is the full GTM Tag resource as a JSON string,\ne.g. {\"name\":\"GA4 Config\",\"type\":\"gaawc\",\"parameter\":[...],\n\"firingTriggerId\":[\"2147479553\"]}.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "tag_json": {
+            "title": "Tag Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_json"
+        ],
+        "title": "gtm_create_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L691-L701",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Parses the resource JSON string as an object and calls the corresponding GTM workspace resource API."
+    },
+    {
+      "name": "gtm_update_tag",
+      "description": "Update an existing tag with a full GTM Tag resource (JSON string).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          },
+          "tag_json": {
+            "title": "Tag Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id",
+          "tag_json"
+        ],
+        "title": "gtm_update_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L704-L715",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Parses the resource JSON string as an object and calls the corresponding GTM workspace resource API."
+    },
+    {
+      "name": "gtm_delete_tag",
+      "description": "Delete a tag. Requires confirm=true.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id"
+        ],
+        "title": "gtm_delete_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L718-L730",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Deletes the specified GTM workspace resource only when confirm is true."
+    },
+    {
+      "name": "gtm_create_trigger",
+      "description": "Create a trigger from a full GTM Trigger resource (JSON string).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "trigger_json": {
+            "title": "Trigger Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger_json"
+        ],
+        "title": "gtm_create_triggerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L733-L741",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Parses the resource JSON string as an object and calls the corresponding GTM workspace resource API."
+    },
+    {
+      "name": "gtm_update_trigger",
+      "description": "Update an existing trigger with a full GTM Trigger resource (JSON string).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "trigger_id": {
+            "title": "Trigger Id",
+            "type": "string"
+          },
+          "trigger_json": {
+            "title": "Trigger Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger_id",
+          "trigger_json"
+        ],
+        "title": "gtm_update_triggerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L744-L755",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Parses the resource JSON string as an object and calls the corresponding GTM workspace resource API."
+    },
+    {
+      "name": "gtm_delete_trigger",
+      "description": "Delete a trigger. Requires confirm=true.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "trigger_id": {
+            "title": "Trigger Id",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger_id"
+        ],
+        "title": "gtm_delete_triggerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L758-L770",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Deletes the specified GTM workspace resource only when confirm is true."
+    },
+    {
+      "name": "gtm_create_variable",
+      "description": "Create a variable from a full GTM Variable resource (JSON string).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "variable_json": {
+            "title": "Variable Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable_json"
+        ],
+        "title": "gtm_create_variableArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L773-L781",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Parses the resource JSON string as an object and calls the corresponding GTM workspace resource API."
+    },
+    {
+      "name": "gtm_update_variable",
+      "description": "Update an existing variable with a full GTM Variable resource (JSON string).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "variable_id": {
+            "title": "Variable Id",
+            "type": "string"
+          },
+          "variable_json": {
+            "title": "Variable Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable_id",
+          "variable_json"
+        ],
+        "title": "gtm_update_variableArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L784-L795",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Parses the resource JSON string as an object and calls the corresponding GTM workspace resource API."
+    },
+    {
+      "name": "gtm_delete_variable",
+      "description": "Delete a variable. Requires confirm=true.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "variable_id": {
+            "title": "Variable Id",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable_id"
+        ],
+        "title": "gtm_delete_variableArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L798-L810",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Deletes the specified GTM workspace resource only when confirm is true."
+    },
+    {
+      "name": "gtm_create_version",
+      "description": "Freeze the current workspace into a new container version. Returns the\nnew containerVersion (with containerVersionId) plus any compiler errors.\nThis does NOT publish; use gtm_publish_version next.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Notes"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "name"
+        ],
+        "title": "gtm_create_versionArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L813-L834",
+      "scope": "gtm",
+      "tags": [
+        "release"
+      ],
+      "behavior": "Calls GTM workspace create_version with name and optional notes to create a saved container version."
+    },
+    {
+      "name": "gtm_publish_version",
+      "description": "Publish a container version to live. Requires confirm=true because this\naffects the live site.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "version_id": {
+            "title": "Version Id",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "version_id"
+        ],
+        "title": "gtm_publish_versionArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/burhan29ee/google-analytics-gtm-mcp/blob/c163c78f04c70144ef39e2e79dc64e93b74ccf10/src/google_analytics_gtm_mcp/server.py#L837-L844",
+      "scope": "gtm",
+      "tags": [
+        "release"
+      ],
+      "behavior": "Calls GTM container version publish only when confirm is true."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "manage",
+    "summary": "Creates and edits workspace resources from JSON strings and confirms deletions and version publication.",
+    "reason": "Implements GTM v2 account/container/workspace inspection, tag/trigger/variable CRUD, saved version creation and publishing alongside GA4 tools.",
+    "examples": [
+      "gtm_get_live_version",
+      "gtm_create_trigger",
+      "gtm_update_tag"
+    ]
+  }
+}

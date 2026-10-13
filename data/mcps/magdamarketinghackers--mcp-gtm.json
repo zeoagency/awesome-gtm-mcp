@@ -1,0 +1,2874 @@
+{
+  "repo": "magdamarketinghackers/MCP-GTM",
+  "url": "https://github.com/magdamarketinghackers/MCP-GTM",
+  "commit": "d90bc3d73394a8c3e444aeb79be5d46a6df342f2",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Implements 77 GTM and auxiliary tools with dry-run mutations, but folder moves/conflict resolution use incorrect request bodies and tag update ignores fingerprint.",
+  "method": "source",
+  "server": "server.py app /mcp (Streamable HTTP)",
+  "exposure": "All ALL_TOOLS entries are returned unconditionally by list_tools; no configured or read-only conditional tool groups. Google operations require configured OAuth and stored user tokens; dry_run defaults True where registered.",
+  "sources": [
+    "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L85-L324",
+    "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/gtm_client.py#L20-L142",
+    "https://tagmanager.googleapis.com/$discovery/rest?version=v2"
+  ],
+  "limitations": [
+    "Static extraction of exact registered schema constructors; no MCP transport or authenticated GTM operation was executed.",
+    "List handlers generally perform one API request without nextPageToken pagination; results may be incomplete.",
+    "Constructs fingerprint query parameters but never passes them to client.put, so optimistic locking input is ignored.",
+    "Posts {entity: entity}, while discovery requires the Entity resource directly as request body; execution needs correction.",
+    "Posts arrays of entity objects in the body, while discovery requires tagId/triggerId/variableId query parameters and a Folder body; execution needs correction.",
+    "Caches discovered containers but does not set any active container; its registered description is stale."
+  ],
+  "tools": [
+    {
+      "name": "list_users",
+      "description": "List all authorized Google users (clients). Always call this first if you don't know which user_id to query — this server keeps no 'active user' state, you must pass user_id explicitly when more than one user is authorized.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L111-L111",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "access"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L322-L586",
+      "behavior": "Reads locally stored authorized users and reports token presence and cached container counts."
+    },
+    {
+      "name": "authorize_user",
+      "description": "Get the OAuth URL to authorize a new Google user",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L112-L113",
+      "scope": "auxiliary",
+      "tags": [
+        "access"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L322-L586",
+      "behavior": "Builds an OAuth authorization-start URL without authenticating or calling Google."
+    },
+    {
+      "name": "get_audit_log",
+      "description": "View recent write operations log",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lines": {
+            "type": "integer"
+          }
+        }
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L114-L115",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "audit"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L322-L586",
+      "behavior": "Reads the local audit log, defaulting to the last 50 entries."
+    },
+    {
+      "name": "list_accounts",
+      "description": "List all GTM accounts accessible to the user",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        }
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L118-L118",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/accounts.py#L17-L36",
+      "behavior": "List all GTM accounts accessible to the user; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "get_account",
+      "description": "Get details for a specific GTM account",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_path": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "account_path"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L119-L120",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/accounts.py#L127-L140",
+      "behavior": "Get details for a specific GTM account; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "update_account",
+      "description": "Update a GTM account name. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_path": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "account_path",
+          "name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L121-L122",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/accounts.py#L143-L160",
+      "behavior": "Update a GTM account name; handler uses GTM API v2 PUT after preview when dry_run=False."
+    },
+    {
+      "name": "list_containers",
+      "description": "List containers in a GTM account",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_path": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "account_path"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L123-L124",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/accounts.py#L39-L61",
+      "behavior": "List containers in a GTM account; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "get_container",
+      "description": "Get details for a specific container",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container_path": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "container_path"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L125-L126",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/accounts.py#L64-L80",
+      "behavior": "Get details for a specific container; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "create_container",
+      "description": "Create a new GTM container. usage_context e.g. ['web'], ['server']. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_path": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "usage_context": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "account_path",
+          "name",
+          "usage_context"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L127-L129",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/accounts.py#L163-L190",
+      "behavior": "Create a new GTM container; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "update_container",
+      "description": "Update a container name/usage context. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container_path": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "usage_context": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "container_path",
+          "name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L130-L133",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/accounts.py#L193-L213",
+      "behavior": "Update a container name/usage context; handler uses GTM API v2 PUT after preview when dry_run=False."
+    },
+    {
+      "name": "delete_container",
+      "description": "Delete a container permanently. dry_run=True by default. WARNING: irreversible.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container_path": {
+            "type": "string"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "container_path"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L134-L135",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/accounts.py#L216-L234",
+      "behavior": "Delete a container permanently; handler uses GTM API v2 DELETE after preview when dry_run=False."
+    },
+    {
+      "name": "get_container_snippet",
+      "description": "Get the GTM snippet code (JS/noscript) to embed on your site",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        }
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L136-L137",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/accounts.py#L237-L249",
+      "behavior": "Get the GTM snippet code (JS/noscript) to embed on your site; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "discover_containers",
+      "description": "Fetch all GTM accounts and containers, save to store, set first as active",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        }
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L138-L139",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/accounts.py#L83-L124",
+      "behavior": "Fetch all GTM accounts and containers, save to store, set first as active; handler uses GTM API v2 GET. Caches discovered containers but does not set any active container; its registered description is stale."
+    },
+    {
+      "name": "list_workspaces",
+      "description": "List workspaces in the active (or specified) container",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        }
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L142-L143",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/workspaces.py#L18-L42",
+      "behavior": "List workspaces in the active (or specified) container; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "get_workspace",
+      "description": "Get workspace details",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L144-L145",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/workspaces.py#L45-L62",
+      "behavior": "Get workspace details; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "create_workspace",
+      "description": "Create a new workspace. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L146-L147",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/workspaces.py#L65-L87",
+      "behavior": "Create a new workspace; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "delete_workspace",
+      "description": "Delete workspace and all unpublished changes. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L148-L149",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/workspaces.py#L90-L108",
+      "behavior": "Delete workspace and all unpublished changes; handler uses GTM API v2 DELETE after preview when dry_run=False."
+    },
+    {
+      "name": "get_workspace_status",
+      "description": "List all pending (uncommitted) changes in a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L150-L151",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "audit"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/workspaces.py#L111-L137",
+      "behavior": "List all pending (uncommitted) changes in a workspace; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "update_workspace",
+      "description": "Rename a workspace or update its description. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L152-L153",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/workspaces.py#L140-L160",
+      "behavior": "Rename a workspace or update its description; handler uses GTM API v2 PUT after preview when dry_run=False."
+    },
+    {
+      "name": "quick_preview_workspace",
+      "description": "Compile and validate workspace entities without creating a version",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L154-L155",
+      "scope": "gtm",
+      "tags": [
+        "workspace",
+        "test"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/workspaces.py#L163-L184",
+      "behavior": "Compile and validate workspace entities without creating a version; handler uses GTM API v2 POST."
+    },
+    {
+      "name": "sync_workspace",
+      "description": "Sync workspace with the latest container version; returns merge conflicts if any",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L156-L157",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/workspaces.py#L187-L208",
+      "behavior": "Sync workspace with the latest container version; returns merge conflicts if any; handler uses GTM API v2 POST."
+    },
+    {
+      "name": "resolve_conflict_workspace",
+      "description": "Resolve a merge conflict in a workspace. entity = GTM resource to use as resolved state. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entity": {
+            "type": "object"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "entity"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L158-L159",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/workspaces.py#L211-L234",
+      "behavior": "Resolve a merge conflict in a workspace; handler uses GTM API v2 POST after preview when dry_run=False. Posts {entity: entity}, while discovery requires the Entity resource directly as request body; execution needs correction."
+    },
+    {
+      "name": "list_tags",
+      "description": "List all tags in a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L162-L163",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/tags.py#L43-L69",
+      "behavior": "List all tags in a workspace; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "get_tag",
+      "description": "Get full tag details including parameters",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "tag_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L164-L165",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/tags.py#L72-L83",
+      "behavior": "Get full tag details including parameters; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "create_tag",
+      "description": "Create a tag. body = GTM Tag resource JSON. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "body"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L166-L167",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/tags.py#L86-L108",
+      "behavior": "Create a tag; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "update_tag",
+      "description": "Update a tag (full replacement). dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag_id": {
+            "type": "string"
+          },
+          "body": {
+            "type": "object"
+          },
+          "fingerprint": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "tag_id",
+          "body"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L168-L170",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/tags.py#L111-L136",
+      "behavior": "Update a tag (full replacement); handler uses GTM API v2 PUT after preview when dry_run=False. Constructs fingerprint query parameters but never passes them to client.put, so optimistic locking input is ignored."
+    },
+    {
+      "name": "delete_tag",
+      "description": "Delete a tag. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "tag_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L171-L172",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/tags.py#L139-L157",
+      "behavior": "Delete a tag; handler uses GTM API v2 DELETE after preview when dry_run=False."
+    },
+    {
+      "name": "revert_tag",
+      "description": "Revert a tag to its state in the published container version. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag_id": {
+            "type": "string"
+          },
+          "fingerprint": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "tag_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L173-L174",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/tags.py#L160-L182",
+      "behavior": "Revert a tag to its state in the published container version; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "list_triggers",
+      "description": "List all triggers in a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L177-L178",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/triggers.py#L58-L81",
+      "behavior": "List all triggers in a workspace; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "get_trigger",
+      "description": "Get full trigger details",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trigger_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "trigger_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L179-L180",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/triggers.py#L84-L95",
+      "behavior": "Get full trigger details; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "create_trigger",
+      "description": "Create a trigger. body = GTM Trigger resource JSON. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "body"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L181-L182",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/triggers.py#L98-L122",
+      "behavior": "Create a trigger; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "update_trigger",
+      "description": "Update a trigger (full replacement). dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trigger_id": {
+            "type": "string"
+          },
+          "body": {
+            "type": "object"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "trigger_id",
+          "body"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L183-L185",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/triggers.py#L125-L145",
+      "behavior": "Update a trigger (full replacement); handler uses GTM API v2 PUT after preview when dry_run=False."
+    },
+    {
+      "name": "delete_trigger",
+      "description": "Delete a trigger. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trigger_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "trigger_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L186-L187",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/triggers.py#L148-L166",
+      "behavior": "Delete a trigger; handler uses GTM API v2 DELETE after preview when dry_run=False."
+    },
+    {
+      "name": "revert_trigger",
+      "description": "Revert a trigger to its state in the published container version. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trigger_id": {
+            "type": "string"
+          },
+          "fingerprint": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "trigger_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L188-L189",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/triggers.py#L169-L191",
+      "behavior": "Revert a trigger to its state in the published container version; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "list_variables",
+      "description": "List all custom variables in a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L192-L193",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/variables.py#L56-L79",
+      "behavior": "List all custom variables in a workspace; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "get_variable",
+      "description": "Get full variable details",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variable_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "variable_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L194-L195",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/variables.py#L82-L93",
+      "behavior": "Get full variable details; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "create_variable",
+      "description": "Create a variable. body = GTM Variable resource JSON. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "body"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L196-L197",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/variables.py#L96-L118",
+      "behavior": "Create a variable; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "update_variable",
+      "description": "Update a variable (full replacement). dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variable_id": {
+            "type": "string"
+          },
+          "body": {
+            "type": "object"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "variable_id",
+          "body"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L198-L200",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/variables.py#L121-L141",
+      "behavior": "Update a variable (full replacement); handler uses GTM API v2 PUT after preview when dry_run=False."
+    },
+    {
+      "name": "delete_variable",
+      "description": "Delete a variable. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variable_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "variable_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L201-L202",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/variables.py#L144-L162",
+      "behavior": "Delete a variable; handler uses GTM API v2 DELETE after preview when dry_run=False."
+    },
+    {
+      "name": "revert_variable",
+      "description": "Revert a variable to its state in the published container version. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variable_id": {
+            "type": "string"
+          },
+          "fingerprint": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "variable_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L203-L204",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/variables.py#L165-L187",
+      "behavior": "Revert a variable to its state in the published container version; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "list_builtin_variables",
+      "description": "List all enabled built-in variables in a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L207-L208",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/builtins.py#L30-L48",
+      "behavior": "List all enabled built-in variables in a workspace; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "enable_builtin_variables",
+      "description": "Enable built-in variables. types = list of type strings. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "types"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L209-L211",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/builtins.py#L51-L78",
+      "behavior": "Enable built-in variables; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "disable_builtin_variables",
+      "description": "Disable built-in variables. types = list of type strings. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "types"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L212-L214",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/builtins.py#L104-L124",
+      "behavior": "Disable built-in variables; handler uses GTM API v2 DELETE after preview when dry_run=False."
+    },
+    {
+      "name": "revert_builtin_variable",
+      "description": "Revert a built-in variable to its published state. variable_type = type string. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variable_type": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "variable_type"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L215-L216",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/builtins.py#L81-L101",
+      "behavior": "Revert a built-in variable to its published state; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "list_version_headers",
+      "description": "List version summaries for a container",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        }
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L219-L220",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/versions.py#L23-L50",
+      "behavior": "List version summaries for a container; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "get_version",
+      "description": "Get full version details (all tags, triggers, variables)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "version_id": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "version_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L221-L222",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/versions.py#L53-L79",
+      "behavior": "Get full version details (all tags, triggers, variables); handler uses GTM API v2 GET."
+    },
+    {
+      "name": "get_live_version",
+      "description": "Get the currently published (live) container version",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        }
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L223-L224",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/versions.py#L82-L102",
+      "behavior": "Get the currently published (live) container version; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "create_version",
+      "description": "Create a version snapshot from a workspace. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L225-L226",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace",
+        "release"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/versions.py#L105-L139",
+      "behavior": "Create a version snapshot from a workspace; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "publish_version",
+      "description": "Publish a version to production (LIVE). dry_run=True by default. WARNING: immediately affects live container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "version_id": {
+            "type": "string"
+          },
+          "fingerprint": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "version_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L227-L228",
+      "scope": "gtm",
+      "tags": [
+        "release"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/versions.py#L142-L173",
+      "behavior": "Publish a version to production (LIVE); handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "get_latest_version_header",
+      "description": "Get summary header of the latest container version",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        }
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L229-L230",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/versions.py#L176-L195",
+      "behavior": "Get summary header of the latest container version; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "update_version",
+      "description": "Update a version name/description. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "version_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "version_id",
+          "name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L231-L232",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/versions.py#L198-L219",
+      "behavior": "Update a version name/description; handler uses GTM API v2 PUT after preview when dry_run=False."
+    },
+    {
+      "name": "delete_version",
+      "description": "Delete a container version. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "version_id": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "version_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L233-L234",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/versions.py#L222-L241",
+      "behavior": "Delete a container version; handler uses GTM API v2 DELETE after preview when dry_run=False."
+    },
+    {
+      "name": "set_latest_version",
+      "description": "Set a version as the 'latest' (what workspaces sync against). dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "version_id": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "version_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L235-L236",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/versions.py#L244-L264",
+      "behavior": "Set a version as the 'latest' (what workspaces sync against); handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "undelete_version",
+      "description": "Restore a previously deleted container version. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "version_id": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "version_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L237-L238",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/versions.py#L267-L287",
+      "behavior": "Restore a previously deleted container version; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "list_environments",
+      "description": "List all GTM environments (Live, Latest, Draft, custom)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        }
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L241-L242",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/environments.py#L23-L48",
+      "behavior": "List all GTM environments (Live, Latest, Draft, custom); handler uses GTM API v2 GET."
+    },
+    {
+      "name": "get_environment",
+      "description": "Get details for a specific environment",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "environment_id": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "environment_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L243-L244",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/environments.py#L51-L61",
+      "behavior": "Get details for a specific environment; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "create_environment",
+      "description": "Create a custom environment. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "enable_debug": {
+            "type": "boolean"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L245-L246",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/environments.py#L64-L93",
+      "behavior": "Create a custom environment; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "update_environment",
+      "description": "Update an environment. body = GTM Environment resource. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "environment_id": {
+            "type": "string"
+          },
+          "body": {
+            "type": "object"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "environment_id",
+          "body"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L247-L248",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/environments.py#L96-L115",
+      "behavior": "Update an environment; handler uses GTM API v2 PUT after preview when dry_run=False."
+    },
+    {
+      "name": "delete_environment",
+      "description": "Delete a custom environment. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "environment_id": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "environment_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L249-L250",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/environments.py#L118-L137",
+      "behavior": "Delete a custom environment; handler uses GTM API v2 DELETE after preview when dry_run=False."
+    },
+    {
+      "name": "reauthorize_environment",
+      "description": "Regenerate the authorization token for an environment. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "environment_id": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "environment_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L251-L252",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/environments.py#L140-L163",
+      "behavior": "Regenerate the authorization token for an environment; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "list_folders",
+      "description": "List all folders in a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L255-L256",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/folders.py#L26-L48",
+      "behavior": "List all folders in a workspace; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "get_folder",
+      "description": "Get folder details",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "folder_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L257-L258",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/folders.py#L51-L61",
+      "behavior": "Get folder details; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "create_folder",
+      "description": "Create a folder in a workspace. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L259-L260",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/folders.py#L64-L82",
+      "behavior": "Create a folder in a workspace; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "update_folder",
+      "description": "Rename a folder. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "folder_id",
+          "name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L261-L262",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/folders.py#L85-L104",
+      "behavior": "Rename a folder; handler uses GTM API v2 PUT after preview when dry_run=False."
+    },
+    {
+      "name": "delete_folder",
+      "description": "Delete a folder (entities inside are NOT deleted). dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "folder_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L263-L264",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/folders.py#L107-L127",
+      "behavior": "Delete a folder (entities inside are NOT deleted); handler uses GTM API v2 DELETE after preview when dry_run=False."
+    },
+    {
+      "name": "list_folder_entities",
+      "description": "List all tags, triggers and variables in a folder",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "folder_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L265-L266",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/folders.py#L130-L150",
+      "behavior": "List all tags, triggers and variables in a folder; handler uses GTM API v2 POST."
+    },
+    {
+      "name": "move_entities_to_folder",
+      "description": "Move tags/triggers/variables into a folder. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder_id": {
+            "type": "string"
+          },
+          "tag_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "trigger_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "variable_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "folder_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L267-L269",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/folders.py#L153-L184",
+      "behavior": "Move tags/triggers/variables into a folder; handler uses GTM API v2 POST after preview when dry_run=False. Posts arrays of entity objects in the body, while discovery requires tagId/triggerId/variableId query parameters and a Folder body; execution needs correction."
+    },
+    {
+      "name": "list_user_permissions",
+      "description": "List all user permissions for a GTM account",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_path": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        }
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L272-L273",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "access"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/permissions.py#L39-L62",
+      "behavior": "List all user permissions for a GTM account; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "get_user_permission",
+      "description": "Get a specific user's GTM permissions",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "permission_id": {
+            "type": "string"
+          },
+          "account_path": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "permission_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L274-L275",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "access"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/permissions.py#L65-L76",
+      "behavior": "Get a specific user's GTM permissions; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "create_user_permission",
+      "description": "Grant a user access. body = UserPermission resource. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object"
+          },
+          "account_path": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "body"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L276-L277",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "access"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/permissions.py#L79-L105",
+      "behavior": "Grant a user access; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "update_user_permission",
+      "description": "Update a user's permissions. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "permission_id": {
+            "type": "string"
+          },
+          "body": {
+            "type": "object"
+          },
+          "account_path": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "permission_id",
+          "body"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L278-L280",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "access"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/permissions.py#L108-L128",
+      "behavior": "Update a user's permissions; handler uses GTM API v2 PUT after preview when dry_run=False."
+    },
+    {
+      "name": "delete_user_permission",
+      "description": "Revoke a user's GTM access. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "permission_id": {
+            "type": "string"
+          },
+          "account_path": {
+            "type": "string"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "permission_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L281-L282",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "access"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/permissions.py#L131-L151",
+      "behavior": "Revoke a user's GTM access; handler uses GTM API v2 DELETE after preview when dry_run=False."
+    },
+    {
+      "name": "list_gtag_configs",
+      "description": "List Google Tag configurations in a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L285-L286",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/gtag_config.py#L25-L47",
+      "behavior": "List Google Tag configurations in a workspace; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "get_gtag_config",
+      "description": "Get a specific Google Tag configuration",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gtag_config_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "gtag_config_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L287-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/gtag_config.py#L50-L60",
+      "behavior": "Get a specific Google Tag configuration; handler uses GTM API v2 GET."
+    },
+    {
+      "name": "create_gtag_config",
+      "description": "Create a Google Tag configuration. body = GtagConfig resource. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "body"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L289-L290",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/gtag_config.py#L63-L82",
+      "behavior": "Create a Google Tag configuration; handler uses GTM API v2 POST after preview when dry_run=False."
+    },
+    {
+      "name": "update_gtag_config",
+      "description": "Update a Google Tag configuration. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gtag_config_id": {
+            "type": "string"
+          },
+          "body": {
+            "type": "object"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "gtag_config_id",
+          "body"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L291-L293",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/gtag_config.py#L85-L104",
+      "behavior": "Update a Google Tag configuration; handler uses GTM API v2 PUT after preview when dry_run=False."
+    },
+    {
+      "name": "delete_gtag_config",
+      "description": "Delete a Google Tag configuration. dry_run=True by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gtag_config_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (numeric string)"
+          },
+          "container_path": {
+            "type": "string",
+            "description": "Container path e.g. accounts/123/containers/456 (optional, uses active container)"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "If True (default), preview only. Pass False to execute."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User email (optional, uses active user)"
+          }
+        },
+        "required": [
+          "workspace_id",
+          "gtag_config_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/server.py#L294-L295",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "handlerSource": "https://github.com/magdamarketinghackers/MCP-GTM/blob/d90bc3d73394a8c3e444aeb79be5d46a6df342f2/tools/gtag_config.py#L107-L125",
+      "behavior": "Delete a Google Tag configuration; handler uses GTM API v2 DELETE after preview when dry_run=False."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "manage",
+    "summary": "Discover containers by public ID, preview draft changes, and manage versions, environments, and account access.",
+    "examples": [
+      "discover_containers",
+      "quick_preview_workspace",
+      "reauthorize_environment"
+    ]
+  }
+}

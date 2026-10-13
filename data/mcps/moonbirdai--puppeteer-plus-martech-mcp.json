@@ -1,0 +1,532 @@
+{
+  "repo": "moonbirdai/puppeteer-plus-martech-mcp",
+  "url": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp",
+  "commit": "1878a43bc92934e45a919b656c8399a9f99f4b71",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Implemented browser inspection tools detect deployed GTM containers, dataLayer events and scripts; this is an audit/testing server, not a GTM management API.",
+  "method": "mixed",
+  "server": "index.js (stdio; all five src/tools registration modules)",
+  "exposure": "All 16 tools are registered unconditionally by index.js; no configuration or credentials required for registration.",
+  "sources": [
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/index.js#L1-L104",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/analyticsTools.js#L16-L307",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/coreTools.js#L50-L116",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/coreTools.js#L8-L49",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingAnalysisTool.js#L16-L468",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingAnalysisTool.js#L469-L712",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingTools.js#L11-L83",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingTools.js#L252-L361",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingTools.js#L362-L471",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingTools.js#L472-L641",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingTools.js#L642-L782",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingTools.js#L84-L251",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/seoTools.js#L160-L297",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/seoTools.js#L298-L421",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/seoTools.js#L422-L540",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/seoTools.js#L70-L159",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/seoTools.js#L9-L69",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/analytics/pixelDetector.js#L55-L68",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/utils/requestInterceptor.js#L15-L114",
+    "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/utils/beaconCapture.js#L18-L43"
+  ],
+  "limitations": [
+    "Offline tools/list obtained using original registration modules, actual SDK McpServer and in-memory client transport; no browser launch or tool handler executed. Handler functionality reviewed statically.",
+    "GTM detection in pixelDetector treats presence of dataLayer as GTM evidence and extracts GTM IDs from script text; heuristic detection can yield false positives and miss external-script-only IDs.",
+    "parse-analytics-beacons installs interception after navigation, so initial page-load requests may be missed. Its optional interaction capture reuses setupRequestInterception, which returns a fresh unattached request array when interception already exists, so interaction beacons may be empty.",
+    "Marketing inspection and highlighted screenshots block images/fonts/media, potentially suppressing image pixels or altering screenshot appearance."
+  ],
+  "tools": [
+    {
+      "name": "puppeteer_navigate",
+      "description": "Navigate to a URL",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to navigate to"
+          },
+          "launchOptions": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false,
+            "description": "PuppeteerJS LaunchOptions. Default null."
+          },
+          "allowDangerous": {
+            "type": "boolean",
+            "description": "Allow dangerous LaunchOptions that reduce security."
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/coreTools.js#L8-L49",
+      "scope": "auxiliary",
+      "tags": [
+        "test"
+      ],
+      "behavior": "Opens the supplied URL in the shared Puppeteer browser, applying supplied launch options."
+    },
+    {
+      "name": "puppeteer_screenshot",
+      "description": "Take a screenshot of the current page or a specific element",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name for the screenshot"
+          },
+          "selector": {
+            "type": "string",
+            "description": "CSS selector for element to screenshot"
+          },
+          "width": {
+            "type": "number",
+            "description": "Width in pixels (default: 800)"
+          },
+          "height": {
+            "type": "number",
+            "description": "Height in pixels (default: 600)"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/coreTools.js#L50-L116",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "test"
+      ],
+      "behavior": "Captures the current page or selected element as a PNG screenshot."
+    },
+    {
+      "name": "find-marketing-technologies",
+      "description": "Get a high-level overview of all marketing technologies on a webpage",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the webpage to analyze"
+          },
+          "waitTime": {
+            "type": "number",
+            "description": "Additional time to wait in milliseconds for delayed pixels to fire"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingTools.js#L11-L83",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit",
+        "test"
+      ],
+      "behavior": "Navigates to a webpage and reports marketing technologies including GTM IDs and dataLayer samples, network activity and SEO metadata."
+    },
+    {
+      "name": "analyze-analytics-platforms",
+      "description": "Deep dive into analytics platforms (GA4, UA, Adobe Analytics, etc.) on a webpage",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the webpage to analyze"
+          },
+          "waitTime": {
+            "type": "number",
+            "description": "Additional time to wait in milliseconds"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingTools.js#L84-L251",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics, Adobe Analytics and other analytics: reports detected platforms, IDs, requests and custom analytics globals."
+    },
+    {
+      "name": "detect-ad-pixels",
+      "description": "Focus on advertising platforms (Facebook, TikTok, etc.) on a webpage",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the webpage to analyze"
+          },
+          "waitTime": {
+            "type": "number",
+            "description": "Additional time to wait in milliseconds"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingTools.js#L252-L361",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Advertising platforms: reports detected advertising pixels, IDs and sample advertising requests."
+    },
+    {
+      "name": "identify-tag-managers",
+      "description": "Analyze tag management systems (GTM, Tealium, etc.) on a webpage",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the webpage to analyze"
+          },
+          "waitTime": {
+            "type": "number",
+            "description": "Additional time to wait in milliseconds"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingTools.js#L362-L471",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit",
+        "test"
+      ],
+      "behavior": "Reports detected GTM and other tag managers, container IDs, dataLayer samples and event names from the webpage."
+    },
+    {
+      "name": "track-marketing-beacons",
+      "description": "Analyze network requests for tracking and marketing activities",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the webpage to analyze"
+          },
+          "waitTime": {
+            "type": "number",
+            "description": "Additional time to wait in milliseconds"
+          },
+          "maxRequests": {
+            "type": "number",
+            "description": "Maximum number of requests to include in results"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingTools.js#L472-L641",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "audit",
+        "test"
+      ],
+      "behavior": "Captures webpage requests and groups marketing beacons by vendor to inspect deployed tracking."
+    },
+    {
+      "name": "highlight-marketing-tools",
+      "description": "Take a screenshot with marketing technologies visually highlighted",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the webpage to screenshot"
+          },
+          "highlightPixels": {
+            "type": "boolean",
+            "description": "Whether to highlight detected marketing pixels"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingTools.js#L642-L782",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "test"
+      ],
+      "behavior": "Injects visual markers for marketing scripts including GTM and returns a screenshot."
+    },
+    {
+      "name": "scan-marketing-stack",
+      "description": "Comprehensive analysis of all marketing and analytics technologies on a webpage",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the webpage to analyze"
+          },
+          "waitTime": {
+            "type": "number",
+            "description": "Additional time to wait in milliseconds for delayed pixels to fire"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingAnalysisTool.js#L16-L468",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit",
+        "test"
+      ],
+      "behavior": "Detects GTM and other marketing globals and data layers, parses recognized provider requests, and returns a combined stack report."
+    },
+    {
+      "name": "visualize-marketing-tech",
+      "description": "Take a screenshot with detailed marketing technologies visually highlighted",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the webpage to screenshot"
+          },
+          "highlightMode": {
+            "type": "string",
+            "enum": [
+              "basic",
+              "detailed",
+              "none"
+            ],
+            "description": "How to highlight detected marketing technologies"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/marketingAnalysisTool.js#L469-L712",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "test"
+      ],
+      "behavior": "Injects configurable markers for GTM, marketing scripts, pixels and data layers and returns a screenshot."
+    },
+    {
+      "name": "parse-analytics-beacons",
+      "description": "Capture and parse Adobe Analytics and Experience Platform beacons on a webpage",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the webpage to analyze"
+          },
+          "waitTime": {
+            "type": "number",
+            "description": "Time to wait for beacons to fire (milliseconds)"
+          },
+          "simulateClick": {
+            "type": "string",
+            "description": "Optional CSS selector to click for interaction beacons"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/analyticsTools.js#L16-L307",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Adobe Analytics and Experience Platform: captures and parses analytics beacons and optional click interactions, extracting Adobe variables and XDM."
+    },
+    {
+      "name": "audit-seo",
+      "description": "Analyze SEO metadata and structure on a webpage",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the webpage to analyze"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/seoTools.js#L9-L69",
+      "scope": "other",
+      "tags": [],
+      "behavior": "SEO: returns webpage SEO metadata and URL structure analysis."
+    },
+    {
+      "name": "check-page-metadata",
+      "description": "Analyze meta tags, titles, and descriptions on a webpage",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the webpage to analyze"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/seoTools.js#L70-L159",
+      "scope": "other",
+      "tags": [],
+      "behavior": "SEO: extracts titles, descriptions, meta tags and social metadata and evaluates common metadata issues."
+    },
+    {
+      "name": "evaluate-page-structure",
+      "description": "Analyze URL structure, headings hierarchy, and page organization",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the webpage to analyze"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/seoTools.js#L160-L297",
+      "scope": "other",
+      "tags": [],
+      "behavior": "SEO: reports URL structure, heading hierarchy, content counts, links and breadcrumbs with evaluations."
+    },
+    {
+      "name": "extract-schema-markup",
+      "description": "Analyze JSON-LD, microdata, and schema.org markup on a webpage",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the webpage to analyze"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/seoTools.js#L298-L421",
+      "scope": "other",
+      "tags": [],
+      "behavior": "SEO: extracts JSON-LD and simplified microdata, lists schema types and reports missing structured data."
+    },
+    {
+      "name": "audit-image-alt-text",
+      "description": "Audit image alt text on a webpage for accessibility and SEO compliance",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the webpage to analyze"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/moonbirdai/puppeteer-plus-martech-mcp/blob/1878a43bc92934e45a919b656c8399a9f99f4b71/src/tools/seoTools.js#L422-L540",
+      "scope": "other",
+      "tags": [],
+      "behavior": "SEO and accessibility: audits image alt attributes and returns issue details, compliance rates and recommendations."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "test",
+    "summary": "Open pages in a browser to identify GTM, sample dataLayer events, and visualize installed tracking technologies.",
+    "examples": [
+      "identify-tag-managers",
+      "scan-marketing-stack",
+      "visualize-marketing-tech"
+    ]
+  }
+}

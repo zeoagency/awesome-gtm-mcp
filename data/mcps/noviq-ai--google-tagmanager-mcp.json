@@ -1,0 +1,362 @@
+{
+  "repo": "noviq-ai/google-tagmanager-mcp",
+  "url": "https://github.com/noviq-ai/google-tagmanager-mcp",
+  "commit": "a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Seven registered read-only GTM tools have implemented v2 API handlers; no write operations are registered.",
+  "method": "tools/list",
+  "server": "tag_manager_mcp/server.py:run_server",
+  "exposure": "All seven tools registered unconditionally when the server imports its tool modules. Normal startup requires Application Default Credentials at utils import time.",
+  "sources": [
+    "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/server.py#L1-L13",
+    "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/coordinator.py#L1-L5",
+    "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/utils.py#L1-L24",
+    "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/tools/accounts.py#L8-L20",
+    "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/tools/containers.py#L8-L27",
+    "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/tools/workspaces.py#L8-L28",
+    "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/tools/tags.py#L8-L31",
+    "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/tools/triggers.py#L8-L28",
+    "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/tools/variables.py#L8-L28",
+    "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/tools/versions.py#L8-L30"
+  ],
+  "limitations": [
+    "Offline registration used an inert replacement for tag_manager_mcp.utils to bypass import-time ADC; no API handlers or authentication were executed.",
+    "Schemas reflect installed mcp 1.30.0; upstream specifies mcp[cli]>=1.2.0 without a lock, so schema metadata can vary by installed SDK version.",
+    "List handlers ignore pagination tokens and return only the first API page."
+  ],
+  "tools": [
+    {
+      "name": "list_accounts",
+      "description": "Returns a list of Google Tag Manager accounts accessible by the authenticated user.\n\nEach account includes:\n- accountId: The GTM account ID\n- name: The account name\n- shareData: Whether the account shares data with Google\n- path: The resource path (accounts/{accountId})\n",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_accountsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_accountsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/tools/accounts.py#L8-L20",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls Tag Manager v2 accounts.list and returns the account array from the first response."
+    },
+    {
+      "name": "list_containers",
+      "description": "Returns a list of GTM containers for the specified account.\n\nArgs:\n    account_id: The GTM account ID (numeric, e.g. 1234567890)\n\nEach container includes:\n- containerId: The container ID\n- name: The container name\n- publicId: The GTM container ID shown in the UI (e.g. GTM-XXXXXXX)\n- usageContext: Where the container is used (web, androidSdk5, iosSdk5, amp, server)\n- domainName: Associated domains\n- path: The resource path\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "list_containersArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_containersOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/tools/containers.py#L8-L27",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls Tag Manager v2 accounts.containers.list for the account and returns the container array from the first response."
+    },
+    {
+      "name": "list_workspaces",
+      "description": "Returns a list of GTM workspaces for the specified container.\n\nArgs:\n    account_id: The GTM account ID (numeric)\n    container_id: The GTM container ID (numeric)\n\nEach workspace includes:\n- workspaceId: The workspace ID\n- name: The workspace name\n- description: The workspace description\n- fingerprint: The fingerprint of the workspace\n- tagManagerUrl: Link to the workspace in the GTM UI\n- path: The resource path\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_workspacesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_workspacesOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/tools/workspaces.py#L8-L28",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Tag Manager v2 accounts.containers.workspaces.list for the container and returns the workspace array from the first response."
+    },
+    {
+      "name": "list_tags",
+      "description": "Returns a list of GTM tags in the specified workspace.\n\nArgs:\n    account_id: The GTM account ID (numeric)\n    container_id: The GTM container ID (numeric)\n    workspace_id: The workspace ID (numeric)\n\nEach tag includes:\n- tagId: The tag ID\n- name: The tag name\n- type: The tag type (e.g. ua, gaawe, html, img)\n- firingTriggerId: List of trigger IDs that fire this tag\n- blockingTriggerId: List of trigger IDs that block this tag\n- tagFiringOption: When to fire (oncePerEvent, oncePerLoad, unlimited)\n- paused: Whether the tag is paused\n- parameter: Tag configuration parameters\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_tagsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_tagsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/tools/tags.py#L8-L31",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Tag Manager v2 workspace tags.list and returns the tag array from the first response."
+    },
+    {
+      "name": "list_triggers",
+      "description": "Returns a list of GTM triggers in the specified workspace.\n\nArgs:\n    account_id: The GTM account ID (numeric)\n    container_id: The GTM container ID (numeric)\n    workspace_id: The workspace ID (numeric)\n\nEach trigger includes:\n- triggerId: The trigger ID\n- name: The trigger name\n- type: The trigger type (e.g. pageview, click, customEvent, formSubmission, historyChange)\n- filter: Conditions that must be true for the trigger to fire\n- parameter: Trigger configuration parameters\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_triggersArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_triggersOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/tools/triggers.py#L8-L28",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Tag Manager v2 workspace triggers.list and returns the trigger array from the first response."
+    },
+    {
+      "name": "list_variables",
+      "description": "Returns a list of GTM variables in the specified workspace.\n\nArgs:\n    account_id: The GTM account ID (numeric)\n    container_id: The GTM container ID (numeric)\n    workspace_id: The workspace ID (numeric)\n\nEach variable includes:\n- variableId: The variable ID\n- name: The variable name\n- type: The variable type (e.g. v (Data Layer Variable), u (URL), k (1st Party Cookie), jsm (Custom JavaScript))\n- parameter: Variable configuration parameters\n- enablingTriggerId: Trigger IDs that enable this variable\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_variablesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_variablesOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/tools/variables.py#L8-L28",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Tag Manager v2 workspace variables.list and returns the variable array from the first response."
+    },
+    {
+      "name": "get_live_container_version",
+      "description": "Returns the currently published (live) version of the specified GTM container.\n\nArgs:\n    account_id: The GTM account ID (numeric)\n    container_id: The GTM container ID (numeric)\n\nReturns the live container version including:\n- containerVersionId: The version ID\n- name: The version name\n- description: The version description\n- container: Container information\n- tag: List of tags in this version\n- trigger: List of triggers in this version\n- variable: List of variables in this version\n- fingerprint: Fingerprint of the version\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "get_live_container_versionArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_live_container_versionOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/noviq-ai/google-tagmanager-mcp/blob/a4e219a6e2bcf3614b57885a44eb8b0b7f3f8416/tag_manager_mcp/tools/versions.py#L8-L30",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Calls Tag Manager v2 accounts.containers.versions.live and returns the live container version."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "inspect",
+    "summary": "Read accounts, containers, workspaces, entities, and the currently published container version.",
+    "examples": [
+      "get_live_container_version",
+      "list_tags",
+      "list_triggers"
+    ]
+  }
+}

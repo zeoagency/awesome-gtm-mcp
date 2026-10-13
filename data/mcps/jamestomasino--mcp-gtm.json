@@ -1,0 +1,1722 @@
+{
+  "repo": "jamestomasino/mcp-gtm",
+  "url": "https://github.com/jamestomasino/mcp-gtm",
+  "commit": "15d96a12a437c86ca5aeec6d1f46a738911e45dc",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Implements 47 registered tools for offline GTM export inspection, editing, audit, server-side entity inspection, and file export; functional limitations are documented.",
+  "method": "mixed",
+  "server": "src/index.ts (stdio)",
+  "exposure": "All 47 tools by default. Presence of GTM_READ_ONLY filters create/update/delete/move/export prefixes; other tools remain registered. All groups, including serverSide, are unconditional.",
+  "sources": [
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/index.ts#L22-L72",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/store.ts#L49-L153",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/schemas/parameter.ts#L8-L19",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/schemas/serverSide.ts#L8-L53",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/analysis.ts#L103-L138",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/analysis.ts#L140-L199",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/analysis.ts#L201-L222",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/analysis.ts#L224-L238",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/container.ts#L10-L27",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/container.ts#L29-L40",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/container.ts#L42-L54",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/export.ts#L11-L27",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/export.ts#L29-L140",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/folders.ts#L104-L125",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/folders.ts#L127-L150",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/folders.ts#L25-L55",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/folders.ts#L57-L67",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/folders.ts#L69-L79",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/folders.ts#L81-L102",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/folders.ts#L9-L23",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/lifecycle.ts#L723-L731",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/lifecycle.ts#L733-L741",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/lifecycle.ts#L743-L783",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/search.ts#L14-L136",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L103-L119",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L121-L158",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L160-L176",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L178-L212",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L24-L54",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L56-L69",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L71-L101",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L9-L22",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/tags.ts#L12-L40",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/tags.ts#L159-L235",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/tags.ts#L237-L247",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/tags.ts#L249-L274",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/tags.ts#L42-L78",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/tags.ts#L80-L157",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/triggers.ts#L117-L172",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/triggers.ts#L12-L28",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/triggers.ts#L174-L186",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/triggers.ts#L30-L64",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/triggers.ts#L66-L115",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/undo.ts#L28-L47",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/undo.ts#L9-L26",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/variables.ts#L11-L25",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/variables.ts#L139-L149",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/variables.ts#L151-L163",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/variables.ts#L27-L60",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/variables.ts#L62-L97",
+    "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/variables.ts#L99-L137"
+  ],
+  "limitations": [
+    "Runtime verification was limited to tools/list; no container or GTM tool handler was invoked.",
+    "This server works on local exported JSON only; it has no live Google API, authentication, workspace sync, publishing, or preview execution.",
+    "GTM_READ_ONLY removes only create/update/delete/move/export prefixes; undo, redo, and loading remain exposed.",
+    "Tag/trigger/variable create and update tool parameters permit only scalar value fields and cannot represent the nested LIST/MAP parameter shapes accepted in container-file schemas.",
+    "Trigger filter tool objects expose type/key/value/condition but underlying ConditionSchema models type/parameter; passthrough preserves extra fields without translating them to canonical GTM condition parameters.",
+    "gtm_get_tag_dependencies omits variable dependencies, gtm_diff_containers omits changes to existing IDs, and lifecycle firing-order/consent conclusions are project heuristics.",
+    "Folder deletion does not clear entity references; moving tags between folders leaves old membership and can duplicate destination membership.",
+    "Server-side entity schemas impose project-specific required fields (including zone type); supported exported JSON shapes are constrained by these schemas rather than Google discovery schemas."
+  ],
+  "tools": [
+    {
+      "name": "gtm_load_container",
+      "description": "Load a GTM container JSON file. Call this first before using any other tools.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "description": "Path to the GTM export JSON file"
+          }
+        },
+        "required": [
+          "file_path"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/container.ts#L10-L27",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Reads and validates a local exported GTM JSON file, normalizes entity placement, and resets in-memory undo/redo history."
+    },
+    {
+      "name": "gtm_get_container_info",
+      "description": "Get container metadata (name, ID, timezone, platform). Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/container.ts#L29-L40",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns loaded container metadata with human-readable usage context names."
+    },
+    {
+      "name": "gtm_get_container_state",
+      "description": "Get summary counts and structure overview of the loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/container.ts#L42-L54",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns loaded entity counts and source file path."
+    },
+    {
+      "name": "gtm_list_tags",
+      "description": "List all tags with summary info, trigger assignments, and consent settings. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/tags.ts#L12-L40",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns summaries of tags from the local loaded container."
+    },
+    {
+      "name": "gtm_get_tag",
+      "description": "Get full tag configuration by tag_id or name. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag_id": {
+            "type": "string",
+            "description": "Tag ID to look up"
+          },
+          "name": {
+            "type": "string",
+            "description": "Tag name to look up (alternative to tag_id)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/tags.ts#L42-L78",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns the local tag selected by ID or exact name."
+    },
+    {
+      "name": "gtm_create_tag",
+      "description": "Create a new tag. Validates against GTM schema, auto-assigns tagId if not provided.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Tag name"
+          },
+          "type": {
+            "type": "string",
+            "description": "Tag type code (e.g. gaawe for GA4, googtag for Google Tag, html for Custom HTML)"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "Parent folder ID"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes for the tag"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the tag is enabled (default: true)"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "key",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Tag configuration parameters (e.g. html content for Custom HTML tags)"
+          },
+          "firing_trigger_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Firing trigger IDs for the tag"
+          },
+          "blocking_trigger_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Blocking trigger IDs for the tag"
+          },
+          "consent_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Required consent types (e.g. ad_storage, analytics_storage). Empty array means no consent required."
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/tags.ts#L80-L157",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Creates a tag in the local in-memory container with project Zod validation and automatically assigned ID.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_update_tag",
+      "description": "Update an existing tag by tag_id.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag_id": {
+            "type": "string",
+            "description": "Tag ID to update"
+          },
+          "name": {
+            "type": "string",
+            "description": "New tag name"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "New parent folder ID"
+          },
+          "notes": {
+            "type": "string",
+            "description": "New notes"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Enable or disable the tag"
+          },
+          "firing_trigger_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Replace the tag's firing trigger IDs"
+          },
+          "blocking_trigger_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Replace the tag's blocking trigger IDs"
+          },
+          "consent_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Replace required additional consent types; an empty array marks no additional consent required"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "key",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Replace the tag's configuration parameters"
+          }
+        },
+        "required": [
+          "tag_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/tags.ts#L159-L235",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Updates a tag in the local in-memory container after project Zod validation.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_delete_tag",
+      "description": "Delete a tag from the container by tag_id.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag_id": {
+            "type": "string",
+            "description": "Tag ID to delete"
+          }
+        },
+        "required": [
+          "tag_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/tags.ts#L237-L247",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Deletes a tag in the local in-memory container without cleaning references from other entities.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_find_tags_by_type",
+      "description": "Find tags by type code (e.g. gaawe, googtag, html). Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Tag type code to search for"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/tags.ts#L249-L274",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Filters local tags by exact type code and returns summaries."
+    },
+    {
+      "name": "gtm_list_triggers",
+      "description": "List all triggers with summary info (name, type, folder). Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/triggers.ts#L12-L28",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns summaries of triggers from the local loaded container."
+    },
+    {
+      "name": "gtm_get_trigger",
+      "description": "Get full trigger configuration by trigger_id or name. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trigger_id": {
+            "type": "string",
+            "description": "Trigger ID to look up"
+          },
+          "name": {
+            "type": "string",
+            "description": "Trigger name to look up (alternative to trigger_id)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/triggers.ts#L30-L64",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns the local trigger selected by ID or exact name."
+    },
+    {
+      "name": "gtm_create_trigger",
+      "description": "Create a new trigger. Validates against GTM schema, auto-assigns triggerId if not provided.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Trigger name"
+          },
+          "type": {
+            "type": "string",
+            "description": "Trigger type code (e.g. pageview, click, custom, scroll, timer)"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "Parent folder ID"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes for the trigger"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "key",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Trigger configuration parameters"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "condition": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Trigger filters/conditions"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/triggers.ts#L66-L115",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Creates a trigger in the local in-memory container with project Zod validation and automatically assigned ID.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_update_trigger",
+      "description": "Update an existing trigger by trigger_id.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trigger_id": {
+            "type": "string",
+            "description": "Trigger ID to update"
+          },
+          "name": {
+            "type": "string",
+            "description": "New trigger name"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "New parent folder ID"
+          },
+          "notes": {
+            "type": "string",
+            "description": "New notes"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "key",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Replace the trigger's configuration parameters"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "condition": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Replace the trigger's filters/conditions"
+          }
+        },
+        "required": [
+          "trigger_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/triggers.ts#L117-L172",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Updates a trigger in the local in-memory container after project Zod validation.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_delete_trigger",
+      "description": "Delete a trigger from the container by trigger_id.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trigger_id": {
+            "type": "string",
+            "description": "Trigger ID to delete"
+          }
+        },
+        "required": [
+          "trigger_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/triggers.ts#L174-L186",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Deletes a trigger in the local in-memory container without cleaning references from other entities.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_list_variables",
+      "description": "List all user-defined variables with summary info. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/variables.ts#L11-L25",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns summaries of variables from the local loaded container."
+    },
+    {
+      "name": "gtm_get_variable",
+      "description": "Get variable details by variable_id or name. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variable_id": {
+            "type": "string",
+            "description": "Variable ID to look up"
+          },
+          "name": {
+            "type": "string",
+            "description": "Variable name to look up (alternative to variable_id)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/variables.ts#L27-L60",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns the local variable selected by ID or exact name."
+    },
+    {
+      "name": "gtm_create_variable",
+      "description": "Create a new variable. Validates against GTM schema, auto-assigns variableId if not provided.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Variable name"
+          },
+          "type": {
+            "type": "string",
+            "description": "Variable type code (e.g. v for Data Layer, u for URL, jsm for Custom JS)"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes for the variable"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "key",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Variable configuration parameters"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/variables.ts#L62-L97",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Creates a variable in the local in-memory container with project Zod validation and automatically assigned ID.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_update_variable",
+      "description": "Update an existing variable by variable_id.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variable_id": {
+            "type": "string",
+            "description": "Variable ID to update"
+          },
+          "name": {
+            "type": "string",
+            "description": "New variable name"
+          },
+          "notes": {
+            "type": "string",
+            "description": "New notes"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "key",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            "description": "Updated variable configuration parameters"
+          }
+        },
+        "required": [
+          "variable_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/variables.ts#L99-L137",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Updates a variable in the local in-memory container after project Zod validation.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_delete_variable",
+      "description": "Delete a variable from the container by variable_id.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variable_id": {
+            "type": "string",
+            "description": "Variable ID to delete"
+          }
+        },
+        "required": [
+          "variable_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/variables.ts#L139-L149",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Deletes a variable in the local in-memory container without cleaning references from other entities.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_list_builtin_variables",
+      "description": "List enabled built-in variables. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/variables.ts#L151-L163",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns built-in variables from the loaded export."
+    },
+    {
+      "name": "gtm_list_folders",
+      "description": "List all folders in the container. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/folders.ts#L9-L23",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns local folder summaries using each folder tagId array for membership counts."
+    },
+    {
+      "name": "gtm_get_folder",
+      "description": "Get folder details and tag membership by folder_id or name. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder_id": {
+            "type": "string",
+            "description": "Folder ID to look up"
+          },
+          "name": {
+            "type": "string",
+            "description": "Folder name to look up (alternative to folder_id)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/folders.ts#L25-L55",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns a local folder by ID or exact name, including any stored membership data."
+    },
+    {
+      "name": "gtm_create_folder",
+      "description": "Create a new folder. Auto-assigns folderId.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Folder name"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Notes for the folder"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/folders.ts#L57-L67",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Creates a local folder with an automatically assigned ID and empty tagId membership.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_delete_folder",
+      "description": "Delete a folder from the container by folder_id.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder_id": {
+            "type": "string",
+            "description": "Folder ID to delete"
+          }
+        },
+        "required": [
+          "folder_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/folders.ts#L69-L79",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Deletes the local folder but does not clear parentFolderId references on its entities.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_move_tag_to_folder",
+      "description": "Move a tag to a folder, or unassign it by setting folder_id to null.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag_id": {
+            "type": "string",
+            "description": "Tag ID to move"
+          },
+          "folder_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Target folder ID, or null to unassign from folder"
+          }
+        },
+        "required": [
+          "tag_id",
+          "folder_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/folders.ts#L81-L102",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Sets local tag parentFolderId and appends destination membership; moving between folders does not remove old membership and destination existence is not required.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_move_trigger_to_folder",
+      "description": "Move a trigger to a folder, or unassign it by setting folder_id to null.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "trigger_id": {
+            "type": "string",
+            "description": "Trigger ID to move"
+          },
+          "folder_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Target folder ID, or null to unassign from folder"
+          }
+        },
+        "required": [
+          "trigger_id",
+          "folder_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/folders.ts#L104-L125",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Sets or clears local trigger parentFolderId without checking destination existence.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_move_variable_to_folder",
+      "description": "Move a variable to a folder, or unassign it by setting folder_id to null.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variable_id": {
+            "type": "string",
+            "description": "Variable ID to move"
+          },
+          "folder_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Target folder ID, or null to unassign from folder"
+          }
+        },
+        "required": [
+          "variable_id",
+          "folder_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/folders.ts#L127-L150",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Sets or clears local variable parentFolderId without checking destination existence.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_get_tag_dependencies",
+      "description": "Show which triggers and variables a tag references. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag_id": {
+            "type": "string",
+            "description": "Tag ID to analyze"
+          },
+          "name": {
+            "type": "string",
+            "description": "Tag name to analyze (alternative to tag_id)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/analysis.ts#L103-L138",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Returns firing and blocking trigger references for a tag; contrary to its description it does not return variable references."
+    },
+    {
+      "name": "gtm_find_unused_entities",
+      "description": "Find tags, triggers, or variables not referenced by any other entity. Variables are classified by type (data_layer, custom_js, constant, lookup_table, etc.) and only those with no parameter references anywhere are reported unused. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "entity_type": {
+            "type": "string",
+            "enum": [
+              "tags",
+              "triggers",
+              "variables",
+              "all"
+            ],
+            "default": "all",
+            "description": "Which entity type to check"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/analysis.ts#L140-L199",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Finds unreferenced triggers and variable names and tags whose enabled property is falsy; omitted enabled values may be reported unused."
+    },
+    {
+      "name": "gtm_find_orphaned_triggers",
+      "description": "Find triggers not fired by any tag. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/analysis.ts#L201-L222",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Returns triggers absent from tag firing-trigger IDs; blocking-only trigger use is not counted."
+    },
+    {
+      "name": "gtm_validate_container",
+      "description": "Run full Zod validation on the loaded container, report all issues. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/analysis.ts#L224-L238",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Validates in-memory export against project Zod schemas and returns schema issues."
+    },
+    {
+      "name": "gtm_export_container",
+      "description": "Write current container state to a JSON file. The file can be imported back into GTM.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "description": "Output file path for the exported container JSON"
+          }
+        },
+        "required": [
+          "file_path"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/export.ts#L11-L27",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Writes the current in-memory export to a local JSON file while preserving the original workspace envelope when detected.",
+      "exposure": "Default; omitted whenever GTM_READ_ONLY is present, regardless of its value."
+    },
+    {
+      "name": "gtm_diff_containers",
+      "description": "Compare two container JSON files and report differences in tags, triggers, and variables.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file_a": {
+            "type": "string",
+            "description": "Path to the first GTM container JSON file"
+          },
+          "file_b": {
+            "type": "string",
+            "description": "Path to the second GTM container JSON file"
+          }
+        },
+        "required": [
+          "file_a",
+          "file_b"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/export.ts#L29-L140",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Reads two local exports and compares entity IDs for additions, removals, and counts; configuration changes to existing IDs are not compared."
+    },
+    {
+      "name": "gtm_list_zones",
+      "description": "List all zones in the container (server-side GTM). Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L9-L22",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect",
+        "server-side"
+      ],
+      "behavior": "Returns summaries of zones from the local loaded container."
+    },
+    {
+      "name": "gtm_get_zone",
+      "description": "Get zone details by zone_id or name (server-side GTM). Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "zone_id": {
+            "type": "string",
+            "description": "Zone ID to look up"
+          },
+          "name": {
+            "type": "string",
+            "description": "Zone name to look up (alternative to zone_id)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L24-L54",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect",
+        "server-side"
+      ],
+      "behavior": "Returns the local zone selected by ID or exact name."
+    },
+    {
+      "name": "gtm_list_clients",
+      "description": "List all clients in the container (server-side GTM). Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L56-L69",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect",
+        "server-side"
+      ],
+      "behavior": "Returns summaries of clients from the local loaded container."
+    },
+    {
+      "name": "gtm_get_client",
+      "description": "Get client details by client_id or name (server-side GTM). Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "client_id": {
+            "type": "string",
+            "description": "Client ID to look up"
+          },
+          "name": {
+            "type": "string",
+            "description": "Client name to look up (alternative to client_id)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L71-L101",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect",
+        "server-side"
+      ],
+      "behavior": "Returns the local client selected by ID or exact name."
+    },
+    {
+      "name": "gtm_list_transformations",
+      "description": "List all transformations in the container (server-side GTM). Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L103-L119",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect",
+        "server-side"
+      ],
+      "behavior": "Returns summaries of transformations from the local loaded container."
+    },
+    {
+      "name": "gtm_get_transformation",
+      "description": "Get transformation details by transformation_id or name (server-side GTM). Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "transformation_id": {
+            "type": "string",
+            "description": "Transformation ID to look up"
+          },
+          "name": {
+            "type": "string",
+            "description": "Transformation name to look up (alternative to transformation_id)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L121-L158",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect",
+        "server-side"
+      ],
+      "behavior": "Returns the local transformation selected by ID or exact name."
+    },
+    {
+      "name": "gtm_list_custom_templates",
+      "description": "List all custom templates in the container. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L160-L176",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns summaries of custom templates from the local loaded container."
+    },
+    {
+      "name": "gtm_get_custom_template",
+      "description": "Get custom template details by template_id or name. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "template_id": {
+            "type": "string",
+            "description": "Template ID to look up"
+          },
+          "name": {
+            "type": "string",
+            "description": "Template name to look up (alternative to template_id)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/serverSide.ts#L178-L212",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns the local custom template selected by ID or exact name."
+    },
+    {
+      "name": "gtm_analyze_tag_firing_order",
+      "description": "Analyze the deterministic tag firing order for the loaded container. Reports the evaluation sequence (Google tags → Custom HTML → Custom Image → Custom Templates), position within each group, sequencing dependencies (fires after/before), and potential ordering conflicts. Critical for understanding consent timing and tag execution order. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/lifecycle.ts#L723-L731",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Estimates firing order by hard-coded tag-type groups and numeric tag IDs and reports sequencing references; it does not execute or simulate GTM."
+    },
+    {
+      "name": "gtm_analyze_consent_setup",
+      "description": "Analyze the container's consent management configuration. Detects consent management tags, consent state variables, consent blocking triggers, and consent initialization patterns. Reports issues like unprotected data collection tags, consent timing problems, orphaned blocking references, and missing consent setup. Issues are classified as critical/warning/info with recommendations. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/lifecycle.ts#L733-L741",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Uses keyword, tag-type, parameter, and trigger heuristics to report consent patterns and potential issues."
+    },
+    {
+      "name": "gtm_get_tag_lifecycle",
+      "description": "Get detailed lifecycle analysis for a specific tag. Reports the lifecycle phase (consent_management, data_collection, other), firing order position, trigger configuration, sequencing dependencies, consent relationships, and per-tag issues. Use to debug why a specific tag might fire at the wrong time or violate consent requirements. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag_id": {
+            "type": "string",
+            "description": "Tag ID to analyze"
+          },
+          "name": {
+            "type": "string",
+            "description": "Tag name to analyze (alternative to tag_id)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/lifecycle.ts#L743-L783",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Reports heuristic lifecycle phase, computed firing group, trigger relationships, consent settings, and issues for a selected tag."
+    },
+    {
+      "name": "gtm_search",
+      "description": "Search across all entities (tags, triggers, variables, folders) by name or notes. Returns matching entities with their type and summary info. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query (matched against entity names and notes)"
+          },
+          "entity_type": {
+            "type": "string",
+            "enum": [
+              "tags",
+              "triggers",
+              "variables",
+              "folders",
+              "all"
+            ],
+            "default": "all",
+            "description": "Which entity types to search"
+          },
+          "case_sensitive": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether the search is case-sensitive"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/search.ts#L14-L136",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Searches local tag, trigger, variable, and folder names and notes with optional case sensitivity."
+    },
+    {
+      "name": "gtm_undo",
+      "description": "Undo the last mutation (create, update, delete, move) made to the container. Returns the previous state summary. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/undo.ts#L9-L26",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Restores a prior in-memory container snapshot and returns state and history counts.",
+      "exposure": "Default and GTM_READ_ONLY mode; these state-changing tools are not covered by the write-prefix filter."
+    },
+    {
+      "name": "gtm_redo",
+      "description": "Redo the last undone mutation. Returns the restored state summary. Requires a loaded container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jamestomasino/mcp-gtm/blob/15d96a12a437c86ca5aeec6d1f46a738911e45dc/src/tools/undo.ts#L28-L47",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Restores a previously undone in-memory snapshot and returns state and history counts.",
+      "exposure": "Default and GTM_READ_ONLY mode; these state-changing tools are not covered by the write-prefix filter."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "offline",
+    "summary": "Edits exported container JSON, manages server-side entities, analyzes dependencies, and supports undo and redo.",
+    "reason": "Implements 47 registered tools for offline GTM export inspection, editing, audit, server-side entity inspection, and file export; functional limitations are documented.",
+    "examples": [
+      "gtm_analyze_consent_setup",
+      "gtm_diff_containers",
+      "gtm_export_container"
+    ]
+  }
+}

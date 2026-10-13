@@ -1,0 +1,900 @@
+{
+  "repo": "andylackie/google-marketing-mcp-servers",
+  "url": "https://github.com/andylackie/google-marketing-mcp-servers",
+  "commit": "6bf5e93167c4dac017ff518c91ab578b306afa58",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "GTM component registers 27 implemented tools backed by Google Tag Manager API v2; includes workspace CRUD, inspection, version creation and confirm-gated publishing.",
+  "method": "tools/list",
+  "server": "gtm-mcp/src/index.ts: authenticated Streamable HTTP /mcp; registrations in gtm-mcp/src/mcp-server.ts",
+  "exposure": "All 27 tools registered unconditionally by buildMcpServer; no read-only or conditional tool groups. Separate GA4/Search Console server excluded.",
+  "sources": [
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L94-L99",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L11-L20",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L100-L105",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L22-L33",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L106-L111",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L35-L49",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L112-L117",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L51-L62",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L118-L118",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L64-L75",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L119-L119",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L77-L88",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L120-L125",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L90-L101",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L126-L126",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L103-L114",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L127-L132",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L116-L127",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L133-L133",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L129-L140",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L134-L139",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L142-L155",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L140-L145",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L157-L168",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L146-L151",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L170-L181",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L154-L159",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L21-L37",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L160-L165",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L39-L56",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L166-L171",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L58-L73",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L172-L177",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L75-L86",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L178-L183",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L88-L105",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L184-L189",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L107-L122",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L190-L195",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L124-L135",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L196-L201",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L137-L154",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L202-L207",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L156-L171",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L208-L213",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L173-L184",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L214-L219",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L186-L203",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L220-L225",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L205-L220",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L228-L233",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/publish.ts#L5-L23",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L234-L239",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/publish.ts#L25-L47",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/gtm.ts#L1-L61",
+    "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/index.ts#L1-L115"
+  ],
+  "limitations": [
+    "tools/list handler invoked offline from the actual SDK server in an isolated dependency installation using the upstream lockfile and cleared environment; no transport, credentials, authentication or GTM operations executed. Handler behavior reviewed statically, not verified against Google.",
+    "Read list handlers issue one API call and do not expose page tokens or paginate; large collections may be incomplete.",
+    "Schemas intentionally leave Tag, Trigger and Variable resources as unrestricted record objects. Zod preprocessing additionally accepts JSON strings although published JSON Schema exposes object/array forms."
+  ],
+  "tools": [
+    {
+      "name": "list_accounts",
+      "description": "List GTM accounts this login can access. Start here.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L94-L99",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L11-L20",
+      "behavior": "Calls Google Tag Manager v2 accounts.list.",
+      "tags": [
+        "inspect"
+      ]
+    },
+    {
+      "name": "list_containers",
+      "description": "List containers under a GTM account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountPath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Account path, e.g. 'accounts/1234567'."
+          }
+        },
+        "required": [
+          "accountPath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L100-L105",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L22-L33",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.list.",
+      "tags": [
+        "inspect"
+      ]
+    },
+    {
+      "name": "get_container",
+      "description": "Get a single container's details (public ID like GTM-XXXX, usage context).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "containerPath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Container path, e.g. 'accounts/1234567/containers/7654321'."
+          }
+        },
+        "required": [
+          "containerPath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L106-L111",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L35-L49",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.get.",
+      "tags": [
+        "inspect"
+      ]
+    },
+    {
+      "name": "list_workspaces",
+      "description": "List workspaces (drafts) in a container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "containerPath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Container path."
+          }
+        },
+        "required": [
+          "containerPath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L112-L117",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L51-L62",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.list.",
+      "tags": [
+        "inspect",
+        "workspace"
+      ]
+    },
+    {
+      "name": "list_tags",
+      "description": "List tags in a workspace.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workspace path, e.g. '.../workspaces/3'."
+          }
+        },
+        "required": [
+          "workspacePath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L118-L118",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L64-L75",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.tags.list.",
+      "tags": [
+        "inspect",
+        "workspace"
+      ]
+    },
+    {
+      "name": "get_tag",
+      "description": "Get one tag by path.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tagPath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Tag path, e.g. '.../workspaces/3/tags/12'."
+          }
+        },
+        "required": [
+          "tagPath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L119-L119",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L77-L88",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.tags.get.",
+      "tags": [
+        "inspect"
+      ]
+    },
+    {
+      "name": "list_triggers",
+      "description": "List triggers in a workspace.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workspace path."
+          }
+        },
+        "required": [
+          "workspacePath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L120-L125",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L90-L101",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.triggers.list.",
+      "tags": [
+        "inspect",
+        "workspace"
+      ]
+    },
+    {
+      "name": "get_trigger",
+      "description": "Get one trigger by path.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "triggerPath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Trigger path, e.g. '.../workspaces/3/triggers/8'."
+          }
+        },
+        "required": [
+          "triggerPath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L126-L126",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L103-L114",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.triggers.get.",
+      "tags": [
+        "inspect"
+      ]
+    },
+    {
+      "name": "list_variables",
+      "description": "List user-defined variables in a workspace.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workspace path."
+          }
+        },
+        "required": [
+          "workspacePath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L127-L132",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L116-L127",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.variables.list.",
+      "tags": [
+        "inspect",
+        "workspace"
+      ]
+    },
+    {
+      "name": "get_variable",
+      "description": "Get one variable by path.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variablePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Variable path, e.g. '.../workspaces/3/variables/5'."
+          }
+        },
+        "required": [
+          "variablePath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L133-L133",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L129-L140",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.variables.get.",
+      "tags": [
+        "inspect"
+      ]
+    },
+    {
+      "name": "list_built_in_variables",
+      "description": "List enabled built-in variables in a workspace.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workspace path."
+          }
+        },
+        "required": [
+          "workspacePath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L134-L139",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L142-L155",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.built_in_variables.list.",
+      "tags": [
+        "inspect",
+        "workspace"
+      ]
+    },
+    {
+      "name": "list_versions",
+      "description": "List container version headers (history).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "containerPath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Container path."
+          }
+        },
+        "required": [
+          "containerPath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L140-L145",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L157-L168",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.version_headers.list.",
+      "tags": [
+        "inspect",
+        "release"
+      ]
+    },
+    {
+      "name": "get_live_version",
+      "description": "Get the currently PUBLISHED (live) container version.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "containerPath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Container path."
+          }
+        },
+        "required": [
+          "containerPath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L146-L151",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/read.ts#L170-L181",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.versions.live.",
+      "tags": [
+        "inspect",
+        "release"
+      ]
+    },
+    {
+      "name": "create_workspace",
+      "description": "Create a new workspace (draft) in a container. All edits happen in a workspace.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "containerPath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Container path, e.g. 'accounts/123/containers/456'."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workspace name."
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "containerPath",
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L154-L159",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L21-L37",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.create.",
+      "tags": [
+        "edit",
+        "workspace"
+      ]
+    },
+    {
+      "name": "create_tag",
+      "description": "Create a tag in a workspace. Workspace-only — not live until a version is published.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workspace path, e.g. '.../workspaces/3'."
+          },
+          "tag": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "GTM Tag resource: { name, type, parameter[], firingTriggerId[], ... }. See Tag Manager API v2 Tag schema."
+          }
+        },
+        "required": [
+          "workspacePath",
+          "tag"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L160-L165",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L39-L56",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.tags.create. Parses stringified JSON payloads before validation.",
+      "tags": [
+        "edit",
+        "workspace"
+      ]
+    },
+    {
+      "name": "update_tag",
+      "description": "Replace a tag in a workspace. Workspace-only — not live until published.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tagPath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Tag path, e.g. '.../workspaces/3/tags/12'."
+          },
+          "tag": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Full GTM Tag resource to replace the existing tag with."
+          }
+        },
+        "required": [
+          "tagPath",
+          "tag"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L166-L171",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L58-L73",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.tags.update. Parses stringified JSON payloads before validation.",
+      "tags": [
+        "edit",
+        "workspace"
+      ]
+    },
+    {
+      "name": "delete_tag",
+      "description": "Delete a tag from a workspace. Workspace-only — not live until published.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tagPath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Tag path to delete from the workspace."
+          }
+        },
+        "required": [
+          "tagPath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L172-L177",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L75-L86",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.tags.delete.",
+      "tags": [
+        "edit",
+        "workspace"
+      ]
+    },
+    {
+      "name": "create_trigger",
+      "description": "Create a trigger in a workspace. Workspace-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workspace path."
+          },
+          "trigger": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "GTM Trigger resource: { name, type, filter[], ... }. See Tag Manager API v2 Trigger schema."
+          }
+        },
+        "required": [
+          "workspacePath",
+          "trigger"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L178-L183",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L88-L105",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.triggers.create. Parses stringified JSON payloads before validation.",
+      "tags": [
+        "edit",
+        "workspace"
+      ]
+    },
+    {
+      "name": "update_trigger",
+      "description": "Replace a trigger in a workspace. Workspace-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "triggerPath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Trigger path."
+          },
+          "trigger": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Full GTM Trigger resource to replace the existing one."
+          }
+        },
+        "required": [
+          "triggerPath",
+          "trigger"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L184-L189",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L107-L122",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.triggers.update. Parses stringified JSON payloads before validation.",
+      "tags": [
+        "edit",
+        "workspace"
+      ]
+    },
+    {
+      "name": "delete_trigger",
+      "description": "Delete a trigger from a workspace. Workspace-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "triggerPath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Trigger path to delete from the workspace."
+          }
+        },
+        "required": [
+          "triggerPath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L190-L195",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L124-L135",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.triggers.delete.",
+      "tags": [
+        "edit",
+        "workspace"
+      ]
+    },
+    {
+      "name": "create_variable",
+      "description": "Create a user-defined variable in a workspace. Workspace-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workspace path."
+          },
+          "variable": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "GTM Variable resource: { name, type, parameter[], ... }. See Tag Manager API v2 Variable schema."
+          }
+        },
+        "required": [
+          "workspacePath",
+          "variable"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L196-L201",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L137-L154",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.variables.create. Parses stringified JSON payloads before validation.",
+      "tags": [
+        "edit",
+        "workspace"
+      ]
+    },
+    {
+      "name": "update_variable",
+      "description": "Replace a variable in a workspace. Workspace-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variablePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Variable path."
+          },
+          "variable": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Full GTM Variable resource to replace the existing one."
+          }
+        },
+        "required": [
+          "variablePath",
+          "variable"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L202-L207",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L156-L171",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.variables.update. Parses stringified JSON payloads before validation.",
+      "tags": [
+        "edit",
+        "workspace"
+      ]
+    },
+    {
+      "name": "delete_variable",
+      "description": "Delete a variable from a workspace. Workspace-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variablePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Variable path to delete from the workspace."
+          }
+        },
+        "required": [
+          "variablePath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L208-L213",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L173-L184",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.variables.delete.",
+      "tags": [
+        "edit",
+        "workspace"
+      ]
+    },
+    {
+      "name": "enable_built_in_variable",
+      "description": "Enable one or more built-in variables in a workspace. Workspace-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workspace path."
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Built-in variable types to enable, e.g. ['pageUrl','clickText','referrer']."
+          }
+        },
+        "required": [
+          "workspacePath",
+          "types"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L214-L219",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L186-L203",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.built_in_variables.create. Parses stringified JSON payloads before validation.",
+      "tags": [
+        "edit",
+        "workspace"
+      ]
+    },
+    {
+      "name": "create_folder",
+      "description": "Create an organizing folder in a workspace. Workspace-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workspace path."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Folder name."
+          }
+        },
+        "required": [
+          "workspacePath",
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L220-L225",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/build.ts#L205-L220",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.folders.create.",
+      "tags": [
+        "edit",
+        "workspace"
+      ]
+    },
+    {
+      "name": "create_version",
+      "description": "Snapshot a workspace into a container version. NOT live — publish separately.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workspace path, e.g. '.../workspaces/3'."
+          },
+          "name": {
+            "type": "string",
+            "description": "Version name."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Version notes."
+          }
+        },
+        "required": [
+          "workspacePath"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L228-L233",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/publish.ts#L5-L23",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.create_version.",
+      "tags": [
+        "release",
+        "workspace"
+      ]
+    },
+    {
+      "name": "publish_version",
+      "description": "PUBLISH a container version LIVE. Changes production tracking immediately. Requires confirm:true; refuses otherwise.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "versionPath": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Container version path to publish LIVE, e.g. 'accounts/123/containers/456/versions/9'."
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "MUST be true. Publishing changes PRODUCTION tracking on the live site immediately."
+          }
+        },
+        "required": [
+          "versionPath",
+          "confirm"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/mcp-server.ts#L234-L239",
+      "scope": "gtm",
+      "implementationSource": "https://github.com/andylackie/google-marketing-mcp-servers/blob/6bf5e93167c4dac017ff518c91ab578b306afa58/gtm-mcp/src/tools/publish.ts#L25-L47",
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.versions.publish. Refuses unless confirm is true.",
+      "tags": [
+        "release"
+      ]
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "manage",
+    "summary": "Edits workspace entities and folders, enables built-ins, creates versions, and confirms publication.",
+    "reason": "GTM component registers 27 implemented tools backed by Google Tag Manager API v2; includes workspace CRUD, inspection, version creation and confirm-gated publishing.",
+    "examples": [
+      "create_folder",
+      "enable_built_in_variable",
+      "update_tag"
+    ]
+  }
+}

@@ -1,0 +1,205 @@
+{
+  "repo": "archievi/climbpast-mcp",
+  "url": "https://github.com/archievi/climbpast-mcp",
+  "commit": "512f1aed6fbaa95faba92ac59d2292feb2f6a0e6",
+  "checkedAt": "2026-10-13",
+  "decision": "remove",
+  "reason": "Documentation-only repository advertises 11 GTM tools among 29 hosted tools; no public implementation or complete schemas available to verify functionality.",
+  "method": "official-docs",
+  "server": "https://climbpast.com/api/mcp",
+  "exposure": "Hosted service requires a cp_ Bearer key. README says read-only by default and write access requires opt-in Google consent. Official docs mark all 11 GTM tools write, including list operations; actual conditional registration versus permission enforcement cannot be verified.",
+  "sources": [
+    "https://climbpast.com/docs/mcp",
+    "https://github.com/archievi/climbpast-mcp/blob/512f1aed6fbaa95faba92ac59d2292feb2f6a0e6/README.md#L1-L138",
+    "https://github.com/archievi/climbpast-mcp/blob/512f1aed6fbaa95faba92ac59d2292feb2f6a0e6/server.json#L1-L28"
+  ],
+  "limitations": [
+    "All 29 documented public names captured in gaps; zero complete input schemas extracted. Official docs list parameter names for get_ga4_report and create_custom_dimension but do not specify complete types or requiredness.",
+    "POST tools/list without credentials returned HTTP 401; this is not a tool catalog. No credentials used and no tool operations invoked.",
+    "Repository contains only README.md, server.json and banner; hosted server implementation is not open source, so handlers and actual GTM functionality cannot be inspected.",
+    "Official docs simultaneously say all tools are read-only and describe write tools with separate consent; README says read-only by default. Runtime exposure and permission behavior remain unverified."
+  ],
+  "tools": [],
+  "gaps": [
+    {
+      "name": "whoami",
+      "description": "Returns the connected workspace, Google account, linked properties, and which write capabilities are granted.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "list_properties",
+      "description": "Lists all connected GA4 properties and Search Console sites.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "get_ga4_report",
+      "description": "Runs a GA4 report. Use a preset or pass your own dimensions and metrics.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "get_ga4_realtime",
+      "description": "Returns active users and top events from the GA4 Realtime API.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "get_gsc_performance",
+      "description": "Clicks, impressions, CTR, and average position from Search Console, grouped by query, page, or date.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "inspect_url",
+      "description": "Runs the Search Console URL Inspection API on a single URL to check whether Google has indexed it.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "get_weekly_report",
+      "description": "The most recent cached weekly performance snapshot for the workspace.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "get_insights",
+      "description": "AI-generated insights from the latest dashboard snapshot.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "get_ai_traffic",
+      "description": "Traffic attributed to AI assistants (ChatGPT, Perplexity, Claude, Gemini) over a date range.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "list_custom_dimensions",
+      "description": "Lists custom dimensions registered on a GA4 property.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "create_custom_dimension",
+      "description": "Registers an event parameter as a custom dimension so it becomes reportable. GA4 does not backfill.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "update_custom_dimension",
+      "description": "Updates a custom dimension’s display name or description. parameterName and scope are immutable in GA4.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "list_key_events",
+      "description": "Lists key events (conversions) marked on a GA4 property.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "create_key_event",
+      "description": "Marks an existing GA4 event as a key event. The event must already be collected.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "update_key_event",
+      "description": "Changes how a key event is counted. The event name itself cannot be changed.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "list_sitemaps",
+      "description": "Lists submitted sitemaps with download status, warnings, errors, and indexed counts.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "submit_sitemap",
+      "description": "Submits or re-submits a sitemap. Re-submitting with fresh lastmod dates is the only automatable recrawl signal Google offers.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "delete_sitemap",
+      "description": "Removes a sitemap from Search Console. Does not deindex any pages.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "gtm_list_containers",
+      "description": "Lists every Tag Manager account and container the connected account can reach. Start here.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "gtm_list_workspaces",
+      "description": "Lists draft workspaces in a container.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "gtm_list_tags",
+      "description": "Lists all tags in a workspace with their type, triggers, and parameters.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "gtm_list_triggers",
+      "description": "Lists all triggers in a workspace.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "gtm_list_variables",
+      "description": "Lists user-defined variables in a workspace.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "gtm_create_workspace",
+      "description": "Creates a draft workspace so changes stay isolated until published.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "gtm_create_tag",
+      "description": "Creates a tag. Takes the raw GTM tag body, so any tag type is supported.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "gtm_update_tag",
+      "description": "Replaces an existing tag. GTM does a full replace, not a merge.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "gtm_delete_tag",
+      "description": "Deletes a tag from a workspace. Draft until published, and revertible from GTM version history.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "gtm_create_trigger",
+      "description": "Creates a trigger. Takes the raw GTM trigger body.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    },
+    {
+      "name": "gtm_publish_container",
+      "description": "Creates a container version from the draft and publishes it. This changes your live site.",
+      "source": "https://climbpast.com/docs/mcp",
+      "reason": "Official tool reference provides no complete JSON input schema (types, required fields, constraints and defaults unavailable). Unauthenticated tools/list returns HTTP 401: Invalid or revoked API key. Hosted implementation is not public."
+    }
+  ],
+  "review": {
+    "status": "reviewed",
+    "classification": null,
+    "summary": "Hosted documentation lists tool names but supplies no complete input schemas; tools/list requires credentials.",
+    "reason": "Hosted documentation lists tool names but supplies no complete input schemas; tools/list requires credentials."
+  }
+}

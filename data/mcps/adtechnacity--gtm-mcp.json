@@ -1,0 +1,1966 @@
+{
+  "repo": "adtechnacity/gtm-mcp",
+  "url": "https://github.com/adtechnacity/gtm-mcp",
+  "commit": "cc3802596523ebad245af0280123e7a617ba1e89",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "35 unconditionally registered tools implement GTM v2 discovery, resource editing, reference audits, and workspace/version lifecycle through googleapiclient.",
+  "method": "tools/list",
+  "server": "src/gtm_mcp/server.py:main (mcp-gtm-server)",
+  "exposure": "All 35 tools register unconditionally by importing lifecycle_tools, read_tools, and write_tools. Default stdio; optional SSE or streamable HTTP. Authentication is lazy at handler invocation and does not gate tool listing.",
+  "sources": [
+    "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/server.py#L1-L10",
+    "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/helpers.py#L33-L51",
+    "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/helpers.py#L111-L132",
+    "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/uv.lock"
+  ],
+  "limitations": [
+    "Offline FastMCP list_tools was loaded with repository uv.lock dependencies in an isolated virtual environment and empty environment; no GTM handler, authentication, or remote GTM request was executed. Runtime API success remains unverified.",
+    "Native dict/list parameters are intentionally unrestricted where upstream signatures expose them; handler-only enums, batch limits, and object validation are not encoded in the exposed input schemas.",
+    "create_trigger accepts advanced trigger types such as timer, scrollDepth, and triggerGroup but exposes only event_name and filters, so creation may require additional type-specific configuration that this handler does not supply."
+  ],
+  "tools": [
+    {
+      "name": "create_gtm_version",
+      "description": "Create a container version from a workspace WITHOUT publishing it.\n\n    Use this to snapshot changes for review, then ``publish_gtm_version`` when\n    approved (``publish_gtm_container`` does both steps at once). GTM refuses\n    to create a version when the workspace has compiler errors or unresolved\n    merge conflicts; those are returned as the error. Creating a version from\n    the Default Workspace replaces it with a new, empty one (new ID).\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        version_name: Name for the new version\n        version_notes: Notes describing the changes\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "version_name": {
+            "title": "Version Name",
+            "type": "string"
+          },
+          "version_notes": {
+            "default": "",
+            "title": "Version Notes",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "version_name"
+        ],
+        "title": "create_gtm_versionArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/lifecycle_tools.py#L58-L95",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace",
+        "release"
+      ],
+      "behavior": "Creates an unpublished container version from the resolved workspace and returns version identity or compilation/sync errors."
+    },
+    {
+      "name": "publish_gtm_container",
+      "description": "Create a version from a workspace and publish it — all its changes go live.\n\n    Same as ``create_gtm_version`` followed by ``publish_gtm_version``; use those\n    two to review the version before it goes live. Check\n    ``get_gtm_workspace_status`` first to see exactly what will ship.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        version_name: Name for the new version\n        version_notes: Notes describing the changes\n        workspace_id: GTM Workspace ID to publish from (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "version_name": {
+            "title": "Version Name",
+            "type": "string"
+          },
+          "version_notes": {
+            "default": "Published via MCP",
+            "title": "Version Notes",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "version_name"
+        ],
+        "title": "publish_gtm_containerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/lifecycle_tools.py#L98-L138",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace",
+        "release"
+      ],
+      "behavior": "Creates a workspace version then publishes it immediately, returning published version identity."
+    },
+    {
+      "name": "publish_gtm_version",
+      "description": "Publish an existing container version — the way to roll back.\n\n    Publishing an older version makes it live immediately. It does NOT touch\n    workspaces: changes still sitting in the Default Workspace will go live\n    again with the next publish from it. Use ``list_gtm_container_versions`` to\n    pick the version and ``diff_gtm_container_versions`` (version → \"live\") to\n    see exactly what the rollback changes before running it.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        version_id: Numeric container version ID to make live\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "version_id": {
+            "title": "Version Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "version_id"
+        ],
+        "title": "publish_gtm_versionArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/lifecycle_tools.py#L141-L169",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "behavior": "Publishes an existing numeric container version, allowing rollback without changing draft workspaces."
+    },
+    {
+      "name": "create_gtm_workspace",
+      "description": "Create a new workspace, branched from the latest container version.\n\n    A separate workspace keeps one person's draft out of everyone else's — pass\n    its ID as ``workspace_id`` to the other tools. GTM limits a container to 3\n    workspaces on the free tier.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        name: Workspace name\n        description: Optional description\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "name"
+        ],
+        "title": "create_gtm_workspaceArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/lifecycle_tools.py#L172-L205",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a named workspace under a container and invalidates cached workspace selection."
+    },
+    {
+      "name": "get_gtm_workspace_status",
+      "description": "List a workspace's pending changes and merge conflicts.\n\n    Shows what would ship with the next version from this workspace (each\n    added/updated/deleted tag, trigger, variable…) and any conflicts with the\n    latest container version. Check this before ``create_gtm_version`` /\n    ``publish_gtm_container``; resolve conflicts with ``sync_gtm_workspace``.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "get_gtm_workspace_statusArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/lifecycle_tools.py#L208-L243",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit",
+        "workspace"
+      ],
+      "behavior": "Fetches pending workspace entity changes and merge conflicts and returns compact summaries."
+    },
+    {
+      "name": "sync_gtm_workspace",
+      "description": "Bring a workspace up to date with the latest container version.\n\n    Needed after someone else publishes: GTM won't create a version from a\n    stale workspace. Non-conflicting changes merge automatically; conflicts are\n    returned and must be fixed (edit the entity, or ``revert_gtm_entity``)\n    before publishing.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "sync_gtm_workspaceArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/lifecycle_tools.py#L246-L283",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Synchronizes a workspace with the latest container version and reports merge conflicts."
+    },
+    {
+      "name": "revert_gtm_entity",
+      "description": "Undo a workspace's changes to one tag, trigger, or variable.\n\n    Restores the entity to how it is in the latest container version: edits\n    are discarded, an entity created in this workspace is removed, a deleted\n    one comes back. Only affects the workspace — nothing live changes.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        kind: \"tag\", \"trigger\", or \"variable\"\n        entity_id: ID of the entity to revert\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "entity_id": {
+            "title": "Entity Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "kind",
+          "entity_id"
+        ],
+        "title": "revert_gtm_entityArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/lifecycle_tools.py#L286-L327",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls the selected tag, trigger, or variable revert endpoint to discard that entity’s workspace changes."
+    },
+    {
+      "name": "list_gtm_containers",
+      "description": "List all GTM containers in an account.\n\n    Calls tagmanager.accounts.containers.list. Returns container names, IDs,\n    public IDs, and usage contexts. Use this to discover container IDs needed\n    by most other tools.\n\n    Args:\n        account_id: GTM Account ID (numeric string)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "list_gtm_containersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/read_tools.py#L20-L46",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists containers accessible in an account and returns their identity and usage fields."
+    },
+    {
+      "name": "list_gtm_accounts",
+      "description": "List all GTM accounts the authenticated user has access to.\n\n    Calls tagmanager.accounts.list. Returns each account's name, ID, and path.\n    This is typically the first discovery call — use the returned account IDs\n    with list_gtm_containers to find containers.\n    ",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_gtm_accountsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/read_tools.py#L48-L73",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists accessible GTM accounts and returns names, account IDs, and paths."
+    },
+    {
+      "name": "list_gtm_workspaces",
+      "description": "List all workspaces in a GTM container.\n\n    Calls tagmanager.accounts.containers.workspaces.list.\n    Returns each workspace's name, ID, and description. The workspace ID is\n    required by most tools that modify container contents.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_gtm_workspacesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/read_tools.py#L76-L111",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Paginates container workspaces and returns names, IDs, and descriptions."
+    },
+    {
+      "name": "list_gtm_variables",
+      "description": "List all variables in a GTM workspace.\n\n    Calls tagmanager.accounts.containers.workspaces.variables.list.\n    Returns each variable's name, type, and ID.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_gtm_variablesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/read_tools.py#L113-L148",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Paginates workspace variables and returns names, types, and IDs."
+    },
+    {
+      "name": "list_gtm_tags",
+      "description": "List all tags in a GTM workspace, including their consent settings.\n\n    Calls tagmanager.accounts.containers.workspaces.tags.list.\n    Returns each tag's name, type, ID, firing/blocking triggers, pause state,\n    and parsed consent configuration. Use this to audit which tags have consent\n    requirements configured.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_gtm_tagsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/read_tools.py#L150-L205",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Paginates workspace tags and returns identity, triggers, pause state, and parsed consent settings."
+    },
+    {
+      "name": "get_gtm_tag",
+      "description": "Get full details of a specific GTM tag, including all parameters and consent settings.\n\n    Calls tagmanager.accounts.containers.workspaces.tags.get.\n    Returns the complete tag resource with all fields (parameters, consent\n    settings, firing triggers, etc.).\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        tag_id: The tag ID to retrieve\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "tag_id"
+        ],
+        "title": "get_gtm_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/read_tools.py#L208-L237",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Fetches and returns the complete workspace tag resource."
+    },
+    {
+      "name": "get_gtm_variable",
+      "description": "Get full details of a specific GTM variable, including its parameters.\n\n    Calls tagmanager.accounts.containers.workspaces.variables.get.\n    For JS Macro (jsm) variables, the JavaScript source is in the parameter\n    list under key=\"javascript\". For Data Layer Variables (v), the dataLayer\n    key is under key=\"name\".\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        variable_id: The variable ID to retrieve\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "variable_id": {
+            "title": "Variable Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "variable_id"
+        ],
+        "title": "get_gtm_variableArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/read_tools.py#L240-L276",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Fetches and returns the complete workspace variable resource."
+    },
+    {
+      "name": "list_gtm_triggers",
+      "description": "List all triggers in a GTM workspace.\n\n    Calls tagmanager.accounts.containers.workspaces.triggers.list.\n    Returns each trigger's name, type, ID, filter conditions, and custom event filters.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_gtm_triggersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/read_tools.py#L279-L316",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Paginates workspace triggers and returns identity and filter conditions."
+    },
+    {
+      "name": "get_gtm_trigger",
+      "description": "Get full details of one trigger: type, filters, auto-event settings, parameters.\n\n    Built-in triggers such as All Pages (ID 2147479553) aren't workspace\n    resources and return 404; ``find_gtm_references`` still works for them.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        trigger_id: The trigger ID to retrieve\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "trigger_id": {
+            "title": "Trigger Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "trigger_id"
+        ],
+        "title": "get_gtm_triggerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/read_tools.py#L319-L342",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Fetches and returns a complete workspace trigger resource; built-in triggers are not workspace resources."
+    },
+    {
+      "name": "find_gtm_references",
+      "description": "Find everything in a workspace that uses a trigger, variable, or tag.\n\n    Run before deleting or renaming — GTM's API doesn't stop you from leaving\n    dangling references, and renaming a variable through the API does NOT\n    rewrite ``{{Old Name}}`` where it's used.\n\n    - ``kind=\"trigger\"``: tags firing on or blocked by it; trigger groups containing it.\n    - ``kind=\"variable\"``: every ``{{Name}}`` use in tags, triggers, and other variables\n      (custom JS, HTML, filters, parameters), with the field path.\n    - ``kind=\"tag\"``: tags that sequence it (setup / teardown).\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        kind: \"trigger\", \"variable\", or \"tag\"\n        entity_id: ID of the entity to look up\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "entity_id": {
+            "title": "Entity Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "kind",
+          "entity_id"
+        ],
+        "title": "find_gtm_referencesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/read_tools.py#L348-L406",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Fetches tags, triggers, and variables and scans trigger links, variable expressions, or tag sequencing references."
+    },
+    {
+      "name": "list_gtm_container_versions",
+      "description": "List all container version headers (the container's publish history).\n\n    Calls tagmanager.accounts.containers.version_headers.list.\n    Returns each version's ID, name, entity counts, and deleted flag. Version\n    IDs are monotonically increasing — higher ID means created later. Headers\n    carry no timestamps; use get_gtm_container_version and read\n    fingerprint_datetime to date a specific version.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        include_deleted: Also include deleted versions (default False)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "include_deleted": {
+            "default": false,
+            "title": "Include Deleted",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_gtm_container_versionsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/read_tools.py#L448-L490",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Paginates version headers with optional deleted versions and returns identity and entity counts."
+    },
+    {
+      "name": "get_gtm_container_version",
+      "description": "Get a summarized snapshot of a specific GTM container version.\n\n    Calls tagmanager.accounts.containers.versions.get (or versions.live when\n    version_id is \"live\"). Returns identity fields, entity counts, and slim\n    tag/trigger/variable listings — never the raw resource, which exceeds 200KB\n    on large containers. fingerprint_datetime (ISO 8601 UTC, derived from the\n    version's fingerprint) is effectively the version's creation time.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        version_id: Container version ID, or \"live\" (default) for the published version\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "version_id": {
+            "default": "live",
+            "title": "Version Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "get_gtm_container_versionArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/read_tools.py#L493-L508",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Fetches a numeric or live container version and returns a summarized snapshot with fingerprint-derived time."
+    },
+    {
+      "name": "diff_gtm_container_versions",
+      "description": "Diff two GTM container versions field-by-field, server-side.\n\n    Calls tagmanager.accounts.containers.versions.get for each side (or\n    versions.live for the special value \"live\"). Answers \"what did publishing\n    version X change\" — diff X-1 → X, or X → live to see what changed since.\n    Returns added/removed/changed tags, triggers, and variables (changed\n    entries carry per-field change lists with GTM parameter lists matched by\n    key), plus added/removed built-in variables and summary counts. Long\n    string values are truncated at 300 chars; per-entity change lists are\n    capped at 40 entries.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        from_version_id: Baseline version ID, or \"live\"\n        to_version_id: Target version ID, or \"live\" (default)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "from_version_id": {
+            "title": "From Version Id",
+            "type": "string"
+          },
+          "to_version_id": {
+            "default": "live",
+            "title": "To Version Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "from_version_id"
+        ],
+        "title": "diff_gtm_container_versionsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/read_tools.py#L511-L556",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit",
+        "release"
+      ],
+      "behavior": "Fetches two versions and computes entity and parameter changes with bounded string and change-list output."
+    },
+    {
+      "name": "delete_gtm_variable",
+      "description": "Delete a variable from a GTM workspace.\n\n    Calls tagmanager.accounts.containers.workspaces.variables.delete.\n    This is permanent within the workspace — publish to make it live, or\n    discard workspace changes to undo.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        variable_id: The variable ID to delete\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "variable_id": {
+            "title": "Variable Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "variable_id"
+        ],
+        "title": "delete_gtm_variableArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/read_tools.py#L559-L588",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Deletes a variable from the resolved workspace through the GTM variables endpoint."
+    },
+    {
+      "name": "create_tag",
+      "description": "Create any tag in a GTM workspace.\n\n    Calls tagmanager.accounts.containers.workspaces.tags.create to create a tag\n    of any type (GA4, Custom HTML, Facebook Pixel, Google Ads, etc.).\n\n    The ``parameter`` list uses GTM's native format — each item is a dict with\n    ``key``, ``value``, and ``type`` (usually ``\"template\"``). Use ``get_gtm_tag``\n    on an existing tag to see the parameter format for a given tag type.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        name: Display name for the tag in GTM\n        tag_type: GTM tag type identifier (e.g. \"gtagjs\", \"html\", \"ua\", \"fbpixel\", \"gclidw\")\n        parameter: List of parameter dicts in GTM format: [{\"key\": \"...\", \"value\": \"...\", \"type\": \"template\"}, ...]\n        firing_trigger_ids: List of trigger ID strings that cause this tag to fire\n        blocking_trigger_ids: List of trigger ID strings that prevent this tag from firing\n        consent_status: Consent requirement — \"notSet\", \"notNeeded\", or \"needed\"\n        consent_types: List of consent types required when consent_status is \"needed\"\n                       (e.g. [\"ad_storage\", \"analytics_storage\"])\n        notes: Optional user notes describing the tag's purpose\n        paused: Whether the tag should be created in a paused state (default False)\n        tag_firing_option: Firing option — \"unlimited\", \"oncePerEvent\", or \"oncePerLoad\"\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "tag_type": {
+            "title": "Tag Type",
+            "type": "string"
+          },
+          "parameter": {
+            "default": null,
+            "items": {},
+            "title": "Parameter",
+            "type": "array"
+          },
+          "firing_trigger_ids": {
+            "default": null,
+            "items": {},
+            "title": "Firing Trigger Ids",
+            "type": "array"
+          },
+          "blocking_trigger_ids": {
+            "default": null,
+            "items": {},
+            "title": "Blocking Trigger Ids",
+            "type": "array"
+          },
+          "consent_status": {
+            "default": null,
+            "title": "Consent Status",
+            "type": "string"
+          },
+          "consent_types": {
+            "default": null,
+            "items": {},
+            "title": "Consent Types",
+            "type": "array"
+          },
+          "notes": {
+            "default": null,
+            "title": "Notes",
+            "type": "string"
+          },
+          "paused": {
+            "default": false,
+            "title": "Paused",
+            "type": "boolean"
+          },
+          "tag_firing_option": {
+            "default": null,
+            "title": "Tag Firing Option",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "name",
+          "tag_type"
+        ],
+        "title": "create_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/write_tools.py#L27-L110",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Creates a tag from native parameter lists and optional trigger, consent, pause, and firing settings."
+    },
+    {
+      "name": "create_datalayer_variables_batch",
+      "description": "Create multiple Data Layer Variables in a GTM workspace at once.\n\n    Iterates over a list of variable definitions and creates each as a type 'v'\n    (Data Layer Variable) using dataLayer version 2. Reports per-variable\n    success/failure.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        variables: List of dicts with 'name' (display name) and 'key' (dataLayer key).\n                   Example: [{\"name\": \"DLV - fs_order_id\", \"key\": \"fs_order_id\"}, ...]\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "variables": {
+            "items": {},
+            "title": "Variables",
+            "type": "array"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "variables"
+        ],
+        "title": "create_datalayer_variables_batchArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/write_tools.py#L117-L155",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Creates up to 50 dataLayer version 2 variables sequentially and reports individual successes and failures."
+    },
+    {
+      "name": "create_trigger",
+      "description": "Create a trigger in a GTM workspace.\n\n    Supports the common GTM trigger types. The most common are:\n\n    - ``customEvent`` (default) — fires on ``dataLayer.push({'event': <name>})``.\n      Requires ``event_name``. Example: set ``event_name=\"consent_update\"`` to\n      fire on ``dataLayer.push({'event': 'consent_update'})``.\n    - ``pageview`` — fires when gtm.js runs (first paint-ish).\n    - ``init`` — Init-All-Pages; fires before the standard pageview trigger.\n    - ``consentInit`` — fires before ``init``, intended for consent defaults.\n    - ``domReady`` / ``windowLoaded`` — standard page lifecycle triggers.\n    - ``click`` / ``linkClick`` / ``formSubmission`` / ``scrollDepth`` /\n      ``elementVisibility`` / ``timer`` / ``historyChange`` / ``youTubeVideo`` /\n      ``triggerGroup`` / ``pageviewGtm`` / ``serverPageview``.\n\n    ``event_name`` is only used when ``trigger_type == \"customEvent\"`` (it is\n    ignored for other types). For ``customEvent`` triggers without ``event_name``\n    you get a validation error.\n\n    Optional ``filters`` adds AND-ed conditions to the trigger (equivalent to\n    the GTM UI \"Fire on Some ...\" conditions). Each item is a GTM Condition\n    dict with ``type`` and ``parameter``, e.g.\n    ``{\"type\": \"equals\", \"parameter\": [{\"key\": \"arg0\", \"value\": \"{{utm_source}}\", \"type\": \"template\"},\n    {\"key\": \"arg1\", \"value\": \"google_yt_el\", \"type\": \"template\"}]}``.\n\n    Note: the GTM REST Condition schema has no ``negate`` flag. To express\n    \"does not equal X\", use ``type: \"matchRegex\"`` with a negative lookahead\n    pattern such as ``^(?!X$).*$``, or invert the intent (use the trigger as\n    a firing filter rather than an exception).\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        trigger_name: Display name for the trigger in GTM (e.g., \"CE - consent_update\")\n        event_name: The custom event name to match — required when trigger_type is \"customEvent\"\n        trigger_type: GTM trigger type (default \"customEvent\"). See list above.\n        filters: Optional list of GTM Condition dicts to AND with the trigger's base match\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "trigger_name": {
+            "title": "Trigger Name",
+            "type": "string"
+          },
+          "event_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Event Name"
+          },
+          "trigger_type": {
+            "default": "customEvent",
+            "title": "Trigger Type",
+            "type": "string"
+          },
+          "filters": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filters"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "trigger_name"
+        ],
+        "title": "create_triggerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/write_tools.py#L170-L265",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Creates a trigger with optional native filter conditions and a custom-event match; advanced trigger types needing additional settings require later updates."
+    },
+    {
+      "name": "delete_tag",
+      "description": "Delete a tag from a GTM workspace.\n\n    Calls tagmanager.accounts.containers.workspaces.tags.delete. Permanent\n    within the workspace — publish to make it live, or discard workspace\n    changes to undo.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        tag_id: The tag ID to delete\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "tag_id"
+        ],
+        "title": "delete_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/write_tools.py#L272-L305",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Deletes a tag from the resolved workspace."
+    },
+    {
+      "name": "delete_trigger",
+      "description": "Delete a trigger from a GTM workspace.\n\n    Removes the trigger resource entirely. Tags that reference this trigger via\n    ``firingTriggerId`` or ``blockingTriggerId`` will have dangling references\n    after deletion — detach it first with ``update_tags_triggers_batch``\n    (``action=\"remove\"``, ``kind=\"firing\"`` or ``\"blocking\"``).\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        trigger_id: The trigger ID to delete\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "trigger_id": {
+            "title": "Trigger Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "trigger_id"
+        ],
+        "title": "delete_triggerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/write_tools.py#L312-L346",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Deletes a workspace trigger without detaching references from tags."
+    },
+    {
+      "name": "update_trigger_parameters",
+      "description": "Upsert top-level fields on a GTM trigger in place.\n\n    Fetches the trigger, overwrites each key in ``fields`` on the resource,\n    and saves via tagmanager.accounts.containers.workspaces.triggers.update\n    with fingerprint-based optimistic concurrency. Keys not in ``fields`` are\n    preserved. Mirrors ``update_tag_parameters``' semantics for triggers.\n\n    Wholesale-replace semantic: list-valued fields (``filter``,\n    ``customEventFilter``, ``autoEventFilter``) overwrite the existing list.\n    Passing ``[]`` clears the list. Passing ``None`` for any *optional* key\n    removes that key from the trigger. ``name`` is required by GTM, so\n    ``None`` is rejected — omit the key to leave the name unchanged.\n\n    Supported keys:\n\n    - ``name`` (str)\n    - ``filter`` / ``customEventFilter`` / ``autoEventFilter`` (list of GTM\n      Condition dicts — same shape ``create_trigger``'s ``filters`` accepts)\n    - ``interval`` / ``limit`` — timer-trigger Parameter dicts (e.g.\n      ``{\"type\": \"integer\", \"key\": \"interval\", \"value\": \"60000\"}``)\n    - ``checkValidation`` / ``waitForTags`` — formSubmission-trigger\n      Parameter dicts (e.g. ``{\"type\": \"boolean\", \"key\": \"checkValidation\",\n      \"value\": \"true\"}``)\n\n    For the {operator, lhs, rhs} ergonomic form, see ``update_trigger_filter``.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        trigger_id: The trigger ID to update\n        fields: Dict of top-level trigger fields to overwrite\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "trigger_id": {
+            "title": "Trigger Id",
+            "type": "string"
+          },
+          "fields": {
+            "additionalProperties": true,
+            "title": "Fields",
+            "type": "object"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "trigger_id",
+          "fields"
+        ],
+        "title": "update_trigger_parametersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/write_tools.py#L470-L517",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Fetches a trigger, replaces or removes supported top-level fields, and updates with fingerprint concurrency."
+    },
+    {
+      "name": "update_trigger_filter",
+      "description": "Replace a trigger's filter list using the ergonomic ``{operator, lhs, rhs}`` form.\n\n    Convenience wrapper around ``update_trigger_parameters``. Each condition\n    is a dict like ``{\"operator\": \"matchRegex\", \"lhs\": \"{{Page Path}}\",\n    \"rhs\": \"/(create|studio)(?:[?/]|$)\"}`` — the tool builds the underlying\n    GTM Condition dicts (``arg0``/``arg1`` template parameters) for you.\n\n    Pass ``[]`` for ``conditions`` to clear the list wholesale (same semantic\n    as ``update_trigger_parameters``).\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        trigger_id: The trigger ID to update\n        conditions: List of ``{operator, lhs, rhs}`` dicts (or ``[]`` to clear)\n        target: Which list to replace — ``filter`` (default), ``customEventFilter``, or ``autoEventFilter``\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "trigger_id": {
+            "title": "Trigger Id",
+            "type": "string"
+          },
+          "conditions": {
+            "items": {},
+            "title": "Conditions",
+            "type": "array"
+          },
+          "target": {
+            "default": "filter",
+            "title": "Target",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "trigger_id",
+          "conditions"
+        ],
+        "title": "update_trigger_filterArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/write_tools.py#L520-L569",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Converts operator/lhs/rhs conditions to native GTM conditions and replaces the selected trigger filter list."
+    },
+    {
+      "name": "update_tags_consent_settings_batch",
+      "description": "Bulk update consent settings for multiple GTM tags at once.\n\n    Applies the same consent configuration to all specified tags.\n    Each tag is fetched and updated individually with fingerprint concurrency.\n    Use list_gtm_tags first to find the tag IDs you want to update.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        tag_ids: List of tag IDs to update\n        consent_status: One of \"notSet\", \"notNeeded\", or \"needed\"\n        consent_types: List of consent type strings required when status is \"needed\".\n                       Valid types: \"ad_storage\", \"analytics_storage\", \"ad_user_data\",\n                       \"ad_personalization\", \"functionality_storage\", \"personalization_storage\",\n                       \"security_storage\"\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "tag_ids": {
+            "items": {},
+            "title": "Tag Ids",
+            "type": "array"
+          },
+          "consent_status": {
+            "title": "Consent Status",
+            "type": "string"
+          },
+          "consent_types": {
+            "default": null,
+            "items": {},
+            "title": "Consent Types",
+            "type": "array"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "tag_ids",
+          "consent_status"
+        ],
+        "title": "update_tags_consent_settings_batchArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/write_tools.py#L576-L616",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Fetches and fingerprint-updates each selected tag with a shared validated consent configuration."
+    },
+    {
+      "name": "update_tag_parameters",
+      "description": "Upsert raw GTM parameter dicts on any tag, by ``key``.\n\n    For each item in ``parameters``, replaces the existing parameter with the\n    same ``key`` on the tag, or appends it if absent. Other parameters are\n    left unchanged. Saves with fingerprint-based optimistic concurrency.\n\n    Each item must be a complete GTM parameter dict matching the API schema:\n    ``{\"key\": str, \"type\": \"template\"|\"boolean\"|\"integer\"|\"list\"|\"map\", ...}``\n    with ``value`` for template/boolean/integer, ``list`` for list, or ``map``\n    for map. Inspect the tag with ``get_gtm_tag`` first to learn the shape.\n\n    GA4 event tag (type ``gaawe``) recipe — add/overwrite event parameters:\n        1. ``get_gtm_tag`` to read existing ``eventParameters``\n        2. Build the merged list-of-maps locally\n        3. Call this tool with that single ``eventParameters`` entry\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        tag_id: The tag ID to update\n        parameters: List of GTM parameter dicts to upsert by ``key``\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          },
+          "parameters": {
+            "items": {},
+            "title": "Parameters",
+            "type": "array"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "tag_id",
+          "parameters"
+        ],
+        "title": "update_tag_parametersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/write_tools.py#L623-L685",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Upserts complete native tag parameters by key and writes the tag with fingerprint concurrency."
+    },
+    {
+      "name": "set_tags_firing_option_batch",
+      "description": "Bulk set the tag firing option for multiple GTM tags at once.\n\n    The firing option controls how often a tag may fire relative to events on\n    a page:\n      - \"oncePerLoad\"  → once per page load (the GTM UI label is \"Once per page\")\n      - \"oncePerEvent\" → once per triggering event (can fire multiple times per page)\n      - \"unlimited\"    → every time a firing trigger is satisfied\n\n    Each tag is fetched and updated individually with fingerprint concurrency,\n    preserving every other field. Tags already set to ``firing_option`` are\n    skipped. Use list_gtm_tags / get_gtm_tag to find tag IDs and inspect their\n    current firing option. Changes apply on the next container publish.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        tag_ids: List of tag ID strings to update\n        firing_option: One of \"unlimited\", \"oncePerEvent\", or \"oncePerLoad\"\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "tag_ids": {
+            "items": {},
+            "title": "Tag Ids",
+            "type": "array"
+          },
+          "firing_option": {
+            "title": "Firing Option",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "tag_ids",
+          "firing_option"
+        ],
+        "title": "set_tags_firing_option_batchArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/write_tools.py#L693-L740",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Updates selected tags to a validated firing option with fingerprint concurrency and skips unchanged tags."
+    },
+    {
+      "name": "create_gtm_variable",
+      "description": "Create a GTM variable of any type.\n\n    Shortcuts that build the parameter list for you:\n\n    - ``javascript=<source>`` → Custom JavaScript (``jsm``). The source is a full\n      anonymous function returning the value, e.g.\n      ``\"function() { return {{utm_source}} === 'google'; }\"``.\n    - ``datalayer_key=<key>`` → Data Layer Variable (``v``, dataLayer v2).\n\n    For any other type pass ``variable_type`` (e.g. \"c\" constant, \"u\" URL) plus a\n    raw GTM ``parameters`` list. ``parameters``, ``javascript`` and\n    ``datalayer_key`` are mutually exclusive. For many data layer variables at\n    once use ``create_datalayer_variables_batch``.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        name: Display name; tags reference it as ``{{name}}``\n        variable_type: GTM variable type; defaults to \"jsm\" with javascript\n        parameters: Raw GTM parameter list (optional)\n        javascript: Custom JS source; implies type \"jsm\" (optional)\n        datalayer_key: dataLayer key to read; implies type \"v\" (optional)\n        notes: Notes (optional)\n        parent_folder_id: Folder ID (optional)\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "variable_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Variable Type"
+          },
+          "parameters": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Parameters"
+          },
+          "javascript": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Javascript"
+          },
+          "datalayer_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Datalayer Key"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Notes"
+          },
+          "parent_folder_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Parent Folder Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "name"
+        ],
+        "title": "create_gtm_variableArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/write_tools.py#L743-L835",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Creates an arbitrary variable from native parameters or custom-JavaScript/dataLayer shortcuts."
+    },
+    {
+      "name": "update_gtm_variable",
+      "description": "Update an existing GTM variable in place (partial update).\n\n    Fetches the variable, mutates only the fields you passed, then writes\n    it back with fingerprint concurrency. Preserves the variable's ID so\n    every tag/trigger reference to ``{{variable_name}}`` keeps working.\n\n    For jsm (Custom JavaScript) variables, pass ``javascript=<source>`` as\n    a shortcut; the tool builds the right parameter list for you. For any\n    variable type, pass ``parameters=<list of GTM parameter dicts>`` to\n    replace the parameter list directly. ``parameters`` and ``javascript``\n    are mutually exclusive.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        variable_id: The variable ID to update\n        name: New display name (optional)\n        parameters: Raw GTM parameter list, replaces existing (optional)\n        javascript: Custom JS source; jsm variables only (optional)\n        notes: New notes (optional)\n        parent_folder_id: New parent folder ID (optional)\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "variable_id": {
+            "title": "Variable Id",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Name"
+          },
+          "parameters": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Parameters"
+          },
+          "javascript": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Javascript"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Notes"
+          },
+          "parent_folder_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Parent Folder Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "variable_id"
+        ],
+        "title": "update_gtm_variableArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/write_tools.py#L838-L944",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Fetches a variable, changes only supplied fields, and saves with fingerprint concurrency."
+    },
+    {
+      "name": "update_tag",
+      "description": "Update an existing GTM tag in place (partial update).\n\n    Fetches the tag, mutates only the fields you passed, then writes it back\n    with fingerprint concurrency — or returns status \"noop\" without writing\n    when the tag already has those values. Preserves the tag's ID so every reference to\n    it (including tag-sequencing links) keeps working. Any field left as\n    ``None`` is untouched; pass ``firing_trigger_ids=[]`` to explicitly clear a\n    tag's own firing triggers (e.g. a tag that should fire only via sequencing).\n\n    Tag sequencing: pass ``teardown_tag_name`` to fire another tag *after* this\n    one (this tag's ``teardownTag``), or ``setup_tag_name`` to fire one\n    *before* it (``setupTag``). ``stop_on_failure`` maps to\n    ``stopTeardownOnFailure`` / ``stopOnSetupFailure`` for whichever you set.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        tag_id: The tag ID to update\n        name: New display name (optional)\n        parameter: Raw GTM parameter list, replaces existing (optional)\n        firing_trigger_ids: Replace the tag's firing trigger IDs; [] clears them\n        blocking_trigger_ids: Replace the tag's blocking (exception) trigger IDs\n        setup_tag_name: Name of a tag to fire before this one (setupTag)\n        teardown_tag_name: Name of a tag to fire after this one (teardownTag)\n        stop_on_failure: stopOnSetupFailure / stopTeardownOnFailure flag\n        tag_firing_option: \"unlimited\", \"oncePerEvent\", or \"oncePerLoad\"\n        consent_status: \"notSet\", \"notNeeded\", or \"needed\"\n        consent_types: Consent types when consent_status is \"needed\"\n        notes: New notes (optional)\n        paused: Pause/unpause the tag (optional)\n        parent_folder_id: New parent folder ID (optional)\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Name"
+          },
+          "parameter": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Parameter"
+          },
+          "firing_trigger_ids": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Firing Trigger Ids"
+          },
+          "blocking_trigger_ids": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Blocking Trigger Ids"
+          },
+          "setup_tag_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Setup Tag Name"
+          },
+          "teardown_tag_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Teardown Tag Name"
+          },
+          "stop_on_failure": {
+            "default": false,
+            "title": "Stop On Failure",
+            "type": "boolean"
+          },
+          "tag_firing_option": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tag Firing Option"
+          },
+          "consent_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Consent Status"
+          },
+          "consent_types": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Consent Types"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Notes"
+          },
+          "paused": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Paused"
+          },
+          "parent_folder_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Parent Folder Id"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "tag_id"
+        ],
+        "title": "update_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/write_tools.py#L947-L1101",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Fetches a tag, changes supplied fields including sequencing and pause state, and fingerprint-updates unless unchanged."
+    },
+    {
+      "name": "update_tags_triggers_batch",
+      "description": "Add, remove, or replace firing or blocking triggers on multiple tags.\n\n    - ``action=\"add\"`` — attach ``trigger_ids`` not already on the tag; others kept.\n    - ``action=\"remove\"`` — detach ``trigger_ids``; others kept.\n    - ``action=\"set\"`` — replace the list with ``trigger_ids`` exactly. ``[]``\n      clears it (a tag with no firing trigger stops firing).\n\n    ``kind=\"blocking\"`` targets exception triggers (``blockingTriggerId``): a\n    matching blocking trigger stops the tag even when a firing trigger matches.\n    Tags that wouldn't change are skipped; each tag is fetched and written with\n    fingerprint concurrency. Typical migration: ``create_trigger`` →\n    ``action=\"add\"`` new → ``action=\"remove\"`` old → ``delete_trigger`` old.\n\n    Args:\n        account_id: GTM Account ID\n        container_id: GTM Container ID\n        tag_ids: Tag IDs to update (max 50)\n        action: \"add\", \"remove\", or \"set\"\n        trigger_ids: Trigger IDs to add/remove, or the full list for \"set\"\n        kind: \"firing\" (default) or \"blocking\"\n        workspace_id: GTM Workspace ID (auto-detected if omitted)\n    ",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "tag_ids": {
+            "items": {},
+            "title": "Tag Ids",
+            "type": "array"
+          },
+          "action": {
+            "title": "Action",
+            "type": "string"
+          },
+          "trigger_ids": {
+            "items": {},
+            "title": "Trigger Ids",
+            "type": "array"
+          },
+          "kind": {
+            "default": "firing",
+            "title": "Kind",
+            "type": "string"
+          },
+          "workspace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Workspace Id"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "tag_ids",
+          "action",
+          "trigger_ids"
+        ],
+        "title": "update_tags_triggers_batchArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/adtechnacity/gtm-mcp/blob/cc3802596523ebad245af0280123e7a617ba1e89/src/gtm_mcp/write_tools.py#L1112-L1164",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Adds, removes, or replaces firing or blocking trigger IDs across selected tags and skips unchanged tags."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "changes",
+    "summary": "Compares versions, synchronizes workspaces, reverts entities, and applies batch tag and consent changes.",
+    "examples": [
+      "diff_gtm_container_versions",
+      "update_tags_consent_settings_batch",
+      "find_gtm_references"
+    ]
+  }
+}

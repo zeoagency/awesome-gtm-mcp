@@ -1,0 +1,98 @@
+{
+  "repo": "creativedesignseo/google-tag-manager-mcp",
+  "url": "https://github.com/creativedesignseo/google-tag-manager-mcp",
+  "commit": "55bb722f506a4f45c0d24e5b0550929dbd197d22",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Three registered and dispatched tools implement GTM account, container and tag inspection through the Google Tag Manager v2 client.",
+  "method": "source",
+  "server": "mcp-server.js",
+  "exposure": "All three tools are unconditionally advertised and dispatched. createGA4ConfigTag is an internal helper with no public registration or dispatch; version management is only a future README promise.",
+  "sources": [
+    "https://github.com/creativedesignseo/google-tag-manager-mcp/blob/55bb722f506a4f45c0d24e5b0550929dbd197d22/mcp-server.js#L30-L115",
+    "https://github.com/creativedesignseo/google-tag-manager-mcp/blob/55bb722f506a4f45c0d24e5b0550929dbd197d22/mcp-server.js#L142-L165"
+  ],
+  "limitations": [
+    "Static extraction of the literal tools/list array; authenticated GTM execution was not tested.",
+    "List methods do not paginate; list_tags chooses the first workspace without user selection.",
+    "Handlers return API errors as ordinary content error objects rather than MCP isError responses."
+  ],
+  "tools": [
+    {
+      "name": "list_accounts",
+      "description": "Listar cuentas de GTM",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/creativedesignseo/google-tag-manager-mcp/blob/55bb722f506a4f45c0d24e5b0550929dbd197d22/mcp-server.js#L145-L145",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists GTM accounts through tagmanager.accounts.list and returns account data; API errors are returned as error objects.",
+      "implementationSource": "https://github.com/creativedesignseo/google-tag-manager-mcp/blob/55bb722f506a4f45c0d24e5b0550929dbd197d22/mcp-server.js#L32-L37"
+    },
+    {
+      "name": "list_containers",
+      "description": "Listar contenedores de una cuenta",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountPath": {
+            "type": "string",
+            "description": "accounts/1234"
+          }
+        },
+        "required": [
+          "accountPath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/creativedesignseo/google-tag-manager-mcp/blob/55bb722f506a4f45c0d24e5b0550929dbd197d22/mcp-server.js#L146-L146",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists GTM containers under the supplied account path and returns container data; API errors are returned as error objects.",
+      "implementationSource": "https://github.com/creativedesignseo/google-tag-manager-mcp/blob/55bb722f506a4f45c0d24e5b0550929dbd197d22/mcp-server.js#L40-L46"
+    },
+    {
+      "name": "list_tags",
+      "description": "Listar etiquetas de un contenedor",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "containerPath": {
+            "type": "string",
+            "description": "accounts/123/containers/456"
+          }
+        },
+        "required": [
+          "containerPath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/creativedesignseo/google-tag-manager-mcp/blob/55bb722f506a4f45c0d24e5b0550929dbd197d22/mcp-server.js#L147-L147",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Selects the first workspace of the supplied GTM container, lists its tags and triggers, and returns tag names, types, IDs, parameters and resolved firing-trigger names.",
+      "implementationSource": "https://github.com/creativedesignseo/google-tag-manager-mcp/blob/55bb722f506a4f45c0d24e5b0550929dbd197d22/mcp-server.js#L49-L91"
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "inspect",
+    "summary": "Lists accounts and containers and resolves firing-trigger names for tags in the first workspace.",
+    "reason": "Three registered and dispatched tools implement GTM account, container and tag inspection through the Google Tag Manager v2 client.",
+    "examples": [
+      "list_accounts",
+      "list_containers",
+      "list_tags"
+    ]
+  }
+}

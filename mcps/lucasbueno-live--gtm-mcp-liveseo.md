@@ -1,0 +1,4593 @@
+# lucasbueno-live/gtm-mcp-liveseo
+
+[Catalog](../README.md) · [Tool index](../TOOL_INDEX.md) · [Upstream project](https://github.com/lucasbueno-live/gtm-mcp-liveseo) · [Machine-readable inventory](../data/mcps/lucasbueno-live--gtm-mcp-liveseo.json)
+
+**21 extracted tools.** Report paused tags, unused-trigger and variable heuristics; manage web and server-container resources.
+
+Snapshot: 2026-10-13 · [a899f4226345](https://github.com/lucasbueno-live/gtm-mcp-liveseo/tree/a899f4226345c13b92afb9927e717fc27511ac2b) · Method: tools/list.
+
+Exposure: All 21 tools always registered; default readonly rejects classified writes at call time, --write permits them; remove/delete/publish also require confirm=true. No registration filtering.
+
+## Limits
+
+- Offline invocation of the real SDK tools/list request handler after registerAllTools; SDK 1.29.0 and dependencies installed from committed package-lock.json. No transport handshake, OAuth, GTM operation or network API validation performed.
+- Advertised inputSchema is preserved verbatim, including defaults, unions, additionalProperties and recursive local $refs. ParameterSchema superRefine rejects nesting depth >3 at runtime; this custom bound is omitted by JSON Schema conversion (src/schemas/ParameterSchema.ts lines 61-70).
+- All 21 tools remain advertised in readonly mode. --write enables actions create/update/remove/delete/publish/createVersion/combine/moveTagId/resolveConflict/sync/revert/link/setLatest/undelete/reauthorize; only remove/delete/publish require confirm. combine is described as destructive but receives no confirm requirement; user-permission update also needs no confirm. quickPreview is not write-classified. Auth login/switch/logout are outside guards.
+- gtm_audit_container does not follow pagination for resources or workspace selection; orphan triggers consider firingTriggerId only, ignoring blockingTriggerId; variable usage searches only serialized tags/triggers, missing inter-variable references. Latest version header is labeled last published even though it is latest rather than live, and no publication date is actually reported despite the description.
+- gtm_container combineConfig requires fromContainerId/toContainerId, which are spread unmodified into API combine whose required other-container parameter is containerId; this action is likely broken.
+- gtm_workspace resolveConflict client branch uses TransformationSchema instead of ClientSchema. quickPreview returns the API QuickPreviewResponse rather than constructing the advertised preview URL.
+- gtm_help ignores topic. Several list handlers (account/container/destination) do not follow API page tokens. Runtime requires IDs/config for specific actions although advertised schemas generally mark them optional.
+- The audit labels the latest version header as the last published version, but latest and live versions can differ; it also does not inspect variable-to-variable references or blocking trigger references.
+
+## Tools
+
+| Tool | Scope | What the handler does |
+|---|---|---|
+| [`gtm_help`](#tool-gtm_help-1e342581) | Supporting | Returns the entire static Portuguese guide; topic is accepted but ignored. |
+| [`gtm_auth`](#tool-gtm_auth-040acc19) | Supporting | Reads saved OAuth profiles, opens login, switches the active profile, or removes local tokens; auth changes bypass GTM write guards. |
+| [`gtm_audit_container`](#tool-gtm_audit_container-a82e2cd2) | GTM | Reads one workspace and first pages of tags, triggers and variables, then builds a Markdown heuristic audit using latest version header rather than live published version. |
+| [`gtm_account`](#tool-gtm_account-da3f1407) | GTM | Lists, gets or updates GTM accounts; list forwards the single API response without following nextPageToken. |
+| [`gtm_container`](#tool-gtm_container-edc9968d) | GTM | Lists, creates, retrieves, updates and deletes containers, fetches snippets, looks up destinations, combines containers or moves Google tag IDs; combine passes incompatible fromContainerId/toContainerId instead of the API containerId. |
+| [`gtm_workspace`](#tool-gtm_workspace-ee5e8b97) | GTM | Manages workspaces, creates versions, reports status, syncs, previews and resolves conflicts; client conflict entity mistakenly uses TransformationSchema. |
+| [`gtm_version`](#tool-gtm_version-759608b8) | GTM | Retrieves live or selected versions with resource filtering and client pagination; publishes, removes, restores, updates or changes the latest version. |
+| [`gtm_version_header`](#tool-gtm_version_header-e1c252fe) | GTM | Retrieves latest version header or follows all list pages and returns a client-paginated history including optionally deleted versions. |
+| [`gtm_tag`](#tool-gtm_tag-c3e06f2b) | GTM | Dispatches workspace resource create/get/list/update/remove/revert to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime. |
+| [`gtm_trigger`](#tool-gtm_trigger-5c5777f3) | GTM | Dispatches workspace resource create/get/list/update/remove/revert to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime. |
+| [`gtm_variable`](#tool-gtm_variable-ec512642) | GTM | Dispatches workspace resource create/get/list/update/remove/revert to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime. |
+| [`gtm_folder`](#tool-gtm_folder-98e6da8b) | GTM | Dispatches workspace resource create/get/list/update/remove to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime. |
+| [`gtm_zone`](#tool-gtm_zone-78bf4872) | GTM | Dispatches workspace resource create/get/list/update/remove/revert to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime. |
+| [`gtm_client`](#tool-gtm_client-dc17ee47) | GTM | Dispatches workspace resource create/get/list/update/remove/revert to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime. |
+| [`gtm_transformation`](#tool-gtm_transformation-c270ba51) | GTM | Dispatches workspace resource create/get/list/update/remove/revert to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime. |
+| [`gtm_template`](#tool-gtm_template-47833aba) | GTM | Dispatches workspace resource create/get/list/update/remove/revert to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime. |
+| [`gtm_gtag_config`](#tool-gtm_gtag_config-f5a9eddd) | GTM | Dispatches workspace resource create/get/list/update/remove to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime. |
+| [`gtm_built_in_variable`](#tool-gtm_built_in_variable-779be1c3) | GTM | Enables, lists, removes or reverts built-in variables in a workspace; list follows API pagination before client slicing. |
+| [`gtm_environment`](#tool-gtm_environment-9aa46ece) | GTM | Creates, gets, lists, updates, deletes or reauthorizes container environments; list follows API pagination before client slicing. |
+| [`gtm_destination`](#tool-gtm_destination-0c1e6401) | GTM | Gets or lists container destinations with client pagination, or links a destination; no unlink action exists. |
+| [`gtm_user_permission`](#tool-gtm_user_permission-cbd8ceca) | GTM | Creates, gets, lists, updates or removes account user permissions; update is write-gated but does not require confirm. |
+
+<a id="tool-gtm_help-1e342581"></a>
+
+## gtm_help
+
+Handler: Returns the entire static Portuguese guide; topic is accepted but ignored.
+
+```text
+Mostra o guia rápido de uso desse MCP. CHAME ESSA TOOL PRIMEIRO em uma nova conversa pra entender o fluxo recomendado, as regras de segurança e os padrões comuns.
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/help.ts#L67-L79) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "topic": {
+      "type": "string",
+      "enum": [
+        "overview",
+        "flow",
+        "safety",
+        "patterns"
+      ],
+      "description": "Tópico específico. Sem param, retorna o guia completo."
+    }
+  },
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_auth-040acc19"></a>
+
+## gtm_auth
+
+Handler: Reads saved OAuth profiles, opens login, switches the active profile, or removes local tokens; auth changes bypass GTM write guards.
+
+```text
+Gerencia QUAL conta Google está logada (multi-conta por perfil). Use quando precisar trocar de cliente: cada cliente/email vira um 'perfil' salvo. Ações: 'status' (perfil ativo), 'list' (todos os perfis e emails), 'login' (autentica um perfil — abre o navegador com o seletor de contas Google), 'switch' (troca o perfil ativo sem refazer login), 'logout' (remove o token de um perfil).
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/auth.ts#L14-L121) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "status",
+        "list",
+        "login",
+        "switch",
+        "logout"
+      ],
+      "description": "status: mostra a conta ativa. list: lista perfis salvos. login: autentica/reautentica um perfil (abre navegador). switch: troca o perfil ativo. logout: remove um perfil."
+    },
+    "profile": {
+      "type": "string",
+      "description": "Nome do perfil (ex: 'cliente-x', 'live-conta2'). Obrigatório para 'login' e 'switch'. Para 'logout' usa o ativo se omitido. Dica: use o nome do cliente como perfil."
+    }
+  },
+  "required": [
+    "action"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_audit_container-a82e2cd2"></a>
+
+## gtm_audit_container
+
+Handler: Reads one workspace and first pages of tags, triggers and variables, then builds a Markdown heuristic audit using latest version header rather than live published version.
+
+```text
+Auditoria humana de um container GTM. Retorna relatório em markdown com: contagem de tags/triggers/variáveis, tags pausadas, tags sem trigger, triggers órfãos, variáveis não referenciadas e data da última publicação. Tudo read-only.
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/audit.ts#L14-L172) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "accountId": {
+      "type": "string",
+      "description": "ID da conta GTM."
+    },
+    "containerId": {
+      "type": "string",
+      "description": "ID do container a auditar."
+    },
+    "workspaceId": {
+      "type": "string",
+      "description": "ID do workspace a auditar. Se omitido, usa o primeiro workspace listado (geralmente 'Default Workspace')."
+    }
+  },
+  "required": [
+    "accountId",
+    "containerId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_account-da3f1407"></a>
+
+## gtm_account
+
+Handler: Lists, gets or updates GTM accounts; list forwards the single API response without following nextPageToken.
+
+```text
+Gerencia contas GTM. Ações: list (sempre comece por aqui pra descobrir IDs de contas), get (detalhes de uma conta), update (renomeia ou altera config).
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/account.ts#L9-L46) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "get",
+        "list",
+        "update"
+      ],
+      "description": "Operação: 'list' (lista todas), 'get' (detalhes), 'update' (modifica)."
+    },
+    "accountId": {
+      "type": "string",
+      "description": "ID da conta GTM. Obrigatório para 'get' e 'update'."
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "fingerprint": {
+          "type": "string",
+          "description": "The fingerprint of the GTM Account as computed at storage time."
+        },
+        "name": {
+          "type": "string",
+          "description": "Account display name."
+        },
+        "shareData": {
+          "type": "boolean",
+          "description": "Whether the account shares data anonymously with Google and others."
+        },
+        "tagManagerUrl": {
+          "type": "string",
+          "description": "Auto generated link to the tag manager UI."
+        },
+        "features": {
+          "type": "object",
+          "properties": {
+            "supportUserPermissions": {
+              "type": "boolean",
+              "description": "Whether this Account supports user permissions managed by GTM."
+            },
+            "supportMultipleContainers": {
+              "type": "boolean",
+              "description": "Whether this Account supports multiple Containers."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Read-only Account feature set."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Dados a atualizar (só para 'update')."
+    },
+    "confirm": {
+      "type": "boolean",
+      "description": "Não usado nessa tool (sem operação destrutiva)."
+    }
+  },
+  "required": [
+    "action"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_container-edc9968d"></a>
+
+## gtm_container
+
+Handler: Lists, creates, retrieves, updates and deletes containers, fetches snippets, looks up destinations, combines containers or moves Google tag IDs; combine passes incompatible fromContainerId/toContainerId instead of the API containerId.
+
+```text
+Gerencia containers GTM dentro de uma conta. Use 'list' para descobrir IDs. 'snippet' retorna o código de instalação. 'remove' e 'combine' são destrutivos.
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/container.ts#L18-L132) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "get",
+        "list",
+        "update",
+        "remove",
+        "combine",
+        "lookup",
+        "moveTagId",
+        "snippet"
+      ]
+    },
+    "accountId": {
+      "type": "string",
+      "description": "ID da conta GTM."
+    },
+    "containerId": {
+      "type": "string",
+      "description": "ID do container. Obrigatório exceto em 'list', 'create' e 'lookup'."
+    },
+    "destinationId": {
+      "type": "string",
+      "description": "destinationId para 'lookup'."
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Container display name."
+        },
+        "domainName": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of domain names associated with the Container."
+        },
+        "publicId": {
+          "type": "string",
+          "description": "Container Public ID."
+        },
+        "tagIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "All Tag IDs that refer to this Container."
+        },
+        "features": {
+          "type": "object",
+          "properties": {
+            "supportUserPermissions": {
+              "type": "boolean",
+              "description": "Whether this Container supports user permissions managed by GTM."
+            },
+            "supportEnvironments": {
+              "type": "boolean",
+              "description": "Whether this Container supports environments."
+            },
+            "supportWorkspaces": {
+              "type": "boolean",
+              "description": "Whether this Container supports workspaces."
+            },
+            "supportGtagConfigs": {
+              "type": "boolean",
+              "description": "Whether this Container supports Google tag config."
+            },
+            "supportBuiltInVariables": {
+              "type": "boolean",
+              "description": "Whether this Container supports built-in variables."
+            },
+            "supportClients": {
+              "type": "boolean",
+              "description": "Whether this Container supports clients."
+            },
+            "supportFolders": {
+              "type": "boolean",
+              "description": "Whether this Container supports folders."
+            },
+            "supportTags": {
+              "type": "boolean",
+              "description": "Whether this Container supports tags."
+            },
+            "supportTemplates": {
+              "type": "boolean",
+              "description": "Whether this Container supports templates."
+            },
+            "supportTriggers": {
+              "type": "boolean",
+              "description": "Whether this Container supports triggers."
+            },
+            "supportVariables": {
+              "type": "boolean",
+              "description": "Whether this Container supports variables."
+            },
+            "supportVersions": {
+              "type": "boolean",
+              "description": "Whether this Container supports Container versions."
+            },
+            "supportZones": {
+              "type": "boolean",
+              "description": "Whether this Container supports zones."
+            },
+            "supportTransformations": {
+              "type": "boolean",
+              "description": "Whether this Container supports transformations."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Read-only Container feature set."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Container Notes."
+        },
+        "usageContext": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "web",
+              "android",
+              "ios",
+              "server",
+              "amp",
+              "iosSdk5",
+              "androidSdk5",
+              "usageContextUnspecified"
+            ]
+          },
+          "description": "List of Usage Contexts for the Container. Valid values include: web, android, or ios."
+        },
+        "tagManagerUrl": {
+          "type": "string",
+          "description": "Auto generated link to the tag manager UI."
+        },
+        "taggingServerUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of server-side container URLs for the Container."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Configuração para 'create' e 'update'."
+    },
+    "combineConfig": {
+      "type": "object",
+      "properties": {
+        "fromContainerId": {
+          "type": "string",
+          "description": "The ID of the source container whose data will be merged."
+        },
+        "toContainerId": {
+          "type": "string",
+          "description": "The ID of the target container to merge data into."
+        },
+        "allowUserPermissionFeatureUpdate": {
+          "type": "boolean",
+          "description": "Set to true to allow user permissions to be updated during the combine operation."
+        },
+        "settingSource": {
+          "type": "string",
+          "description": "Specifies the source of configuration settings after the combine."
+        }
+      },
+      "required": [
+        "fromContainerId",
+        "toContainerId"
+      ],
+      "additionalProperties": false,
+      "description": "Configuração para 'combine'."
+    },
+    "moveTagIdConfig": {
+      "type": "object",
+      "properties": {
+        "tagId": {
+          "type": "string",
+          "description": "The ID of the tag to move."
+        },
+        "tagName": {
+          "type": "string",
+          "description": "The name for the newly created tag."
+        },
+        "allowUserPermissionFeatureUpdate": {
+          "type": "boolean",
+          "description": "Set to true to allow user permissions to be updated during the move."
+        },
+        "copySettings": {
+          "type": "boolean",
+          "description": "Whether to copy tag settings to the new tag."
+        },
+        "copyTermsOfService": {
+          "type": "boolean",
+          "description": "Set to true to accept all terms of service agreements for the new tag."
+        },
+        "copyUsers": {
+          "type": "boolean",
+          "description": "Whether to copy users from this tag to the new tag."
+        }
+      },
+      "required": [
+        "tagId"
+      ],
+      "additionalProperties": false,
+      "description": "Configuração para 'moveTagId'."
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "Fingerprint pra 'update'."
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean",
+      "description": "Obrigatório para 'remove'."
+    }
+  },
+  "required": [
+    "action",
+    "accountId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_workspace-ee5e8b97"></a>
+
+## gtm_workspace
+
+Handler: Manages workspaces, creates versions, reports status, syncs, previews and resolves conflicts; client conflict entity mistakenly uses TransformationSchema.
+
+```text
+Gerencia workspaces GTM (rascunhos de trabalho). 'createVersion' converte o workspace em uma versão imutável — passo necessário antes de publicar. 'quickPreview' gera uma URL de preview sem publicar. 'getStatus' lista as mudanças pendentes.
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/workspace.ts#L39-L168) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "get",
+        "list",
+        "update",
+        "remove",
+        "createVersion",
+        "getStatus",
+        "sync",
+        "quickPreview",
+        "resolveConflict"
+      ]
+    },
+    "accountId": {
+      "type": "string",
+      "description": "ID da conta GTM."
+    },
+    "containerId": {
+      "type": "string",
+      "description": "ID do container."
+    },
+    "workspaceId": {
+      "type": "string",
+      "description": "ID do workspace. Obrigatório exceto em 'create' e 'list'."
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "tagManagerUrl": {
+          "type": "string",
+          "description": "Auto generated link to the tag manager UI."
+        },
+        "name": {
+          "type": "string",
+          "description": "Workspace display name."
+        },
+        "description": {
+          "type": "string",
+          "description": "Workspace description."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Configuração para 'create', 'update', 'createVersion'."
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "Fingerprint para 'update' e 'resolveConflict'."
+    },
+    "entity": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "tag": {
+              "type": "object",
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "description": "GTM Account ID."
+                },
+                "containerId": {
+                  "type": "string",
+                  "description": "GTM Container ID."
+                },
+                "workspaceId": {
+                  "type": "string",
+                  "description": "GTM Workspace ID."
+                },
+                "tagId": {
+                  "type": "string",
+                  "description": "The Tag ID uniquely identifies the GTM Tag."
+                },
+                "fingerprint": {
+                  "type": "string",
+                  "description": "The fingerprint of the GTM Tag as computed at storage time. This value is recomputed whenever the tag is modified."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Tag display name."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "GTM Tag Type."
+                },
+                "liveOnly": {
+                  "type": "boolean",
+                  "description": "If set to true, this tag will only fire in the live environment (e.g. not in preview or debug mode)."
+                },
+                "priority": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "The type of the parameter."
+                    },
+                    "key": {
+                      "type": "string",
+                      "description": "Parameter key."
+                    },
+                    "value": {
+                      "type": "string",
+                      "description": "Parameter value as a string. The actual value may depend on the parameter type."
+                    },
+                    "list": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority"
+                      },
+                      "description": "List of parameter values (if the parameter is a list type)."
+                    },
+                    "map": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority"
+                      },
+                      "description": "Array of key-value pairs for map parameters."
+                    },
+                    "isWeakReference": {
+                      "type": "boolean",
+                      "description": "Whether this is a weak reference parameter."
+                    }
+                  },
+                  "additionalProperties": false,
+                  "description": "User defined numeric priority of the tag. Tags are fired asynchronously in order of priority. Tags with higher numeric value fire first. A tag's priority can be a positive or negative value. The default value is 0."
+                },
+                "notes": {
+                  "type": "string",
+                  "description": "User notes on how to apply this tag in the container."
+                },
+                "scheduleStartMs": {
+                  "type": "string",
+                  "description": "The start timestamp in milliseconds to schedule a tag."
+                },
+                "scheduleEndMs": {
+                  "type": "string",
+                  "description": "The end timestamp in milliseconds to schedule a tag."
+                },
+                "parameter": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority"
+                  },
+                  "description": "The tag's parameters."
+                },
+                "firingTriggerId": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Firing trigger IDs. A tag will fire when any of the listed triggers are true and all of its blockingTriggerIds (if any specified) are false."
+                },
+                "blockingTriggerId": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Blocking trigger IDs. If any of the listed triggers evaluate to true, the tag will not fire."
+                },
+                "setupTag": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "tagName": {
+                        "type": "string",
+                        "description": "The name of the setup tag."
+                      },
+                      "stopOnSetupFailure": {
+                        "type": "boolean",
+                        "description": "If true, fire the main tag if and only if the setup tag fires successfully. If false, fire the main tag regardless of setup tag firing status."
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "description": "The list of setup tags. Currently only one is allowed."
+                },
+                "teardownTag": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "tagName": {
+                        "type": "string",
+                        "description": "The name of the teardown tag."
+                      },
+                      "stopTeardownOnFailure": {
+                        "type": "boolean",
+                        "description": "If true, fire the teardown tag if and only if the main tag fires successfully. If false, fire the teardown tag regardless of main tag firing status."
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "description": "The list of teardown tags. Currently only one is allowed."
+                },
+                "parentFolderId": {
+                  "type": "string",
+                  "description": "Parent folder id."
+                },
+                "tagFiringOption": {
+                  "type": "string",
+                  "enum": [
+                    "tagFiringOptionUnspecified",
+                    "unlimited",
+                    "oncePerEvent",
+                    "oncePerLoad"
+                  ],
+                  "description": "Option to fire this tag."
+                },
+                "tagManagerUrl": {
+                  "type": "string",
+                  "description": "Auto generated link to the tag manager UI."
+                },
+                "paused": {
+                  "type": "boolean",
+                  "description": "Indicates whether the tag is paused, which prevents the tag from firing."
+                },
+                "monitoringMetadata": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "A map of key-value pairs of tag metadata to be included in the event data for tag monitoring."
+                },
+                "monitoringMetadataTagNameKey": {
+                  "type": "string",
+                  "description": "If non-empty, then the tag display name will be included in the monitoring metadata map using the key specified."
+                },
+                "consentSettings": {
+                  "type": "object",
+                  "properties": {
+                    "consentStatus": {
+                      "type": "string",
+                      "enum": [
+                        "notSet",
+                        "notNeeded",
+                        "needed"
+                      ],
+                      "description": "The tag's consent status. If set to NEEDED, the runtime will check that the consent types specified by the consentType field have been granted."
+                    },
+                    "consentType": {
+                      "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                      "description": "The type of consents to check for during tag firing if in the consent NEEDED state. This parameter must be of type LIST where each list item is of type STRING."
+                    }
+                  },
+                  "additionalProperties": false,
+                  "description": "Consent settings of a tag."
+                }
+              },
+              "required": [
+                "accountId",
+                "containerId",
+                "workspaceId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "tag"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "trigger": {
+              "type": "object",
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "description": "GTM Account ID."
+                },
+                "containerId": {
+                  "type": "string",
+                  "description": "GTM Container ID."
+                },
+                "workspaceId": {
+                  "type": "string",
+                  "description": "GTM Workspace ID."
+                },
+                "triggerId": {
+                  "type": "string",
+                  "description": "The Trigger ID uniquely identifies the GTM Trigger."
+                },
+                "fingerprint": {
+                  "type": "string",
+                  "description": "The fingerprint of the GTM Trigger as computed at storage time. This value is recomputed whenever the trigger is modified."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Trigger display name."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Trigger type."
+                },
+                "filter": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "description": "The type of operator for this condition (ConditionType enum)."
+                      },
+                      "parameter": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority"
+                        },
+                        "description": "A list of named parameters (key/value), depending on the condition's type."
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "The trigger's filter conditions."
+                },
+                "autoEventFilter": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/properties/entity/anyOf/1/properties/trigger/properties/filter/items"
+                  },
+                  "description": "The trigger's auto event filter conditions."
+                },
+                "customEventFilter": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/properties/entity/anyOf/1/properties/trigger/properties/filter/items"
+                  },
+                  "description": "The trigger's custom event filter conditions."
+                },
+                "tagManagerUrl": {
+                  "type": "string",
+                  "description": "Auto generated link to the tag manager UI."
+                },
+                "notes": {
+                  "type": "string",
+                  "description": "User notes on how to apply this trigger in the container."
+                },
+                "parameter": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority"
+                  },
+                  "description": "Additional parameters for the trigger."
+                },
+                "waitForTags": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "Whether or not to delay form submissions or link opening until all of the tags have fired. Only valid for Form Submission and Link Click triggers."
+                },
+                "checkValidation": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "Whether or not to only fire tags if the form submit or link click event is not cancelled by some other event handler. Only valid for Form Submission and Link Click triggers."
+                },
+                "waitForTagsTimeout": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "How long to wait (in ms) for tags to fire when 'waits_for_tags' above evaluates to true. Only valid for Form Submission and Link Click triggers."
+                },
+                "uniqueTriggerId": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "Globally unique id of the trigger that auto-generates this (a Form Submit, Link Click or Timer listener) if any. Only valid for Form Submit, Link Click and Timer triggers."
+                },
+                "eventName": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "Name of the GTM event that is fired. Only valid for Timer triggers."
+                },
+                "interval": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "Time between triggering recurring Timer Events (in ms). Only valid for Timer triggers."
+                },
+                "limit": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "Limit of the number of GTM events this Timer Trigger will fire. Only valid for Timer triggers."
+                },
+                "parentFolderId": {
+                  "type": "string",
+                  "description": "Parent folder id."
+                },
+                "selector": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "A click trigger CSS selector. Only valid for AMP Click trigger."
+                },
+                "intervalSeconds": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "Time between Timer Events to fire (in seconds). Only valid for AMP Timer trigger."
+                },
+                "maxTimerLengthSeconds": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "Max time to fire Timer Events (in seconds). Only valid for AMP Timer trigger."
+                },
+                "verticalScrollPercentageList": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "List of integer percentage values for scroll triggers. Fires when each percentage is reached when scrolled vertically. Only valid for AMP scroll triggers."
+                },
+                "horizontalScrollPercentageList": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "List of integer percentage values for scroll triggers. Fires when each percentage is reached when scrolled horizontally. Only valid for AMP scroll triggers."
+                },
+                "visibilitySelector": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "A visibility trigger CSS selector. Only valid for AMP Visibility trigger."
+                },
+                "visiblePercentageMin": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "A visibility trigger minimum percent visibility. Only valid for AMP Visibility trigger."
+                },
+                "visiblePercentageMax": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "A visibility trigger maximum percent visibility. Only valid for AMP Visibility trigger."
+                },
+                "continuousTimeMinMilliseconds": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "A visibility trigger minimum continuous visible time (ms). Only valid for AMP Visibility trigger."
+                },
+                "totalTimeMinMilliseconds": {
+                  "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority",
+                  "description": "A visibility trigger minimum total visible time (ms). Only valid for AMP Visibility trigger."
+                }
+              },
+              "required": [
+                "accountId",
+                "containerId",
+                "workspaceId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "trigger"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "variable": {
+              "type": "object",
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "description": "GTM Account ID."
+                },
+                "containerId": {
+                  "type": "string",
+                  "description": "GTM Container ID."
+                },
+                "workspaceId": {
+                  "type": "string",
+                  "description": "GTM Workspace ID."
+                },
+                "variableId": {
+                  "type": "string",
+                  "description": "The Variable ID uniquely identifies the GTM Variable."
+                },
+                "fingerprint": {
+                  "type": "string",
+                  "description": "The fingerprint of the GTM Variable as computed at storage time. This value is recomputed whenever the variable is modified."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Variable display name."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Variable type."
+                },
+                "parameter": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority"
+                  },
+                  "description": "The variable's parameters."
+                },
+                "notes": {
+                  "type": "string",
+                  "description": "User notes on how to apply this variable in the container."
+                },
+                "tagManagerUrl": {
+                  "type": "string",
+                  "description": "Auto generated link to the tag manager UI."
+                }
+              },
+              "required": [
+                "accountId",
+                "containerId",
+                "workspaceId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "variable"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "folder": {
+              "type": "object",
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "description": "GTM Account ID."
+                },
+                "containerId": {
+                  "type": "string",
+                  "description": "GTM Container ID."
+                },
+                "workspaceId": {
+                  "type": "string",
+                  "description": "GTM Workspace ID."
+                },
+                "folderId": {
+                  "type": "string",
+                  "description": "The Folder ID uniquely identifies the GTM Folder."
+                },
+                "fingerprint": {
+                  "type": "string",
+                  "description": "The fingerprint of the GTM Folder as computed at storage time. This value is recomputed whenever the folder is modified."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Folder display name."
+                },
+                "tagManagerUrl": {
+                  "type": "string",
+                  "description": "Auto generated link to the tag manager UI."
+                },
+                "notes": {
+                  "type": "string",
+                  "description": "User notes on how to apply this folder in the container."
+                }
+              },
+              "required": [
+                "accountId",
+                "containerId",
+                "workspaceId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "folder"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "client": {
+              "type": "object",
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "description": "GTM Account ID."
+                },
+                "containerId": {
+                  "type": "string",
+                  "description": "GTM Container ID."
+                },
+                "workspaceId": {
+                  "type": "string",
+                  "description": "GTM Workspace ID."
+                },
+                "transformationId": {
+                  "type": "string",
+                  "description": "The Transformation ID uniquely identifies the GTM transformation."
+                },
+                "fingerprint": {
+                  "type": "string",
+                  "description": "The fingerprint of the GTM Transformation as computed at storage time. This value is recomputed whenever the transformation is modified."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Transformation display name."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Transformation type."
+                },
+                "parameter": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority"
+                  },
+                  "description": "The transformation's parameters."
+                },
+                "tagManagerUrl": {
+                  "type": "string",
+                  "description": "Auto generated link to the tag manager UI."
+                },
+                "parentFolderId": {
+                  "type": "string",
+                  "description": "Parent folder id."
+                },
+                "notes": {
+                  "type": "string",
+                  "description": "User notes on how to apply this transformation in the container."
+                }
+              },
+              "required": [
+                "accountId",
+                "containerId",
+                "workspaceId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "client"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "transformation": {
+              "$ref": "#/properties/entity/anyOf/4/properties/client"
+            }
+          },
+          "required": [
+            "transformation"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "zone": {
+              "type": "object",
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "description": "GTM Account ID."
+                },
+                "containerId": {
+                  "type": "string",
+                  "description": "GTM Container ID."
+                },
+                "workspaceId": {
+                  "type": "string",
+                  "description": "GTM Workspace ID."
+                },
+                "zoneId": {
+                  "type": "string",
+                  "description": "The Zone ID uniquely identifies the GTM Zone."
+                },
+                "fingerprint": {
+                  "type": "string",
+                  "description": "The fingerprint of the GTM Zone as computed at storage time. This value is recomputed whenever the zone is modified."
+                },
+                "tagManagerUrl": {
+                  "type": "string",
+                  "description": "Auto generated link to the tag manager UI."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Zone display name."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Zone type."
+                },
+                "childContainer": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "publicId": {
+                        "type": "string",
+                        "description": "The child container's public id."
+                      },
+                      "nickname": {
+                        "type": "string",
+                        "description": "The zone's nickname for the child container."
+                      }
+                    },
+                    "required": [
+                      "publicId"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Child containers for the zone."
+                },
+                "notes": {
+                  "type": "string",
+                  "description": "Zone notes."
+                },
+                "boundary": {
+                  "type": "object",
+                  "properties": {
+                    "condition": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/entity/anyOf/1/properties/trigger/properties/filter/items"
+                      },
+                      "description": "The conditions that, when conjoined, make up the boundary."
+                    },
+                    "customEvaluationTriggerId": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Custom evaluation trigger IDs. A zone will evaluate its boundary conditions when any of the listed triggers are true."
+                    }
+                  },
+                  "additionalProperties": false,
+                  "description": "This Zone's boundary."
+                },
+                "typeRestriction": {
+                  "type": "object",
+                  "properties": {
+                    "enable": {
+                      "type": "boolean",
+                      "description": "True if type restrictions have been enabled for this Zone."
+                    },
+                    "whitelistedTypeId": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of type public ids that have been whitelisted for use in this Zone."
+                    }
+                  },
+                  "additionalProperties": false,
+                  "description": "This Zone's type restrictions."
+                }
+              },
+              "required": [
+                "accountId",
+                "containerId",
+                "workspaceId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "zone"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "customTemplate": {
+              "type": "object",
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "description": "GTM Account ID."
+                },
+                "containerId": {
+                  "type": "string",
+                  "description": "GTM Container ID."
+                },
+                "workspaceId": {
+                  "type": "string",
+                  "description": "GTM Workspace ID."
+                },
+                "templateId": {
+                  "type": "string",
+                  "description": "The Custom Template ID uniquely identifies the GTM custom template."
+                },
+                "fingerprint": {
+                  "type": "string",
+                  "description": "The fingerprint of the GTM Custom Template as computed at storage time. This value is recomputed whenever the template is modified."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Custom Template display name."
+                },
+                "tagManagerUrl": {
+                  "type": "string",
+                  "description": "Auto generated link to the tag manager UI."
+                },
+                "templateData": {
+                  "type": "string",
+                  "description": "The custom template in text format."
+                },
+                "galleryReference": {
+                  "type": "object",
+                  "properties": {
+                    "host": {
+                      "type": "string",
+                      "description": "The name of the host for the community gallery template."
+                    },
+                    "owner": {
+                      "type": "string",
+                      "description": "The name of the owner for the community gallery template."
+                    },
+                    "repository": {
+                      "type": "string",
+                      "description": "The name of the repository for the community gallery template."
+                    },
+                    "version": {
+                      "type": "string",
+                      "description": "The version of the community gallery template."
+                    },
+                    "isModified": {
+                      "type": "boolean",
+                      "description": "If a user has manually edited the community gallery template."
+                    },
+                    "signature": {
+                      "type": "string",
+                      "description": "The signature of the community gallery template as computed at import time. This value is recomputed whenever the template is updated from the gallery."
+                    },
+                    "templateDeveloperId": {
+                      "type": "string",
+                      "description": "The developer id of the community gallery template. This value is set whenever the template is created from the gallery."
+                    },
+                    "galleryTemplateId": {
+                      "type": "string",
+                      "description": "ID for the gallery template that is generated once during first sync and travels with the template redirects."
+                    }
+                  },
+                  "additionalProperties": false,
+                  "description": "A reference to the Community Template Gallery entry."
+                }
+              },
+              "required": [
+                "accountId",
+                "containerId",
+                "workspaceId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "customTemplate"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "builtInVariable": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Type of built-in variable."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Display name for the built-in variable."
+                },
+                "notes": {
+                  "type": "string",
+                  "description": "User notes on how to apply this variable in tagging scenarios."
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "builtInVariable"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "gtagConfig": {
+              "type": "object",
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "description": "Google tag account ID."
+                },
+                "containerId": {
+                  "type": "string",
+                  "description": "Google tag container ID."
+                },
+                "workspaceId": {
+                  "type": "string",
+                  "description": "Google tag workspace ID. Only used by GTM containers. Set to 0 otherwise."
+                },
+                "fingerprint": {
+                  "type": "string",
+                  "description": "The fingerprint of the Google tag config as computed at storage time. This value is recomputed whenever the config is modified."
+                },
+                "gtagConfigId": {
+                  "type": "string",
+                  "description": "The ID uniquely identifies the Google tag config."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Google tag config type."
+                },
+                "parameter": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/properties/entity/anyOf/0/properties/tag/properties/priority"
+                  },
+                  "description": "The Google tag config's parameters."
+                },
+                "tagManagerUrl": {
+                  "type": "string",
+                  "description": "Auto generated link to the tag manager UI."
+                }
+              },
+              "required": [
+                "accountId",
+                "containerId",
+                "workspaceId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "gtagConfig"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "description": "Entidade resolvida para 'resolveConflict'."
+    },
+    "changeStatus": {
+      "type": "string",
+      "enum": [
+        "added",
+        "modified",
+        "deleted",
+        "unmodified"
+      ],
+      "description": "Status da mudança para 'resolveConflict'."
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean",
+      "description": "Obrigatório para 'remove'."
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_version-759608b8"></a>
+
+## gtm_version
+
+Handler: Retrieves live or selected versions with resource filtering and client pagination; publishes, removes, restores, updates or changes the latest version.
+
+```text
+Gerencia versões de container (snapshots imutáveis do GTM). 'live' retorna a versão atualmente publicada. 'publish' publica uma versão (afeta o site ao vivo — exige confirm: true). Para vistas grandes use resourceType + paginação.
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/version.ts#L18-L139) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "get",
+        "live",
+        "publish",
+        "remove",
+        "setLatest",
+        "undelete",
+        "update"
+      ]
+    },
+    "accountId": {
+      "type": "string",
+      "description": "ID da conta GTM."
+    },
+    "containerId": {
+      "type": "string",
+      "description": "ID do container."
+    },
+    "containerVersionId": {
+      "type": "string",
+      "description": "ID da versão. Obrigatório exceto em 'live'."
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Container version display name."
+        },
+        "deleted": {
+          "type": "boolean",
+          "description": "A value of true indicates this container version has been deleted."
+        },
+        "description": {
+          "type": "string",
+          "description": "Container version description."
+        },
+        "container": {
+          "type": "object",
+          "properties": {
+            "accountId": {
+              "type": "string",
+              "description": "GTM Account ID."
+            },
+            "containerId": {
+              "type": "string",
+              "description": "The Container ID uniquely identifies the GTM Container."
+            },
+            "fingerprint": {
+              "type": "string",
+              "description": "The fingerprint of the GTM Container as computed at storage time."
+            },
+            "name": {
+              "type": "string",
+              "description": "Container display name."
+            },
+            "domainName": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of domain names associated with the Container."
+            },
+            "publicId": {
+              "type": "string",
+              "description": "Container Public ID."
+            },
+            "tagIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "All Tag IDs that refer to this Container."
+            },
+            "features": {
+              "type": "object",
+              "properties": {
+                "supportUserPermissions": {
+                  "type": "boolean",
+                  "description": "Whether this Container supports user permissions managed by GTM."
+                },
+                "supportEnvironments": {
+                  "type": "boolean",
+                  "description": "Whether this Container supports environments."
+                },
+                "supportWorkspaces": {
+                  "type": "boolean",
+                  "description": "Whether this Container supports workspaces."
+                },
+                "supportGtagConfigs": {
+                  "type": "boolean",
+                  "description": "Whether this Container supports Google tag config."
+                },
+                "supportBuiltInVariables": {
+                  "type": "boolean",
+                  "description": "Whether this Container supports built-in variables."
+                },
+                "supportClients": {
+                  "type": "boolean",
+                  "description": "Whether this Container supports clients."
+                },
+                "supportFolders": {
+                  "type": "boolean",
+                  "description": "Whether this Container supports folders."
+                },
+                "supportTags": {
+                  "type": "boolean",
+                  "description": "Whether this Container supports tags."
+                },
+                "supportTemplates": {
+                  "type": "boolean",
+                  "description": "Whether this Container supports templates."
+                },
+                "supportTriggers": {
+                  "type": "boolean",
+                  "description": "Whether this Container supports triggers."
+                },
+                "supportVariables": {
+                  "type": "boolean",
+                  "description": "Whether this Container supports variables."
+                },
+                "supportVersions": {
+                  "type": "boolean",
+                  "description": "Whether this Container supports Container versions."
+                },
+                "supportZones": {
+                  "type": "boolean",
+                  "description": "Whether this Container supports zones."
+                },
+                "supportTransformations": {
+                  "type": "boolean",
+                  "description": "Whether this Container supports transformations."
+                }
+              },
+              "additionalProperties": false,
+              "description": "Read-only Container feature set."
+            },
+            "notes": {
+              "type": "string",
+              "description": "Container Notes."
+            },
+            "usageContext": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "web",
+                  "android",
+                  "ios",
+                  "server",
+                  "amp",
+                  "iosSdk5",
+                  "androidSdk5",
+                  "usageContextUnspecified"
+                ]
+              },
+              "description": "List of Usage Contexts for the Container. Valid values include: web, android, or ios."
+            },
+            "tagManagerUrl": {
+              "type": "string",
+              "description": "Auto generated link to the tag manager UI."
+            },
+            "taggingServerUrls": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of server-side container URLs for the Container."
+            }
+          },
+          "required": [
+            "accountId"
+          ],
+          "additionalProperties": false,
+          "description": "The container that this version was taken from."
+        },
+        "tag": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "accountId": {
+                "type": "string",
+                "description": "GTM Account ID."
+              },
+              "containerId": {
+                "type": "string",
+                "description": "GTM Container ID."
+              },
+              "workspaceId": {
+                "type": "string",
+                "description": "GTM Workspace ID."
+              },
+              "tagId": {
+                "type": "string",
+                "description": "The Tag ID uniquely identifies the GTM Tag."
+              },
+              "fingerprint": {
+                "type": "string",
+                "description": "The fingerprint of the GTM Tag as computed at storage time. This value is recomputed whenever the tag is modified."
+              },
+              "name": {
+                "type": "string",
+                "description": "Tag display name."
+              },
+              "type": {
+                "type": "string",
+                "description": "GTM Tag Type."
+              },
+              "liveOnly": {
+                "type": "boolean",
+                "description": "If set to true, this tag will only fire in the live environment (e.g. not in preview or debug mode)."
+              },
+              "priority": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "The type of the parameter."
+                  },
+                  "key": {
+                    "type": "string",
+                    "description": "Parameter key."
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "Parameter value as a string. The actual value may depend on the parameter type."
+                  },
+                  "list": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/properties/config/properties/tag/items/properties/priority"
+                    },
+                    "description": "List of parameter values (if the parameter is a list type)."
+                  },
+                  "map": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/properties/config/properties/tag/items/properties/priority"
+                    },
+                    "description": "Array of key-value pairs for map parameters."
+                  },
+                  "isWeakReference": {
+                    "type": "boolean",
+                    "description": "Whether this is a weak reference parameter."
+                  }
+                },
+                "additionalProperties": false,
+                "description": "User defined numeric priority of the tag. Tags are fired asynchronously in order of priority. Tags with higher numeric value fire first. A tag's priority can be a positive or negative value. The default value is 0."
+              },
+              "notes": {
+                "type": "string",
+                "description": "User notes on how to apply this tag in the container."
+              },
+              "scheduleStartMs": {
+                "type": "string",
+                "description": "The start timestamp in milliseconds to schedule a tag."
+              },
+              "scheduleEndMs": {
+                "type": "string",
+                "description": "The end timestamp in milliseconds to schedule a tag."
+              },
+              "parameter": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/tag/items/properties/priority"
+                },
+                "description": "The tag's parameters."
+              },
+              "firingTriggerId": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Firing trigger IDs. A tag will fire when any of the listed triggers are true and all of its blockingTriggerIds (if any specified) are false."
+              },
+              "blockingTriggerId": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Blocking trigger IDs. If any of the listed triggers evaluate to true, the tag will not fire."
+              },
+              "setupTag": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "tagName": {
+                      "type": "string",
+                      "description": "The name of the setup tag."
+                    },
+                    "stopOnSetupFailure": {
+                      "type": "boolean",
+                      "description": "If true, fire the main tag if and only if the setup tag fires successfully. If false, fire the main tag regardless of setup tag firing status."
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "description": "The list of setup tags. Currently only one is allowed."
+              },
+              "teardownTag": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "tagName": {
+                      "type": "string",
+                      "description": "The name of the teardown tag."
+                    },
+                    "stopTeardownOnFailure": {
+                      "type": "boolean",
+                      "description": "If true, fire the teardown tag if and only if the main tag fires successfully. If false, fire the teardown tag regardless of main tag firing status."
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "description": "The list of teardown tags. Currently only one is allowed."
+              },
+              "parentFolderId": {
+                "type": "string",
+                "description": "Parent folder id."
+              },
+              "tagFiringOption": {
+                "type": "string",
+                "enum": [
+                  "tagFiringOptionUnspecified",
+                  "unlimited",
+                  "oncePerEvent",
+                  "oncePerLoad"
+                ],
+                "description": "Option to fire this tag."
+              },
+              "tagManagerUrl": {
+                "type": "string",
+                "description": "Auto generated link to the tag manager UI."
+              },
+              "paused": {
+                "type": "boolean",
+                "description": "Indicates whether the tag is paused, which prevents the tag from firing."
+              },
+              "monitoringMetadata": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "A map of key-value pairs of tag metadata to be included in the event data for tag monitoring."
+              },
+              "monitoringMetadataTagNameKey": {
+                "type": "string",
+                "description": "If non-empty, then the tag display name will be included in the monitoring metadata map using the key specified."
+              },
+              "consentSettings": {
+                "type": "object",
+                "properties": {
+                  "consentStatus": {
+                    "type": "string",
+                    "enum": [
+                      "notSet",
+                      "notNeeded",
+                      "needed"
+                    ],
+                    "description": "The tag's consent status. If set to NEEDED, the runtime will check that the consent types specified by the consentType field have been granted."
+                  },
+                  "consentType": {
+                    "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                    "description": "The type of consents to check for during tag firing if in the consent NEEDED state. This parameter must be of type LIST where each list item is of type STRING."
+                  }
+                },
+                "additionalProperties": false,
+                "description": "Consent settings of a tag."
+              }
+            },
+            "required": [
+              "accountId",
+              "containerId",
+              "workspaceId"
+            ],
+            "additionalProperties": false
+          },
+          "description": "The tags in the container that this version was taken from."
+        },
+        "trigger": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "accountId": {
+                "type": "string",
+                "description": "GTM Account ID."
+              },
+              "containerId": {
+                "type": "string",
+                "description": "GTM Container ID."
+              },
+              "workspaceId": {
+                "type": "string",
+                "description": "GTM Workspace ID."
+              },
+              "triggerId": {
+                "type": "string",
+                "description": "The Trigger ID uniquely identifies the GTM Trigger."
+              },
+              "fingerprint": {
+                "type": "string",
+                "description": "The fingerprint of the GTM Trigger as computed at storage time. This value is recomputed whenever the trigger is modified."
+              },
+              "name": {
+                "type": "string",
+                "description": "Trigger display name."
+              },
+              "type": {
+                "type": "string",
+                "description": "Trigger type."
+              },
+              "filter": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "The type of operator for this condition (ConditionType enum)."
+                    },
+                    "parameter": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/config/properties/tag/items/properties/priority"
+                      },
+                      "description": "A list of named parameters (key/value), depending on the condition's type."
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "The trigger's filter conditions."
+              },
+              "autoEventFilter": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/trigger/items/properties/filter/items"
+                },
+                "description": "The trigger's auto event filter conditions."
+              },
+              "customEventFilter": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/trigger/items/properties/filter/items"
+                },
+                "description": "The trigger's custom event filter conditions."
+              },
+              "tagManagerUrl": {
+                "type": "string",
+                "description": "Auto generated link to the tag manager UI."
+              },
+              "notes": {
+                "type": "string",
+                "description": "User notes on how to apply this trigger in the container."
+              },
+              "parameter": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/tag/items/properties/priority"
+                },
+                "description": "Additional parameters for the trigger."
+              },
+              "waitForTags": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "Whether or not to delay form submissions or link opening until all of the tags have fired. Only valid for Form Submission and Link Click triggers."
+              },
+              "checkValidation": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "Whether or not to only fire tags if the form submit or link click event is not cancelled by some other event handler. Only valid for Form Submission and Link Click triggers."
+              },
+              "waitForTagsTimeout": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "How long to wait (in ms) for tags to fire when 'waits_for_tags' above evaluates to true. Only valid for Form Submission and Link Click triggers."
+              },
+              "uniqueTriggerId": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "Globally unique id of the trigger that auto-generates this (a Form Submit, Link Click or Timer listener) if any. Only valid for Form Submit, Link Click and Timer triggers."
+              },
+              "eventName": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "Name of the GTM event that is fired. Only valid for Timer triggers."
+              },
+              "interval": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "Time between triggering recurring Timer Events (in ms). Only valid for Timer triggers."
+              },
+              "limit": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "Limit of the number of GTM events this Timer Trigger will fire. Only valid for Timer triggers."
+              },
+              "parentFolderId": {
+                "type": "string",
+                "description": "Parent folder id."
+              },
+              "selector": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "A click trigger CSS selector. Only valid for AMP Click trigger."
+              },
+              "intervalSeconds": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "Time between Timer Events to fire (in seconds). Only valid for AMP Timer trigger."
+              },
+              "maxTimerLengthSeconds": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "Max time to fire Timer Events (in seconds). Only valid for AMP Timer trigger."
+              },
+              "verticalScrollPercentageList": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "List of integer percentage values for scroll triggers. Fires when each percentage is reached when scrolled vertically. Only valid for AMP scroll triggers."
+              },
+              "horizontalScrollPercentageList": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "List of integer percentage values for scroll triggers. Fires when each percentage is reached when scrolled horizontally. Only valid for AMP scroll triggers."
+              },
+              "visibilitySelector": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "A visibility trigger CSS selector. Only valid for AMP Visibility trigger."
+              },
+              "visiblePercentageMin": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "A visibility trigger minimum percent visibility. Only valid for AMP Visibility trigger."
+              },
+              "visiblePercentageMax": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "A visibility trigger maximum percent visibility. Only valid for AMP Visibility trigger."
+              },
+              "continuousTimeMinMilliseconds": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "A visibility trigger minimum continuous visible time (ms). Only valid for AMP Visibility trigger."
+              },
+              "totalTimeMinMilliseconds": {
+                "$ref": "#/properties/config/properties/tag/items/properties/priority",
+                "description": "A visibility trigger minimum total visible time (ms). Only valid for AMP Visibility trigger."
+              }
+            },
+            "required": [
+              "accountId",
+              "containerId",
+              "workspaceId"
+            ],
+            "additionalProperties": false
+          },
+          "description": "The triggers in the container that this version was taken from."
+        },
+        "variable": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "accountId": {
+                "type": "string",
+                "description": "GTM Account ID."
+              },
+              "containerId": {
+                "type": "string",
+                "description": "GTM Container ID."
+              },
+              "workspaceId": {
+                "type": "string",
+                "description": "GTM Workspace ID."
+              },
+              "variableId": {
+                "type": "string",
+                "description": "The Variable ID uniquely identifies the GTM Variable."
+              },
+              "fingerprint": {
+                "type": "string",
+                "description": "The fingerprint of the GTM Variable as computed at storage time. This value is recomputed whenever the variable is modified."
+              },
+              "name": {
+                "type": "string",
+                "description": "Variable display name."
+              },
+              "type": {
+                "type": "string",
+                "description": "Variable type."
+              },
+              "parameter": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/tag/items/properties/priority"
+                },
+                "description": "The variable's parameters."
+              },
+              "notes": {
+                "type": "string",
+                "description": "User notes on how to apply this variable in the container."
+              },
+              "tagManagerUrl": {
+                "type": "string",
+                "description": "Auto generated link to the tag manager UI."
+              }
+            },
+            "required": [
+              "accountId",
+              "containerId",
+              "workspaceId"
+            ],
+            "additionalProperties": false
+          },
+          "description": "The variables in the container that this version was taken from."
+        },
+        "folder": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "accountId": {
+                "type": "string",
+                "description": "GTM Account ID."
+              },
+              "containerId": {
+                "type": "string",
+                "description": "GTM Container ID."
+              },
+              "workspaceId": {
+                "type": "string",
+                "description": "GTM Workspace ID."
+              },
+              "folderId": {
+                "type": "string",
+                "description": "The Folder ID uniquely identifies the GTM Folder."
+              },
+              "fingerprint": {
+                "type": "string",
+                "description": "The fingerprint of the GTM Folder as computed at storage time. This value is recomputed whenever the folder is modified."
+              },
+              "name": {
+                "type": "string",
+                "description": "Folder display name."
+              },
+              "tagManagerUrl": {
+                "type": "string",
+                "description": "Auto generated link to the tag manager UI."
+              },
+              "notes": {
+                "type": "string",
+                "description": "User notes on how to apply this folder in the container."
+              }
+            },
+            "required": [
+              "accountId",
+              "containerId",
+              "workspaceId"
+            ],
+            "additionalProperties": false
+          },
+          "description": "The folders in the container that this version was taken from."
+        },
+        "builtInVariable": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "Type of built-in variable."
+              },
+              "name": {
+                "type": "string",
+                "description": "Display name for the built-in variable."
+              },
+              "notes": {
+                "type": "string",
+                "description": "User notes on how to apply this variable in tagging scenarios."
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "The built-in variables in the container that this version was taken from."
+        },
+        "tagManagerUrl": {
+          "type": "string",
+          "description": "Auto generated link to the tag manager UI."
+        },
+        "zone": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "accountId": {
+                "type": "string",
+                "description": "GTM Account ID."
+              },
+              "containerId": {
+                "type": "string",
+                "description": "GTM Container ID."
+              },
+              "workspaceId": {
+                "type": "string",
+                "description": "GTM Workspace ID."
+              },
+              "zoneId": {
+                "type": "string",
+                "description": "The Zone ID uniquely identifies the GTM Zone."
+              },
+              "fingerprint": {
+                "type": "string",
+                "description": "The fingerprint of the GTM Zone as computed at storage time. This value is recomputed whenever the zone is modified."
+              },
+              "tagManagerUrl": {
+                "type": "string",
+                "description": "Auto generated link to the tag manager UI."
+              },
+              "name": {
+                "type": "string",
+                "description": "Zone display name."
+              },
+              "type": {
+                "type": "string",
+                "description": "Zone type."
+              },
+              "childContainer": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "publicId": {
+                      "type": "string",
+                      "description": "The child container's public id."
+                    },
+                    "nickname": {
+                      "type": "string",
+                      "description": "The zone's nickname for the child container."
+                    }
+                  },
+                  "required": [
+                    "publicId"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Child containers for the zone."
+              },
+              "notes": {
+                "type": "string",
+                "description": "Zone notes."
+              },
+              "boundary": {
+                "type": "object",
+                "properties": {
+                  "condition": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/properties/config/properties/trigger/items/properties/filter/items"
+                    },
+                    "description": "The conditions that, when conjoined, make up the boundary."
+                  },
+                  "customEvaluationTriggerId": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Custom evaluation trigger IDs. A zone will evaluate its boundary conditions when any of the listed triggers are true."
+                  }
+                },
+                "additionalProperties": false,
+                "description": "This Zone's boundary."
+              },
+              "typeRestriction": {
+                "type": "object",
+                "properties": {
+                  "enable": {
+                    "type": "boolean",
+                    "description": "True if type restrictions have been enabled for this Zone."
+                  },
+                  "whitelistedTypeId": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "List of type public ids that have been whitelisted for use in this Zone."
+                  }
+                },
+                "additionalProperties": false,
+                "description": "This Zone's type restrictions."
+              }
+            },
+            "required": [
+              "accountId",
+              "containerId",
+              "workspaceId"
+            ],
+            "additionalProperties": false
+          },
+          "description": "The zones in the container that this version was taken from."
+        },
+        "customTemplate": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "accountId": {
+                "type": "string",
+                "description": "GTM Account ID."
+              },
+              "containerId": {
+                "type": "string",
+                "description": "GTM Container ID."
+              },
+              "workspaceId": {
+                "type": "string",
+                "description": "GTM Workspace ID."
+              },
+              "templateId": {
+                "type": "string",
+                "description": "The Custom Template ID uniquely identifies the GTM custom template."
+              },
+              "fingerprint": {
+                "type": "string",
+                "description": "The fingerprint of the GTM Custom Template as computed at storage time. This value is recomputed whenever the template is modified."
+              },
+              "name": {
+                "type": "string",
+                "description": "Custom Template display name."
+              },
+              "tagManagerUrl": {
+                "type": "string",
+                "description": "Auto generated link to the tag manager UI."
+              },
+              "templateData": {
+                "type": "string",
+                "description": "The custom template in text format."
+              },
+              "galleryReference": {
+                "type": "object",
+                "properties": {
+                  "host": {
+                    "type": "string",
+                    "description": "The name of the host for the community gallery template."
+                  },
+                  "owner": {
+                    "type": "string",
+                    "description": "The name of the owner for the community gallery template."
+                  },
+                  "repository": {
+                    "type": "string",
+                    "description": "The name of the repository for the community gallery template."
+                  },
+                  "version": {
+                    "type": "string",
+                    "description": "The version of the community gallery template."
+                  },
+                  "isModified": {
+                    "type": "boolean",
+                    "description": "If a user has manually edited the community gallery template."
+                  },
+                  "signature": {
+                    "type": "string",
+                    "description": "The signature of the community gallery template as computed at import time. This value is recomputed whenever the template is updated from the gallery."
+                  },
+                  "templateDeveloperId": {
+                    "type": "string",
+                    "description": "The developer id of the community gallery template. This value is set whenever the template is created from the gallery."
+                  },
+                  "galleryTemplateId": {
+                    "type": "string",
+                    "description": "ID for the gallery template that is generated once during first sync and travels with the template redirects."
+                  }
+                },
+                "additionalProperties": false,
+                "description": "A reference to the Community Template Gallery entry."
+              }
+            },
+            "required": [
+              "accountId",
+              "containerId",
+              "workspaceId"
+            ],
+            "additionalProperties": false
+          },
+          "description": "The custom templates in the container that this version was taken from."
+        },
+        "client": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "accountId": {
+                "type": "string",
+                "description": "GTM Account ID."
+              },
+              "containerId": {
+                "type": "string",
+                "description": "GTM Container ID."
+              },
+              "workspaceId": {
+                "type": "string",
+                "description": "GTM Workspace ID."
+              },
+              "clientId": {
+                "type": "string",
+                "description": "The Client ID uniquely identifies the GTM Client."
+              },
+              "fingerprint": {
+                "type": "string",
+                "description": "The fingerprint of the GTM Client as computed at storage time. This value is recomputed whenever the client is modified."
+              },
+              "name": {
+                "type": "string",
+                "description": "Client display name."
+              },
+              "type": {
+                "type": "string",
+                "description": "Client type."
+              },
+              "parameter": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/tag/items/properties/priority"
+                },
+                "description": "The client's parameters."
+              },
+              "priority": {
+                "type": "number",
+                "description": "Priority determines relative firing order."
+              },
+              "tagManagerUrl": {
+                "type": "string",
+                "description": "Auto generated link to the tag manager UI."
+              },
+              "parentFolderId": {
+                "type": "string",
+                "description": "Parent folder id."
+              },
+              "notes": {
+                "type": "string",
+                "description": "User notes on how to apply this tag in the container."
+              }
+            },
+            "required": [
+              "accountId",
+              "containerId",
+              "workspaceId"
+            ],
+            "additionalProperties": false
+          },
+          "description": "The clients in the container that this version was taken from."
+        },
+        "gtagConfig": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "accountId": {
+                "type": "string",
+                "description": "Google tag account ID."
+              },
+              "containerId": {
+                "type": "string",
+                "description": "Google tag container ID."
+              },
+              "workspaceId": {
+                "type": "string",
+                "description": "Google tag workspace ID. Only used by GTM containers. Set to 0 otherwise."
+              },
+              "fingerprint": {
+                "type": "string",
+                "description": "The fingerprint of the Google tag config as computed at storage time. This value is recomputed whenever the config is modified."
+              },
+              "gtagConfigId": {
+                "type": "string",
+                "description": "The ID uniquely identifies the Google tag config."
+              },
+              "type": {
+                "type": "string",
+                "description": "Google tag config type."
+              },
+              "parameter": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/tag/items/properties/priority"
+                },
+                "description": "The Google tag config's parameters."
+              },
+              "tagManagerUrl": {
+                "type": "string",
+                "description": "Auto generated link to the tag manager UI."
+              }
+            },
+            "required": [
+              "accountId",
+              "containerId",
+              "workspaceId"
+            ],
+            "additionalProperties": false
+          },
+          "description": "The Google tag configs in the container that this version was taken from."
+        },
+        "transformation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "accountId": {
+                "type": "string",
+                "description": "GTM Account ID."
+              },
+              "containerId": {
+                "type": "string",
+                "description": "GTM Container ID."
+              },
+              "workspaceId": {
+                "type": "string",
+                "description": "GTM Workspace ID."
+              },
+              "transformationId": {
+                "type": "string",
+                "description": "The Transformation ID uniquely identifies the GTM transformation."
+              },
+              "fingerprint": {
+                "type": "string",
+                "description": "The fingerprint of the GTM Transformation as computed at storage time. This value is recomputed whenever the transformation is modified."
+              },
+              "name": {
+                "type": "string",
+                "description": "Transformation display name."
+              },
+              "type": {
+                "type": "string",
+                "description": "Transformation type."
+              },
+              "parameter": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/tag/items/properties/priority"
+                },
+                "description": "The transformation's parameters."
+              },
+              "tagManagerUrl": {
+                "type": "string",
+                "description": "Auto generated link to the tag manager UI."
+              },
+              "parentFolderId": {
+                "type": "string",
+                "description": "Parent folder id."
+              },
+              "notes": {
+                "type": "string",
+                "description": "User notes on how to apply this transformation in the container."
+              }
+            },
+            "required": [
+              "accountId",
+              "containerId",
+              "workspaceId"
+            ],
+            "additionalProperties": false
+          },
+          "description": "The transformations in the container that this version was taken from."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Configuração para 'update'."
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "Fingerprint para 'publish' e 'update'."
+    },
+    "resourceType": {
+      "type": "string",
+      "enum": [
+        "tag",
+        "trigger",
+        "variable",
+        "folder",
+        "builtInVariable",
+        "zone",
+        "customTemplate",
+        "client",
+        "gtagConfig",
+        "transformation"
+      ],
+      "description": "Filtra um tipo específico de recurso ao retornar a versão (apenas em 'get' e 'live')."
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 20,
+      "default": 20
+    },
+    "includeSummary": {
+      "type": "boolean",
+      "default": true
+    },
+    "confirm": {
+      "type": "boolean",
+      "description": "Obrigatório para 'remove' e 'publish'."
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_version_header-e1c252fe"></a>
+
+## gtm_version_header
+
+Handler: Retrieves latest version header or follows all list pages and returns a client-paginated history including optionally deleted versions.
+
+```text
+Lista os headers (resumos) das versões publicadas de um container. Use 'latest' pra pegar a mais recente, 'list' pra ver o histórico.
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/misc.ts#L269-L309) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "list",
+        "latest"
+      ]
+    },
+    "accountId": {
+      "type": "string"
+    },
+    "containerId": {
+      "type": "string"
+    },
+    "includeDeleted": {
+      "type": "boolean",
+      "default": false
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_tag-c3e06f2b"></a>
+
+## gtm_tag
+
+Handler: Dispatches workspace resource create/get/list/update/remove/revert to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime.
+
+```text
+Gerencia tags dentro de um workspace GTM. Ações: create, get, list, update, remove, revert. 'list' lista todos os itens (paginação client-side, 20/página).
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/workspaceResources.ts#L12-L28) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "get",
+        "list",
+        "update",
+        "remove",
+        "revert"
+      ]
+    },
+    "accountId": {
+      "type": "string",
+      "description": "ID da conta GTM."
+    },
+    "containerId": {
+      "type": "string",
+      "description": "ID do container."
+    },
+    "workspaceId": {
+      "type": "string",
+      "description": "ID do workspace."
+    },
+    "tagId": {
+      "type": "string",
+      "description": "ID do tag. Obrigatório para get/update/remove/revert."
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Tag display name."
+        },
+        "type": {
+          "type": "string",
+          "description": "GTM Tag Type."
+        },
+        "liveOnly": {
+          "type": "boolean",
+          "description": "If set to true, this tag will only fire in the live environment (e.g. not in preview or debug mode)."
+        },
+        "priority": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": "The type of the parameter."
+            },
+            "key": {
+              "type": "string",
+              "description": "Parameter key."
+            },
+            "value": {
+              "type": "string",
+              "description": "Parameter value as a string. The actual value may depend on the parameter type."
+            },
+            "list": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/config/properties/priority"
+              },
+              "description": "List of parameter values (if the parameter is a list type)."
+            },
+            "map": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/config/properties/priority"
+              },
+              "description": "Array of key-value pairs for map parameters."
+            },
+            "isWeakReference": {
+              "type": "boolean",
+              "description": "Whether this is a weak reference parameter."
+            }
+          },
+          "additionalProperties": false,
+          "description": "User defined numeric priority of the tag. Tags are fired asynchronously in order of priority. Tags with higher numeric value fire first. A tag's priority can be a positive or negative value. The default value is 0."
+        },
+        "notes": {
+          "type": "string",
+          "description": "User notes on how to apply this tag in the container."
+        },
+        "scheduleStartMs": {
+          "type": "string",
+          "description": "The start timestamp in milliseconds to schedule a tag."
+        },
+        "scheduleEndMs": {
+          "type": "string",
+          "description": "The end timestamp in milliseconds to schedule a tag."
+        },
+        "parameter": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/config/properties/priority"
+          },
+          "description": "The tag's parameters."
+        },
+        "firingTriggerId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Firing trigger IDs. A tag will fire when any of the listed triggers are true and all of its blockingTriggerIds (if any specified) are false."
+        },
+        "blockingTriggerId": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Blocking trigger IDs. If any of the listed triggers evaluate to true, the tag will not fire."
+        },
+        "setupTag": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "tagName": {
+                "type": "string",
+                "description": "The name of the setup tag."
+              },
+              "stopOnSetupFailure": {
+                "type": "boolean",
+                "description": "If true, fire the main tag if and only if the setup tag fires successfully. If false, fire the main tag regardless of setup tag firing status."
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "The list of setup tags. Currently only one is allowed."
+        },
+        "teardownTag": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "tagName": {
+                "type": "string",
+                "description": "The name of the teardown tag."
+              },
+              "stopTeardownOnFailure": {
+                "type": "boolean",
+                "description": "If true, fire the teardown tag if and only if the main tag fires successfully. If false, fire the teardown tag regardless of main tag firing status."
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "The list of teardown tags. Currently only one is allowed."
+        },
+        "parentFolderId": {
+          "type": "string",
+          "description": "Parent folder id."
+        },
+        "tagFiringOption": {
+          "type": "string",
+          "enum": [
+            "tagFiringOptionUnspecified",
+            "unlimited",
+            "oncePerEvent",
+            "oncePerLoad"
+          ],
+          "description": "Option to fire this tag."
+        },
+        "tagManagerUrl": {
+          "type": "string",
+          "description": "Auto generated link to the tag manager UI."
+        },
+        "paused": {
+          "type": "boolean",
+          "description": "Indicates whether the tag is paused, which prevents the tag from firing."
+        },
+        "monitoringMetadata": {
+          "$ref": "#/properties/config/properties/priority",
+          "description": "A map of key-value pairs of tag metadata to be included in the event data for tag monitoring."
+        },
+        "monitoringMetadataTagNameKey": {
+          "type": "string",
+          "description": "If non-empty, then the tag display name will be included in the monitoring metadata map using the key specified."
+        },
+        "consentSettings": {
+          "type": "object",
+          "properties": {
+            "consentStatus": {
+              "type": "string",
+              "enum": [
+                "notSet",
+                "notNeeded",
+                "needed"
+              ],
+              "description": "The tag's consent status. If set to NEEDED, the runtime will check that the consent types specified by the consentType field have been granted."
+            },
+            "consentType": {
+              "$ref": "#/properties/config/properties/priority",
+              "description": "The type of consents to check for during tag firing if in the consent NEEDED state. This parameter must be of type LIST where each list item is of type STRING."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Consent settings of a tag."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Configuração para 'create' e 'update'."
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "Fingerprint para 'update' e 'revert'."
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 20,
+      "default": 20
+    },
+    "confirm": {
+      "type": "boolean",
+      "description": "Obrigatório para 'remove'."
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId",
+    "workspaceId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_trigger-5c5777f3"></a>
+
+## gtm_trigger
+
+Handler: Dispatches workspace resource create/get/list/update/remove/revert to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime.
+
+```text
+Gerencia triggers dentro de um workspace GTM. Ações: create, get, list, update, remove, revert. 'list' lista todos os itens (paginação client-side, 50/página).
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/workspaceResources.ts#L30-L45) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "get",
+        "list",
+        "update",
+        "remove",
+        "revert"
+      ]
+    },
+    "accountId": {
+      "type": "string",
+      "description": "ID da conta GTM."
+    },
+    "containerId": {
+      "type": "string",
+      "description": "ID do container."
+    },
+    "workspaceId": {
+      "type": "string",
+      "description": "ID do workspace."
+    },
+    "triggerId": {
+      "type": "string",
+      "description": "ID do trigger. Obrigatório para get/update/remove/revert."
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Trigger display name."
+        },
+        "type": {
+          "type": "string",
+          "description": "Trigger type."
+        },
+        "filter": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "The type of operator for this condition (ConditionType enum)."
+              },
+              "parameter": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "The type of the parameter."
+                    },
+                    "key": {
+                      "type": "string",
+                      "description": "Parameter key."
+                    },
+                    "value": {
+                      "type": "string",
+                      "description": "Parameter value as a string. The actual value may depend on the parameter type."
+                    },
+                    "list": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/config/properties/filter/items/properties/parameter/items"
+                      },
+                      "description": "List of parameter values (if the parameter is a list type)."
+                    },
+                    "map": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/config/properties/filter/items/properties/parameter/items"
+                      },
+                      "description": "Array of key-value pairs for map parameters."
+                    },
+                    "isWeakReference": {
+                      "type": "boolean",
+                      "description": "Whether this is a weak reference parameter."
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "description": "A list of named parameters (key/value), depending on the condition's type."
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "description": "The trigger's filter conditions."
+        },
+        "autoEventFilter": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/config/properties/filter/items"
+          },
+          "description": "The trigger's auto event filter conditions."
+        },
+        "customEventFilter": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/config/properties/filter/items"
+          },
+          "description": "The trigger's custom event filter conditions."
+        },
+        "tagManagerUrl": {
+          "type": "string",
+          "description": "Auto generated link to the tag manager UI."
+        },
+        "notes": {
+          "type": "string",
+          "description": "User notes on how to apply this trigger in the container."
+        },
+        "parameter": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/config/properties/filter/items/properties/parameter/items"
+          },
+          "description": "Additional parameters for the trigger."
+        },
+        "waitForTags": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "Whether or not to delay form submissions or link opening until all of the tags have fired. Only valid for Form Submission and Link Click triggers."
+        },
+        "checkValidation": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "Whether or not to only fire tags if the form submit or link click event is not cancelled by some other event handler. Only valid for Form Submission and Link Click triggers."
+        },
+        "waitForTagsTimeout": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "How long to wait (in ms) for tags to fire when 'waits_for_tags' above evaluates to true. Only valid for Form Submission and Link Click triggers."
+        },
+        "uniqueTriggerId": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "Globally unique id of the trigger that auto-generates this (a Form Submit, Link Click or Timer listener) if any. Only valid for Form Submit, Link Click and Timer triggers."
+        },
+        "eventName": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "Name of the GTM event that is fired. Only valid for Timer triggers."
+        },
+        "interval": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "Time between triggering recurring Timer Events (in ms). Only valid for Timer triggers."
+        },
+        "limit": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "Limit of the number of GTM events this Timer Trigger will fire. Only valid for Timer triggers."
+        },
+        "parentFolderId": {
+          "type": "string",
+          "description": "Parent folder id."
+        },
+        "selector": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "A click trigger CSS selector. Only valid for AMP Click trigger."
+        },
+        "intervalSeconds": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "Time between Timer Events to fire (in seconds). Only valid for AMP Timer trigger."
+        },
+        "maxTimerLengthSeconds": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "Max time to fire Timer Events (in seconds). Only valid for AMP Timer trigger."
+        },
+        "verticalScrollPercentageList": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "List of integer percentage values for scroll triggers. Fires when each percentage is reached when scrolled vertically. Only valid for AMP scroll triggers."
+        },
+        "horizontalScrollPercentageList": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "List of integer percentage values for scroll triggers. Fires when each percentage is reached when scrolled horizontally. Only valid for AMP scroll triggers."
+        },
+        "visibilitySelector": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "A visibility trigger CSS selector. Only valid for AMP Visibility trigger."
+        },
+        "visiblePercentageMin": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "A visibility trigger minimum percent visibility. Only valid for AMP Visibility trigger."
+        },
+        "visiblePercentageMax": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "A visibility trigger maximum percent visibility. Only valid for AMP Visibility trigger."
+        },
+        "continuousTimeMinMilliseconds": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "A visibility trigger minimum continuous visible time (ms). Only valid for AMP Visibility trigger."
+        },
+        "totalTimeMinMilliseconds": {
+          "$ref": "#/properties/config/properties/filter/items/properties/parameter/items",
+          "description": "A visibility trigger minimum total visible time (ms). Only valid for AMP Visibility trigger."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Configuração para 'create' e 'update'."
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "Fingerprint para 'update' e 'revert'."
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean",
+      "description": "Obrigatório para 'remove'."
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId",
+    "workspaceId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_variable-ec512642"></a>
+
+## gtm_variable
+
+Handler: Dispatches workspace resource create/get/list/update/remove/revert to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime.
+
+```text
+Gerencia variáveis dentro de um workspace GTM. Ações: create, get, list, update, remove, revert. 'list' lista todos os itens (paginação client-side, 50/página).
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/workspaceResources.ts#L47-L62) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "get",
+        "list",
+        "update",
+        "remove",
+        "revert"
+      ]
+    },
+    "accountId": {
+      "type": "string",
+      "description": "ID da conta GTM."
+    },
+    "containerId": {
+      "type": "string",
+      "description": "ID do container."
+    },
+    "workspaceId": {
+      "type": "string",
+      "description": "ID do workspace."
+    },
+    "variableId": {
+      "type": "string",
+      "description": "ID do variávei. Obrigatório para get/update/remove/revert."
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Variable display name."
+        },
+        "type": {
+          "type": "string",
+          "description": "Variable type."
+        },
+        "parameter": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "The type of the parameter."
+              },
+              "key": {
+                "type": "string",
+                "description": "Parameter key."
+              },
+              "value": {
+                "type": "string",
+                "description": "Parameter value as a string. The actual value may depend on the parameter type."
+              },
+              "list": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/parameter/items"
+                },
+                "description": "List of parameter values (if the parameter is a list type)."
+              },
+              "map": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/parameter/items"
+                },
+                "description": "Array of key-value pairs for map parameters."
+              },
+              "isWeakReference": {
+                "type": "boolean",
+                "description": "Whether this is a weak reference parameter."
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "The variable's parameters."
+        },
+        "notes": {
+          "type": "string",
+          "description": "User notes on how to apply this variable in the container."
+        },
+        "tagManagerUrl": {
+          "type": "string",
+          "description": "Auto generated link to the tag manager UI."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Configuração para 'create' e 'update'."
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "Fingerprint para 'update' e 'revert'."
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean",
+      "description": "Obrigatório para 'remove'."
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId",
+    "workspaceId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_folder-98e6da8b"></a>
+
+## gtm_folder
+
+Handler: Dispatches workspace resource create/get/list/update/remove to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime.
+
+```text
+Gerencia folders dentro de um workspace GTM. Ações: create, get, list, update, remove. 'list' lista todos os itens (paginação client-side, 50/página).
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/workspaceResources.ts#L64-L78) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "get",
+        "list",
+        "update",
+        "remove"
+      ]
+    },
+    "accountId": {
+      "type": "string",
+      "description": "ID da conta GTM."
+    },
+    "containerId": {
+      "type": "string",
+      "description": "ID do container."
+    },
+    "workspaceId": {
+      "type": "string",
+      "description": "ID do workspace."
+    },
+    "folderId": {
+      "type": "string",
+      "description": "ID do folder. Obrigatório para get/update/remove/revert."
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Folder display name."
+        },
+        "tagManagerUrl": {
+          "type": "string",
+          "description": "Auto generated link to the tag manager UI."
+        },
+        "notes": {
+          "type": "string",
+          "description": "User notes on how to apply this folder in the container."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Configuração para 'create' e 'update'."
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "Fingerprint para 'update' e 'revert'."
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean",
+      "description": "Obrigatório para 'remove'."
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId",
+    "workspaceId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_zone-78bf4872"></a>
+
+## gtm_zone
+
+Handler: Dispatches workspace resource create/get/list/update/remove/revert to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime.
+
+```text
+Gerencia zones dentro de um workspace GTM. Ações: create, get, list, update, remove, revert. 'list' lista todos os itens (paginação client-side, 50/página).
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/workspaceResources.ts#L80-L95) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "get",
+        "list",
+        "update",
+        "remove",
+        "revert"
+      ]
+    },
+    "accountId": {
+      "type": "string",
+      "description": "ID da conta GTM."
+    },
+    "containerId": {
+      "type": "string",
+      "description": "ID do container."
+    },
+    "workspaceId": {
+      "type": "string",
+      "description": "ID do workspace."
+    },
+    "zoneId": {
+      "type": "string",
+      "description": "ID do zone. Obrigatório para get/update/remove/revert."
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "tagManagerUrl": {
+          "type": "string",
+          "description": "Auto generated link to the tag manager UI."
+        },
+        "name": {
+          "type": "string",
+          "description": "Zone display name."
+        },
+        "type": {
+          "type": "string",
+          "description": "Zone type."
+        },
+        "childContainer": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "publicId": {
+                "type": "string",
+                "description": "The child container's public id."
+              },
+              "nickname": {
+                "type": "string",
+                "description": "The zone's nickname for the child container."
+              }
+            },
+            "required": [
+              "publicId"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Child containers for the zone."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Zone notes."
+        },
+        "boundary": {
+          "type": "object",
+          "properties": {
+            "condition": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "The type of operator for this condition (ConditionType enum)."
+                  },
+                  "parameter": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "description": "The type of the parameter."
+                        },
+                        "key": {
+                          "type": "string",
+                          "description": "Parameter key."
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "Parameter value as a string. The actual value may depend on the parameter type."
+                        },
+                        "list": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/properties/config/properties/boundary/properties/condition/items/properties/parameter/items"
+                          },
+                          "description": "List of parameter values (if the parameter is a list type)."
+                        },
+                        "map": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/properties/config/properties/boundary/properties/condition/items/properties/parameter/items"
+                          },
+                          "description": "Array of key-value pairs for map parameters."
+                        },
+                        "isWeakReference": {
+                          "type": "boolean",
+                          "description": "Whether this is a weak reference parameter."
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "description": "A list of named parameters (key/value), depending on the condition's type."
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false
+              },
+              "description": "The conditions that, when conjoined, make up the boundary."
+            },
+            "customEvaluationTriggerId": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Custom evaluation trigger IDs. A zone will evaluate its boundary conditions when any of the listed triggers are true."
+            }
+          },
+          "additionalProperties": false,
+          "description": "This Zone's boundary."
+        },
+        "typeRestriction": {
+          "type": "object",
+          "properties": {
+            "enable": {
+              "type": "boolean",
+              "description": "True if type restrictions have been enabled for this Zone."
+            },
+            "whitelistedTypeId": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of type public ids that have been whitelisted for use in this Zone."
+            }
+          },
+          "additionalProperties": false,
+          "description": "This Zone's type restrictions."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Configuração para 'create' e 'update'."
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "Fingerprint para 'update' e 'revert'."
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean",
+      "description": "Obrigatório para 'remove'."
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId",
+    "workspaceId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_client-dc17ee47"></a>
+
+## gtm_client
+
+Handler: Dispatches workspace resource create/get/list/update/remove/revert to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime.
+
+```text
+Gerencia clients (server-side) dentro de um workspace GTM. Ações: create, get, list, update, remove, revert. 'list' lista todos os itens (paginação client-side, 50/página).
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/workspaceResources.ts#L97-L112) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "get",
+        "list",
+        "update",
+        "remove",
+        "revert"
+      ]
+    },
+    "accountId": {
+      "type": "string",
+      "description": "ID da conta GTM."
+    },
+    "containerId": {
+      "type": "string",
+      "description": "ID do container."
+    },
+    "workspaceId": {
+      "type": "string",
+      "description": "ID do workspace."
+    },
+    "clientId": {
+      "type": "string",
+      "description": "ID do clients (server-side). Obrigatório para get/update/remove/revert."
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Client display name."
+        },
+        "type": {
+          "type": "string",
+          "description": "Client type."
+        },
+        "parameter": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "The type of the parameter."
+              },
+              "key": {
+                "type": "string",
+                "description": "Parameter key."
+              },
+              "value": {
+                "type": "string",
+                "description": "Parameter value as a string. The actual value may depend on the parameter type."
+              },
+              "list": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/parameter/items"
+                },
+                "description": "List of parameter values (if the parameter is a list type)."
+              },
+              "map": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/parameter/items"
+                },
+                "description": "Array of key-value pairs for map parameters."
+              },
+              "isWeakReference": {
+                "type": "boolean",
+                "description": "Whether this is a weak reference parameter."
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "The client's parameters."
+        },
+        "priority": {
+          "type": "number",
+          "description": "Priority determines relative firing order."
+        },
+        "tagManagerUrl": {
+          "type": "string",
+          "description": "Auto generated link to the tag manager UI."
+        },
+        "parentFolderId": {
+          "type": "string",
+          "description": "Parent folder id."
+        },
+        "notes": {
+          "type": "string",
+          "description": "User notes on how to apply this tag in the container."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Configuração para 'create' e 'update'."
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "Fingerprint para 'update' e 'revert'."
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean",
+      "description": "Obrigatório para 'remove'."
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId",
+    "workspaceId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_transformation-c270ba51"></a>
+
+## gtm_transformation
+
+Handler: Dispatches workspace resource create/get/list/update/remove/revert to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime.
+
+```text
+Gerencia transformations dentro de um workspace GTM. Ações: create, get, list, update, remove, revert. 'list' lista todos os itens (paginação client-side, 50/página).
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/workspaceResources.ts#L114-L130) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "get",
+        "list",
+        "update",
+        "remove",
+        "revert"
+      ]
+    },
+    "accountId": {
+      "type": "string",
+      "description": "ID da conta GTM."
+    },
+    "containerId": {
+      "type": "string",
+      "description": "ID do container."
+    },
+    "workspaceId": {
+      "type": "string",
+      "description": "ID do workspace."
+    },
+    "transformationId": {
+      "type": "string",
+      "description": "ID do transformation. Obrigatório para get/update/remove/revert."
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Transformation display name."
+        },
+        "type": {
+          "type": "string",
+          "description": "Transformation type."
+        },
+        "parameter": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "The type of the parameter."
+              },
+              "key": {
+                "type": "string",
+                "description": "Parameter key."
+              },
+              "value": {
+                "type": "string",
+                "description": "Parameter value as a string. The actual value may depend on the parameter type."
+              },
+              "list": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/parameter/items"
+                },
+                "description": "List of parameter values (if the parameter is a list type)."
+              },
+              "map": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/parameter/items"
+                },
+                "description": "Array of key-value pairs for map parameters."
+              },
+              "isWeakReference": {
+                "type": "boolean",
+                "description": "Whether this is a weak reference parameter."
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "The transformation's parameters."
+        },
+        "tagManagerUrl": {
+          "type": "string",
+          "description": "Auto generated link to the tag manager UI."
+        },
+        "parentFolderId": {
+          "type": "string",
+          "description": "Parent folder id."
+        },
+        "notes": {
+          "type": "string",
+          "description": "User notes on how to apply this transformation in the container."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Configuração para 'create' e 'update'."
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "Fingerprint para 'update' e 'revert'."
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean",
+      "description": "Obrigatório para 'remove'."
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId",
+    "workspaceId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_template-47833aba"></a>
+
+## gtm_template
+
+Handler: Dispatches workspace resource create/get/list/update/remove/revert to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime.
+
+```text
+Gerencia custom templates dentro de um workspace GTM. Ações: create, get, list, update, remove, revert. 'list' lista todos os itens (paginação client-side, 50/página).
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/workspaceResources.ts#L132-L147) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "get",
+        "list",
+        "update",
+        "remove",
+        "revert"
+      ]
+    },
+    "accountId": {
+      "type": "string",
+      "description": "ID da conta GTM."
+    },
+    "containerId": {
+      "type": "string",
+      "description": "ID do container."
+    },
+    "workspaceId": {
+      "type": "string",
+      "description": "ID do workspace."
+    },
+    "templateId": {
+      "type": "string",
+      "description": "ID do custom template. Obrigatório para get/update/remove/revert."
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Custom Template display name."
+        },
+        "tagManagerUrl": {
+          "type": "string",
+          "description": "Auto generated link to the tag manager UI."
+        },
+        "templateData": {
+          "type": "string",
+          "description": "The custom template in text format."
+        },
+        "galleryReference": {
+          "type": "object",
+          "properties": {
+            "host": {
+              "type": "string",
+              "description": "The name of the host for the community gallery template."
+            },
+            "owner": {
+              "type": "string",
+              "description": "The name of the owner for the community gallery template."
+            },
+            "repository": {
+              "type": "string",
+              "description": "The name of the repository for the community gallery template."
+            },
+            "version": {
+              "type": "string",
+              "description": "The version of the community gallery template."
+            },
+            "isModified": {
+              "type": "boolean",
+              "description": "If a user has manually edited the community gallery template."
+            },
+            "signature": {
+              "type": "string",
+              "description": "The signature of the community gallery template as computed at import time. This value is recomputed whenever the template is updated from the gallery."
+            },
+            "templateDeveloperId": {
+              "type": "string",
+              "description": "The developer id of the community gallery template. This value is set whenever the template is created from the gallery."
+            },
+            "galleryTemplateId": {
+              "type": "string",
+              "description": "ID for the gallery template that is generated once during first sync and travels with the template redirects."
+            }
+          },
+          "additionalProperties": false,
+          "description": "A reference to the Community Template Gallery entry."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Configuração para 'create' e 'update'."
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "Fingerprint para 'update' e 'revert'."
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean",
+      "description": "Obrigatório para 'remove'."
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId",
+    "workspaceId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_gtag_config-f5a9eddd"></a>
+
+## gtm_gtag_config
+
+Handler: Dispatches workspace resource create/get/list/update/remove to the Tag Manager v2 client; list follows all API pages then slices client-side, with action-specific IDs/config required at runtime.
+
+```text
+Gerencia Google tag configs dentro de um workspace GTM. Ações: create, get, list, update, remove. 'list' lista todos os itens (paginação client-side, 50/página).
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/workspaceResources.ts#L149-L165) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "get",
+        "list",
+        "update",
+        "remove"
+      ]
+    },
+    "accountId": {
+      "type": "string",
+      "description": "ID da conta GTM."
+    },
+    "containerId": {
+      "type": "string",
+      "description": "ID do container."
+    },
+    "workspaceId": {
+      "type": "string",
+      "description": "ID do workspace."
+    },
+    "gtagConfigId": {
+      "type": "string",
+      "description": "ID do Google tag config. Obrigatório para get/update/remove/revert."
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Google tag config type."
+        },
+        "parameter": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "The type of the parameter."
+              },
+              "key": {
+                "type": "string",
+                "description": "Parameter key."
+              },
+              "value": {
+                "type": "string",
+                "description": "Parameter value as a string. The actual value may depend on the parameter type."
+              },
+              "list": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/parameter/items"
+                },
+                "description": "List of parameter values (if the parameter is a list type)."
+              },
+              "map": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/config/properties/parameter/items"
+                },
+                "description": "Array of key-value pairs for map parameters."
+              },
+              "isWeakReference": {
+                "type": "boolean",
+                "description": "Whether this is a weak reference parameter."
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": "The Google tag config's parameters."
+        },
+        "tagManagerUrl": {
+          "type": "string",
+          "description": "Auto generated link to the tag manager UI."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Configuração para 'create' e 'update'."
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "Fingerprint para 'update' e 'revert'."
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean",
+      "description": "Obrigatório para 'remove'."
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId",
+    "workspaceId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_built_in_variable-779be1c3"></a>
+
+## gtm_built_in_variable
+
+Handler: Enables, lists, removes or reverts built-in variables in a workspace; list follows API pagination before client slicing.
+
+```text
+Habilita ou desabilita variáveis built-in num workspace (Page URL, Click Classes, etc.). Use 'list' pra ver as disponíveis. 'create' aceita um array de types pra habilitar várias de uma vez.
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/misc.ts#L11-L309) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "list",
+        "remove",
+        "revert"
+      ]
+    },
+    "accountId": {
+      "type": "string"
+    },
+    "containerId": {
+      "type": "string"
+    },
+    "workspaceId": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "description": "Tipo único pra 'revert'."
+    },
+    "types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tipos pra 'create' e 'remove'."
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean",
+      "description": "Obrigatório para 'remove'."
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId",
+    "workspaceId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_environment-9aa46ece"></a>
+
+## gtm_environment
+
+Handler: Creates, gets, lists, updates, deletes or reauthorizes container environments; list follows API pagination before client slicing.
+
+```text
+Gerencia environments do container (Live, Latest, custom). Use 'reauthorize' pra renovar a auth de um environment.
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/misc.ts#L82-L309) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "get",
+        "list",
+        "update",
+        "remove",
+        "reauthorize"
+      ]
+    },
+    "accountId": {
+      "type": "string"
+    },
+    "containerId": {
+      "type": "string"
+    },
+    "environmentId": {
+      "type": "string"
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "user",
+            "live",
+            "latest",
+            "workspace"
+          ],
+          "description": "The type of this environment."
+        },
+        "name": {
+          "type": "string",
+          "description": "The environment display name. Can be set or changed only on USER type environments."
+        },
+        "description": {
+          "type": "string",
+          "description": "The environment description. Can be set or changed only on USER type environments."
+        },
+        "enableDebug": {
+          "type": "boolean",
+          "description": "Whether or not to enable debug by default for the environment."
+        },
+        "url": {
+          "type": "string",
+          "description": "Default preview page url for the environment."
+        },
+        "authorizationCode": {
+          "type": "string",
+          "description": "The environment authorization code."
+        },
+        "authorizationTimestamp": {
+          "type": "string",
+          "description": "The last update time-stamp for the authorization code. Uses RFC 3339 format."
+        },
+        "tagManagerUrl": {
+          "type": "string",
+          "description": "Auto generated link to the tag manager UI."
+        },
+        "containerVersionId": {
+          "type": "string",
+          "description": "Represents a link to a container version."
+        },
+        "workspaceId": {
+          "type": "string",
+          "description": "Represents a link to a quick preview of a workspace."
+        }
+      },
+      "additionalProperties": false
+    },
+    "fingerprint": {
+      "type": "string"
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_destination-0c1e6401"></a>
+
+## gtm_destination
+
+Handler: Gets or lists container destinations with client pagination, or links a destination; no unlink action exists.
+
+```text
+Lista destinations (Google tag IDs) ligados a um container e conecta um destino. A API do GTM não expõe desconexão — para desconectar, use a interface do Tag Manager.
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/misc.ts#L158-L309) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "get",
+        "list",
+        "link"
+      ]
+    },
+    "accountId": {
+      "type": "string"
+    },
+    "containerId": {
+      "type": "string"
+    },
+    "destinationId": {
+      "type": "string"
+    },
+    "allowUserPermissionFeatureUpdate": {
+      "type": "boolean"
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "action",
+    "accountId",
+    "containerId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>
+
+<a id="tool-gtm_user_permission-cbd8ceca"></a>
+
+## gtm_user_permission
+
+Handler: Creates, gets, lists, updates or removes account user permissions; update is write-gated but does not require confirm.
+
+```text
+Gerencia permissões de usuário em uma conta GTM. Ações destrutivas (remove, update) afetam acesso de pessoas reais — use com cuidado.
+```
+
+[Source](https://github.com/lucasbueno-live/gtm-mcp-liveseo/blob/a899f4226345c13b92afb9927e717fc27511ac2b/src/tools/misc.ts#L204-L309) · Schema: tools/list.
+
+<details>
+<summary>Full input parameters</summary>
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": [
+        "create",
+        "get",
+        "list",
+        "update",
+        "remove"
+      ]
+    },
+    "accountId": {
+      "type": "string"
+    },
+    "userPermissionId": {
+      "type": "string"
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "emailAddress": {
+          "type": "string",
+          "description": "User's email address."
+        },
+        "accountAccess": {
+          "type": "object",
+          "properties": {
+            "permission": {
+              "type": "string",
+              "enum": [
+                "accountPermissionUnspecified",
+                "noAccess",
+                "user",
+                "admin"
+              ],
+              "description": "Whether the user has no access, user access, or admin access to an account."
+            }
+          },
+          "additionalProperties": false,
+          "description": "GTM Account access permissions."
+        },
+        "containerAccess": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "containerId": {
+                "type": "string",
+                "description": "GTM Container ID."
+              },
+              "permission": {
+                "type": "string",
+                "enum": [
+                  "containerPermissionUnspecified",
+                  "noAccess",
+                  "read",
+                  "edit",
+                  "approve",
+                  "publish"
+                ],
+                "description": "List of Container permissions."
+              }
+            },
+            "required": [
+              "containerId"
+            ],
+            "additionalProperties": false
+          },
+          "description": "GTM Container access permissions."
+        }
+      },
+      "required": [
+        "emailAddress"
+      ],
+      "additionalProperties": false
+    },
+    "page": {
+      "type": "number",
+      "minimum": 1,
+      "default": 1
+    },
+    "itemsPerPage": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 50
+    },
+    "confirm": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "action",
+    "accountId"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```
+
+</details>

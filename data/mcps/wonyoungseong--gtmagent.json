@@ -1,0 +1,1554 @@
+{
+  "repo": "wonyoungseong/gtmAgent",
+  "url": "https://github.com/wonyoungseong/gtmAgent",
+  "commit": "4ad276f877abb28e0b5ff1dd279b26da2bbf1e35",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "23 implemented GTM and workflow utilities, but destination unlink is an exposed unsupported action and session removal description overstates Google auth revocation.",
+  "method": "source",
+  "server": "mcp-server/src/index.ts",
+  "exposure": "All 23 schemas returned unconditionally by registerAllTools; container create/update/remove and version publish/remove are absent from advertised enums and explicitly rejected by handlers.",
+  "sources": [
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/index.ts#L1-L58",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/index.ts#L1-L20",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/index.ts#L1-L95",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/schema-builder.ts#L1-L176",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/context.handler.ts#L1-L101",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/account.handler.ts#L1-L44",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/container.handler.ts#L1-L97",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/workspace.handler.ts#L1-L142",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/tag.handler.ts#L1-L143",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/trigger.handler.ts#L1-L141",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/variable.handler.ts#L1-L141",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/version.handler.ts#L1-L117",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/version-header.handler.ts#L1-L53",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/built-in-variable.handler.ts#L1-L75",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/client.handler.ts#L1-L96",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/destination.handler.ts#L1-L61",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/environment.handler.ts#L1-L93",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/folder.handler.ts#L1-L118",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/gtag-config.handler.ts#L1-L86",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/template.handler.ts#L1-L96",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/transformation.handler.ts#L1-L97",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/user-permission.handler.ts#L1-L82",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/zone.handler.ts#L1-L96",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/export.handler.ts#L1-L141",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/index.ts#L1-L136",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/cache.handler.ts#L1-L59",
+    "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/workflow.handler.ts#L1-L376"
+  ],
+  "limitations": [
+    "Offline evaluation of checked-in compiled schema modules only; no MCP protocol session or authenticated API operations executed.",
+    "Destination unlink is in registered action enum but always throws unsupported-operation error.",
+    "gtm_remove_session clears local state and caches rather than remotely revoking Google authorization.",
+    "Workspace export only issues one list request per resource (no nextPageToken loop), omits gtag_config resources, and suppresses errors for optional clients/zones/transformations, so its COMPLETE promise is not guaranteed.",
+    "Most configuration payloads are intentionally unrestricted objects in upstream schemas; no imagined Google API fields were added."
+  ],
+  "tools": [
+    {
+      "name": "gtm_context",
+      "description": "GTM 작업 환경(컨텍스트)을 관리합니다. 한 번 설정하면 이후 모든 도구 호출에서 accountId/containerId/workspaceId를 생략할 수 있습니다.\n\n**권장 워크플로우:**\n1. gtm_context action='set' → Account/Container/Workspace 선택\n2. 이후 gtm_tag, gtm_trigger 등 호출 시 ID 생략 가능\n\n**액션:**\n- 'get': 현재 설정된 컨텍스트 조회\n- 'set': 컨텍스트 설정 (accountId 필수, containerId/workspaceId 선택)\n- 'clear': 컨텍스트 초기화",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "get",
+              "set",
+              "clear"
+            ],
+            "description": "get: 현재 컨텍스트 조회, set: 컨텍스트 설정, clear: 컨텍스트 초기화"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID. 'set' action에서 필수."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID. 'set' action에서 선택."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "GTM Workspace ID. 'set' action에서 선택. containerId가 있어야 설정 가능."
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/context.schema.ts#L9-L43",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "edit",
+        "offline"
+      ],
+      "behavior": "Reads, clears or sets session hierarchy context; setting verifies names through GTM account/container/workspace reads.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/context.handler.ts#L1-L100"
+    },
+    {
+      "name": "gtm_account",
+      "description": "Performs all account-related operations: get, list, update. Use the 'action' parameter to select the operation. 'list' requires no additional params. 'get' and 'update' require accountId.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "get",
+              "list",
+              "update"
+            ],
+            "description": "The account operation to perform. 'list': returns all accessible accounts (no accountId needed). 'get': returns specific account (requires accountId). 'update': updates account (requires accountId and config)."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account. Required for 'get' and 'update' actions. Not needed for 'list'."
+          },
+          "config": {
+            "type": "object",
+            "description": "Configuration for 'update' action. All fields correspond to the GTM Account resource."
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/account.schema.ts#L9-L30",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Lists, reads and updates GTM accounts via accounts API.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/account.handler.ts#L1-L43"
+    },
+    {
+      "name": "gtm_container",
+      "description": "Performs container-related operations: get, list, combine, lookup, moveTagId, snippet. The 'list' action returns up to itemsPerPage items per page. NOTE: create/update/remove actions are disabled for safety.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "get",
+              "list",
+              "combine",
+              "lookup",
+              "moveTagId",
+              "snippet"
+            ],
+            "description": "The container operation to perform. Must be one of: 'get', 'list', 'combine', 'lookup', 'moveTagId', 'snippet'. NOTE: create/update/remove are disabled for safety."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the container."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container. Required for 'get', 'update', 'remove', 'combine', 'lookup', 'moveTagId', and 'snippet' actions."
+          },
+          "destinationId": {
+            "type": "string",
+            "description": "The destination ID linked to a GTM Container (e.g., AW-123456789). Required for the 'lookup' action."
+          },
+          "createOrUpdateConfig": {
+            "type": "object",
+            "description": "Configuration for 'create' and 'update' actions. All fields correspond to the GTM Container resource."
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "The fingerprint for optimistic concurrency control. Required for 'update' action."
+          },
+          "combineConfig": {
+            "type": "object",
+            "description": "Configuration for 'combine' action. Specifies which containers to combine."
+          },
+          "moveTagIdConfig": {
+            "type": "object",
+            "description": "Configuration for 'moveTagId' action. Specifies tag ID mapping for moving tags between containers."
+          },
+          "page": {
+            "type": "number",
+            "description": "Page number for pagination (starts from 1). Each page contains up to itemsPerPage items.",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "description": "Number of items to return per page (1-50). Default: 50. Use lower values if experiencing response issues.",
+            "default": 50
+          }
+        },
+        "required": [
+          "action",
+          "accountId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/container.schema.ts#L9-L60",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Lists, reads, combines, looks up, moves tag IDs and retrieves snippets; create/update/remove branches reject requests.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/container.handler.ts#L1-L96"
+    },
+    {
+      "name": "gtm_workspace",
+      "description": "Performs various workspace operations including create, get, list, update, remove, createVersion, getStatus, sync, quickPreview, and resolveConflict actions. The 'list' action returns up to 50 items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get",
+              "list",
+              "update",
+              "remove",
+              "createVersion",
+              "getStatus",
+              "sync",
+              "quickPreview",
+              "resolveConflict"
+            ],
+            "description": "The workspace operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the workspace."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the workspace."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Workspace. Required for all actions except 'create' and 'list'."
+          },
+          "createOrUpdateConfig": {
+            "type": "object",
+            "description": "Configuration for 'create' and 'update' actions."
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "Fingerprint for optimistic concurrency control. Required for 'update' and 'resolveConflict' actions."
+          },
+          "entity": {
+            "type": "object",
+            "description": "The resolved entity for 'resolveConflict' action."
+          },
+          "changeStatus": {
+            "type": "string",
+            "description": "The status of the change for 'resolveConflict' action. Possible values: 'added', 'modified', 'deleted', 'unmodified'."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 50
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/workspace.schema.ts#L9-L58",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace",
+        "test"
+      ],
+      "behavior": "Performs workspace CRUD, version creation, status, synchronization, preview and conflict resolution through GTM workspace APIs.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/workspace.handler.ts#L1-L141"
+    },
+    {
+      "name": "gtm_tag",
+      "description": "Performs all GTM tag operations: create, get, list, update, remove, revert. The 'list' action returns up to 20 items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get",
+              "list",
+              "update",
+              "remove",
+              "revert"
+            ],
+            "description": "The GTM tag operation to perform. Must be one of: 'create', 'get', 'list', 'update', 'remove', 'revert'."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the tag."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the tag."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Workspace containing the tag."
+          },
+          "tagId": {
+            "type": "string",
+            "description": "The unique ID of the GTM tag. Required for 'get', 'update', 'remove', and 'revert' actions."
+          },
+          "createOrUpdateConfig": {
+            "type": "object",
+            "description": "Configuration for 'create' and 'update' actions."
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "The fingerprint for optimistic concurrency control. Required for 'update' and 'revert' actions."
+          },
+          "page": {
+            "type": "number",
+            "default": 1,
+            "description": "Page number for pagination (starts from 1). Each page contains up to itemsPerPage items."
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 20,
+            "maximum": 20,
+            "description": "Number of items to return per page (1-20). Default: 20."
+          },
+          "refresh": {
+            "type": "boolean",
+            "default": false,
+            "description": "Force refresh cache by fetching latest data from API, ignoring cached data."
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/tag.schema.ts#L9-L62",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Routes create, get, list, update, remove, revert actions to GTM tag resource API methods with local pagination where implemented.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/tag.handler.ts#L1-L142"
+    },
+    {
+      "name": "gtm_trigger",
+      "description": "Performs all GTM trigger operations: create, get, list, update, remove, revert. The 'list' action returns up to 20 items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get",
+              "list",
+              "update",
+              "remove",
+              "revert"
+            ],
+            "description": "The GTM trigger operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the trigger."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the trigger."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Workspace containing the trigger."
+          },
+          "triggerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM trigger. Required for 'get', 'update', 'remove', and 'revert' actions."
+          },
+          "createOrUpdateConfig": {
+            "type": "object",
+            "description": "Configuration for 'create' and 'update' actions."
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "The fingerprint for optimistic concurrency control."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 20,
+            "maximum": 20
+          },
+          "refresh": {
+            "type": "boolean",
+            "default": false,
+            "description": "Force refresh cache by fetching latest data from API, ignoring cached data."
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/trigger.schema.ts#L9-L60",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Routes create, get, list, update, remove, revert actions to GTM trigger resource API methods with local pagination where implemented.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/trigger.handler.ts#L1-L140"
+    },
+    {
+      "name": "gtm_variable",
+      "description": "Performs all GTM variable operations: create, get, list, update, remove, revert. The 'list' action returns up to 20 items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get",
+              "list",
+              "update",
+              "remove",
+              "revert"
+            ],
+            "description": "The GTM variable operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the variable."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the variable."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Workspace containing the variable."
+          },
+          "variableId": {
+            "type": "string",
+            "description": "The unique ID of the GTM variable. Required for 'get', 'update', 'remove', and 'revert' actions."
+          },
+          "createOrUpdateConfig": {
+            "type": "object",
+            "description": "Configuration for 'create' and 'update' actions."
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "The fingerprint for optimistic concurrency control."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 20,
+            "maximum": 20
+          },
+          "refresh": {
+            "type": "boolean",
+            "default": false,
+            "description": "Force refresh cache by fetching latest data from API, ignoring cached data."
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/variable.schema.ts#L9-L60",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Routes create, get, list, update, remove, revert actions to GTM variable resource API methods with local pagination where implemented.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/variable.handler.ts#L1-L140"
+    },
+    {
+      "name": "gtm_version",
+      "description": "Performs container version operations: get, live, setLatest, undelete, update. For 'get' and 'live' actions, use 'resourceType' to paginate specific resource arrays (up to 20 items per page) to avoid response truncation. NOTE: publish/remove actions are disabled for safety.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "get",
+              "live",
+              "setLatest",
+              "undelete",
+              "update"
+            ],
+            "description": "The container version operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the container version."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the container version."
+          },
+          "containerVersionId": {
+            "type": "string",
+            "description": "The unique ID of the GTM container version. Required for 'get', 'setLatest', 'undelete', and 'update' actions."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 20,
+            "maximum": 20
+          },
+          "createOrUpdateConfig": {
+            "type": "object",
+            "description": "Configuration for 'update' actions."
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "The fingerprint for optimistic concurrency control. Required for 'update' actions."
+          },
+          "resourceType": {
+            "type": "string",
+            "enum": [
+              "tag",
+              "trigger",
+              "variable",
+              "folder",
+              "builtInVariable",
+              "zone",
+              "customTemplate",
+              "client",
+              "gtagConfig",
+              "transformation"
+            ],
+            "description": "Specific resource type to retrieve with pagination (only for 'get' and 'live' actions)."
+          },
+          "includeSummary": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include counts and metadata for all resource types."
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L12-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "release"
+      ],
+      "behavior": "Reads live/specific versions and updates, restores or sets latest versions; publish/remove explicitly reject requests.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/version.handler.ts#L1-L116"
+    },
+    {
+      "name": "gtm_version_header",
+      "description": "Performs all container version header operations: list, latest. The 'list' action returns up to 50 items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "latest"
+            ],
+            "description": "The container operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the container."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the container."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 50,
+            "maximum": 50
+          },
+          "includeDeleted": {
+            "type": "boolean",
+            "description": "Whether to also retrieve deleted (archived) versions. Required for 'list' action."
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L188-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Routes list, latest actions to GTM version-header resource API methods with local pagination where implemented.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/version-header.handler.ts#L1-L52"
+    },
+    {
+      "name": "gtm_built_in_variable",
+      "description": "Performs all built-in variable operations: create, list, remove, revert. The 'list' action returns up to itemsPerPage items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "list",
+              "remove",
+              "revert"
+            ],
+            "description": "The built-in variable operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the built-in variable."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the built-in variable."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Workspace containing the built-in variable."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 50,
+            "maximum": 50
+          },
+          "type": {
+            "type": "string",
+            "description": "The built-in variable type. Required for 'revert' and 'remove' actions."
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of built-in variable types. Optional for 'list' action."
+          },
+          "pageToken": {
+            "type": "string",
+            "description": "A token for pagination. Optional for 'list' action."
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L44-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Routes create, list, remove, revert actions to GTM built-in-variable resource API methods with local pagination where implemented.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/built-in-variable.handler.ts#L1-L74"
+    },
+    {
+      "name": "gtm_client",
+      "description": "Performs all client operations: create, get, list, update, remove, revert. The 'list' action returns up to itemsPerPage items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get",
+              "list",
+              "update",
+              "remove",
+              "revert"
+            ],
+            "description": "The client operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the client."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the client."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Workspace containing the client."
+          },
+          "clientId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Client. Required for 'get', 'update', 'remove', and 'revert' actions."
+          },
+          "createOrUpdateConfig": {
+            "type": "object",
+            "description": "Configuration for 'create' and 'update' actions."
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "The fingerprint for optimistic concurrency control."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 50,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L69-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace",
+        "server-side"
+      ],
+      "behavior": "Routes create, get, list, update, remove, revert actions to GTM client resource API methods with local pagination where implemented.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/client.handler.ts#L1-L95"
+    },
+    {
+      "name": "gtm_destination",
+      "description": "Performs all destination operations: get, list, link, unlink.  The 'list' action returns up to 50 items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "get",
+              "list",
+              "link",
+              "unlink"
+            ],
+            "description": "The destination operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the destination."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the destination."
+          },
+          "destinationId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Destination. Required for 'get', 'link', and 'unlink' actions."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 50,
+            "maximum": 50
+          },
+          "allowUserPermissionFeatureUpdate": {
+            "type": "boolean",
+            "description": "If true, allows user permission feature update during linking."
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L80-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Reads/lists/links GTM destinations; exposed unlink action always throws unsupported-operation error.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/destination.handler.ts#L1-L60"
+    },
+    {
+      "name": "gtm_environment",
+      "description": "Performs all environment operations: create, get, list, update, remove, reauthorize.  The 'list' action returns up to 50 items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get",
+              "list",
+              "update",
+              "remove",
+              "reauthorize"
+            ],
+            "description": "The environment operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the environment."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the environment."
+          },
+          "environmentId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Environment. Required for 'get', 'update', 'remove', and 'reauthorize' actions."
+          },
+          "createOrUpdateConfig": {
+            "type": "object",
+            "description": "Configuration for 'create' and 'update' actions."
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "The fingerprint for optimistic concurrency control."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 50,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L98-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "release"
+      ],
+      "behavior": "Routes create, get, list, update, remove, reauthorize actions to GTM environment resource API methods with local pagination where implemented.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/environment.handler.ts#L1-L92"
+    },
+    {
+      "name": "gtm_folder",
+      "description": "Performs all folder operations: create, get, list, update, remove, revert, entities, moveEntitiesToFolder. The 'list' action returns up to 50 items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get",
+              "list",
+              "update",
+              "remove",
+              "revert",
+              "entities",
+              "moveEntitiesToFolder"
+            ],
+            "description": "The folder operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the folder."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the folder."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Workspace containing the folder."
+          },
+          "folderId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Folder."
+          },
+          "createOrUpdateConfig": {
+            "type": "object",
+            "description": "Configuration for 'create' and 'update' actions."
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "The fingerprint for optimistic concurrency control."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 50,
+            "maximum": 50
+          },
+          "tagId": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The tags to be moved to the folder."
+          },
+          "triggerId": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The triggers to be moved to the folder."
+          },
+          "variableId": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The variables to be moved to the folder."
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L109-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Routes create, get, list, update, remove, revert, entities, moveEntitiesToFolder actions to GTM folder resource API methods with local pagination where implemented.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/folder.handler.ts#L1-L117"
+    },
+    {
+      "name": "gtm_gtag_config",
+      "description": "Performs all Google tag config operations: create, get, list, update, remove. The 'list' action returns up to itemsPerPage items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get",
+              "list",
+              "update",
+              "remove"
+            ],
+            "description": "The Google tag config operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the Google tag config."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the Google tag config."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Workspace containing the Google tag config."
+          },
+          "gtagConfigId": {
+            "type": "string",
+            "description": "The unique ID of the Google tag config. Required for 'get', 'update', and 'remove' actions."
+          },
+          "createOrUpdateConfig": {
+            "type": "object",
+            "description": "Configuration for 'create' and 'update' actions."
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "The fingerprint for optimistic concurrency control."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 50,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L137-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Routes create, get, list, update, remove actions to GTM gtag-config resource API methods with local pagination where implemented.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/gtag-config.handler.ts#L1-L85"
+    },
+    {
+      "name": "gtm_template",
+      "description": "Performs all GTM custom template operations: create, get, list, update, remove, revert. The 'list' action returns up to itemsPerPage items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get",
+              "list",
+              "update",
+              "remove",
+              "revert"
+            ],
+            "description": "The custom template operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the custom template."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the custom template."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Workspace containing the custom template."
+          },
+          "templateId": {
+            "type": "string",
+            "description": "The unique ID of the GTM custom template. Required for 'get', 'update', 'remove', and 'revert' actions."
+          },
+          "createOrUpdateConfig": {
+            "type": "object",
+            "description": "Configuration for 'create' and 'update' actions."
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "The fingerprint for optimistic concurrency control."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 20,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L148-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Routes create, get, list, update, remove, revert actions to GTM template resource API methods with local pagination where implemented.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/template.handler.ts#L1-L95"
+    },
+    {
+      "name": "gtm_transformation",
+      "description": "Performs all GTM transformation operations: create, get, list, update, remove, revert. The 'list' action returns up to itemsPerPage items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get",
+              "list",
+              "update",
+              "remove",
+              "revert"
+            ],
+            "description": "The transformation operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the transformation."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the transformation."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Workspace containing the transformation."
+          },
+          "transformationId": {
+            "type": "string",
+            "description": "The unique ID of the GTM transformation. Required for 'get', 'update', 'remove', and 'revert' actions."
+          },
+          "createOrUpdateConfig": {
+            "type": "object",
+            "description": "Configuration for 'create' and 'update' actions."
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "The fingerprint for optimistic concurrency control."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 50,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L159-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace",
+        "server-side"
+      ],
+      "behavior": "Routes create, get, list, update, remove, revert actions to GTM transformation resource API methods with local pagination where implemented.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/transformation.handler.ts#L1-L96"
+    },
+    {
+      "name": "gtm_user_permission",
+      "description": "Performs all user permission operations: create, get, list, update, remove. The 'list' action returns up to 50 items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get",
+              "list",
+              "update",
+              "remove"
+            ],
+            "description": "The user permission operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the user permission."
+          },
+          "userPermissionId": {
+            "type": "string",
+            "description": "The unique ID of the user permission. Required for 'get', 'update', and 'remove' actions."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 50,
+            "maximum": 50
+          },
+          "createOrUpdateConfig": {
+            "type": "object",
+            "description": "Configuration for 'create' and 'update' actions."
+          }
+        },
+        "required": [
+          "action",
+          "accountId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L170-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "access"
+      ],
+      "behavior": "Routes create, get, list, update, remove actions to GTM user-permission resource API methods with local pagination where implemented.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/user-permission.handler.ts#L1-L81"
+    },
+    {
+      "name": "gtm_zone",
+      "description": "Performs various zone operations including create, get, list, update, remove, and revert actions. The 'list' action returns up to 20 items per page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "create",
+              "get",
+              "list",
+              "update",
+              "remove",
+              "revert"
+            ],
+            "description": "The zone operation to perform."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account containing the zone."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container containing the zone."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Workspace containing the zone."
+          },
+          "zoneId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Zone. Required for all actions except 'create' and 'list'."
+          },
+          "createOrUpdateConfig": {
+            "type": "object",
+            "description": "Configuration for 'create' and 'update' actions."
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "The fingerprint for optimistic concurrency control."
+          },
+          "page": {
+            "type": "number",
+            "default": 1
+          },
+          "itemsPerPage": {
+            "type": "number",
+            "default": 20,
+            "maximum": 20
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L204-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Routes create, get, list, update, remove, revert actions to GTM zone resource API methods with local pagination where implemented.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/zone.handler.ts#L1-L95"
+    },
+    {
+      "name": "gtm_export_full",
+      "description": "Export COMPLETE GTM container data as JSON. Supports live version, specific version, or workspace (draft). When outputPath is provided, saves directly to file and returns only summary (recommended for large containers). Without outputPath, returns full data inline.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Account."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "The unique ID of the GTM Container."
+          },
+          "versionType": {
+            "type": "string",
+            "enum": [
+              "live",
+              "specific",
+              "workspace"
+            ],
+            "description": "Export live version, a specific version, or workspace (draft without publishing)."
+          },
+          "containerVersionId": {
+            "type": "string",
+            "description": "The version ID (required if versionType is 'specific')."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "The workspace ID (required if versionType is 'workspace')."
+          },
+          "outputPath": {
+            "type": "string",
+            "description": "Absolute file path to save the JSON export. When provided, saves directly to file and returns only summary (avoids large response issues)."
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "versionType"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L217-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "offline"
+      ],
+      "behavior": "Exports live/specific version or collected workspace resources inline or writes JSON to a supplied local output path; optional resource errors are swallowed.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/export.handler.ts#L1-L140"
+    },
+    {
+      "name": "gtm_remove_session",
+      "description": "Clear client data from MCP server and revoke google auth access",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L253-L288",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "offline"
+      ],
+      "behavior": "Clears local session, cached auth client and all caches; does not revoke Google authorization remotely despite description.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/index.ts#L1-L135"
+    },
+    {
+      "name": "gtm_cache",
+      "description": "Manage GTM MCP cache. Use 'clear' to force refresh data on next request. Use 'stats' to view cache status.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "clear",
+              "clearAll",
+              "stats"
+            ],
+            "description": "'clear': Clear cache for specific workspace (requires accountId, containerId, workspaceId). 'clearAll': Clear all caches. 'stats': Show cache statistics."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "Account ID (required for 'clear' action)"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "Container ID (required for 'clear' action)"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "Workspace ID (required for 'clear' action)"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/other.schema.ts#L263-L288",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "edit",
+        "offline"
+      ],
+      "behavior": "Clears per-workspace or all local caches, or reports cache statistics; dispatch still constructs an authenticated GTM client.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/cache.handler.ts#L1-L58"
+    },
+    {
+      "name": "gtm_workflow",
+      "description": "Executes GTM Agent System workflows for tag replication between workspaces.\n\nActions:\n- analyze: Analyze source workspace tags and build dependency graph\n- replicate: Replicate tags from source to target workspace (full workflow)\n- status: Get current workflow status\n\nThis tool uses the multi-agent system (AnalyzerAgent, NamingAgent, PlannerAgent, BuilderAgent, ValidatorAgent) to automatically:\n1. Analyze dependencies between tags, triggers, variables\n2. Apply naming patterns from target workspace\n3. Plan creation order respecting dependencies\n4. Create entities in correct order\n5. Validate created entities",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "The workflow action to perform",
+            "enum": [
+              "analyze",
+              "replicate",
+              "status"
+            ]
+          },
+          "sessionId": {
+            "type": "string",
+            "description": "Unique session ID for tracking workflow state. Required for all actions."
+          },
+          "sourceAccountId": {
+            "type": "string",
+            "description": "Source GTM Account ID. Required for 'analyze' and 'replicate' actions."
+          },
+          "sourceContainerId": {
+            "type": "string",
+            "description": "Source GTM Container ID. Required for 'analyze' and 'replicate' actions."
+          },
+          "sourceWorkspaceId": {
+            "type": "string",
+            "description": "Source GTM Workspace ID. Required for 'analyze' and 'replicate' actions."
+          },
+          "targetAccountId": {
+            "type": "string",
+            "description": "Target GTM Account ID. Required for 'replicate' action."
+          },
+          "targetContainerId": {
+            "type": "string",
+            "description": "Target GTM Container ID. Required for 'replicate' action."
+          },
+          "targetWorkspaceId": {
+            "type": "string",
+            "description": "Target GTM Workspace ID. Required for 'replicate' action."
+          },
+          "tagIds": {
+            "type": "string",
+            "description": "Comma-separated list of tag IDs to analyze/replicate (e.g., '123,456,789'). Required for 'analyze' and 'replicate' actions."
+          },
+          "includeAllDependencies": {
+            "type": "boolean",
+            "description": "Whether to include all dependencies (triggers, variables, templates). Default: true",
+            "default": true
+          },
+          "skipNaming": {
+            "type": "boolean",
+            "description": "Skip naming pattern analysis. Default: false",
+            "default": false
+          },
+          "skipValidation": {
+            "type": "boolean",
+            "description": "Skip validation after creation. Default: false",
+            "default": false
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "If true, only plan without creating. Default: false",
+            "default": false
+          },
+          "namePrefix": {
+            "type": "string",
+            "description": "Prefix to add to entity names (e.g., '[COPY] ')"
+          },
+          "nameSuffix": {
+            "type": "string",
+            "description": "Suffix to add to entity names (e.g., ' v2')"
+          }
+        },
+        "required": [
+          "action",
+          "sessionId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/schemas/workflow.schema.ts#L9-L95",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "edit",
+        "audit",
+        "test"
+      ],
+      "behavior": "Runs local multi-agent tag dependency analysis or replication using internal tag/trigger/variable/template handlers, and reports session workflow status.",
+      "handlerSource": "https://github.com/wonyoungseong/gtmAgent/blob/4ad276f877abb28e0b5ff1dd279b26da2bbf1e35/mcp-server/src/tools/handlers/workflow.handler.ts#L1-L375"
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "server-side",
+    "summary": "Manage server clients and transformations, export workspace resources, and prepare tracking workflow changes.",
+    "examples": [
+      "gtm_client",
+      "gtm_transformation",
+      "gtm_export_full"
+    ]
+  }
+}

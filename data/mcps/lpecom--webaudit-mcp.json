@@ -1,0 +1,212 @@
+{
+  "repo": "lpecom/webaudit-mcp",
+  "url": "https://github.com/lpecom/webaudit-mcp",
+  "commit": "0fad8695889102a820c208c13df3d565c9068c34",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Implements static GTM installation and duplicate-risk audits alongside generic web-audit tools; no GTM account/container API access or configuration mutations.",
+  "method": "tools/list",
+  "server": "src/index.ts (stdio), registering src/tools.ts",
+  "exposure": "All seven tools registered unconditionally by default; measure_performance remains exposed when Playwright/Chromium is missing but returns installation guidance. Every tool has only the required URL parameter, with no input defaults or nested parameters.",
+  "sources": [
+    "https://github.com/lpecom/webaudit-mcp/blob/0fad8695889102a820c208c13df3d565c9068c34/src/index.ts#L5-L20",
+    "https://github.com/lpecom/webaudit-mcp/blob/0fad8695889102a820c208c13df3d565c9068c34/src/tools.ts#L25-L27",
+    "https://github.com/lpecom/webaudit-mcp/blob/0fad8695889102a820c208c13df3d565c9068c34/src/tools.ts#L265-L436",
+    "https://github.com/lpecom/webaudit-mcp/blob/0fad8695889102a820c208c13df3d565c9068c34/src/lib/tracking.ts#L122-L336",
+    "https://github.com/lpecom/webaudit-mcp/blob/0fad8695889102a820c208c13df3d565c9068c34/src/lib/performance.ts#L32-L139",
+    "https://github.com/lpecom/webaudit-mcp/blob/0fad8695889102a820c208c13df3d565c9068c34/src/lib/page-weight.ts#L28-L159",
+    "https://github.com/lpecom/webaudit-mcp/blob/0fad8695889102a820c208c13df3d565c9068c34/src/lib/safe-fetch.ts#L13-L165"
+  ],
+  "limitations": [
+    "Offline MCP initialize/tools/list verified registrations and schemas only; no tool operations or live web audits were invoked.",
+    "Tracking tools scan served HTML only: runtime-injected GTM/CMP tags, actual event firing, container contents and consent behavior are unobservable; server-side/first-party findings are URL-pattern heuristics.",
+    "measure_performance dynamically imports Playwright, which is a devDependency, and additionally requires an installed Chromium browser; npm production installs can lack the package.",
+    "Page-weight GET fallback uses fetched body bytes, which may be decompressed by the fetch client; reports should not be assumed to be exact wire-transfer sizes."
+  ],
+  "tools": [
+    {
+      "name": "audit_page",
+      "description": "One-shot audit of a URL: tracking tags, duplicate-tag risks, response-header hygiene, and resource counts, as a single readable report. Fast (no browser). For byte-level page weight use analyze_page_weight; for lab Core Web Vitals use measure_performance.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Absolute http(s) URL of the page to audit, e.g. https://example.com"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/lpecom/webaudit-mcp/blob/0fad8695889102a820c208c13df3d565c9068c34/src/tools.ts#L266-L317",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Fetches served HTML and combines static GTM/analytics detection, duplicate-risk heuristics, response headers and resource counts without running page JavaScript."
+    },
+    {
+      "name": "detect_tracking_tags",
+      "description": "Static scan of a page's HTML for analytics/advertising tags: GA4, Google Tag Manager, Universal Analytics, Google Ads, Meta Pixel, TikTok, LinkedIn Insight, Hotjar, Microsoft Clarity, server-side/first-party tagging, and consent platforms. Reports IDs and where each was found.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Absolute http(s) URL of the page to audit, e.g. https://example.com"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/lpecom/webaudit-mcp/blob/0fad8695889102a820c208c13df3d565c9068c34/src/tools.ts#L319-L337",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Parses served HTML for tag loader URLs, inline IDs, noscript pixels and consent signatures, including GTM and heuristic first-party/server-side signals; does not execute scripts or inspect container contents."
+    },
+    {
+      "name": "find_duplicate_tags",
+      "description": "Flag duplicate GA4/GTM/pixel installations and double-fire patterns: same ID initialized twice, multiple containers, hardcoded GA4 next to GTM, multiple pixel IDs, legacy UA leftovers.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Absolute http(s) URL of the page to audit, e.g. https://example.com"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/lpecom/webaudit-mcp/blob/0fad8695889102a820c208c13df3d565c9068c34/src/tools.ts#L339-L357",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Analyzes static HTML findings for multiple GTM container IDs, repeated inline initializations and GTM plus hardcoded GA4 coexistence; cannot confirm runtime double firing or inspect the container."
+    },
+    {
+      "name": "measure_performance",
+      "description": "Load the page in headless Chromium (Playwright) and capture lab metrics: TTFB, FCP, LCP, CLS, load times, request count and transfer sizes. Clearly labeled lab data, not field data. Requires the Playwright Chromium browser; returns the install command if missing.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Absolute http(s) URL of the page to audit, e.g. https://example.com"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/lpecom/webaudit-mcp/blob/0fad8695889102a820c208c13df3d565c9068c34/src/tools.ts#L359-L376",
+      "scope": "other",
+      "tags": [],
+      "behavior": "General web-performance tool loads the URL in headless Chromium, waits three seconds after load, and reports browser Performance API lab timing and resource totals without inspecting GTM configuration or event firing."
+    },
+    {
+      "name": "analyze_page_weight",
+      "description": "Static page-weight analysis: counts and byte sizes of scripts, stylesheets, images, fonts and iframes referenced in the HTML, plus the largest third-party scripts. Measures up to 30 resources with capped, guarded requests.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Absolute http(s) URL of the page to audit, e.g. https://example.com"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/lpecom/webaudit-mcp/blob/0fad8695889102a820c208c13df3d565c9068c34/src/tools.ts#L378-L396",
+      "scope": "other",
+      "tags": [],
+      "behavior": "General web-page sizing tool extracts HTML-referenced resources and sizes at most 30 using guarded HEAD requests with capped GET fallback, without executing JavaScript."
+    },
+    {
+      "name": "check_headers",
+      "description": "Inspect the page's HTTP response headers: caching policy, compression, HSTS, CSP, clickjacking protection, referrer policy, CDN presence. Informational grades with explanations, no synthetic scores.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Absolute http(s) URL of the page to audit, e.g. https://example.com"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/lpecom/webaudit-mcp/blob/0fad8695889102a820c208c13df3d565c9068c34/src/tools.ts#L398-L415",
+      "scope": "other",
+      "tags": [],
+      "behavior": "General HTTP hygiene tool fetches the URL and reports caching, compression and security/CDN response-header checks."
+    },
+    {
+      "name": "tracking_summary",
+      "description": "Plain-language summary of a site's tracking setup written for a media buyer or marketer: what is installed, what it means for campaigns, consent posture, and issues to raise with the dev team.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Absolute http(s) URL of the page to audit, e.g. https://example.com"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/lpecom/webaudit-mcp/blob/0fad8695889102a820c208c13df3d565c9068c34/src/tools.ts#L417-L435",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Turns static HTML tracking detections and duplicate heuristics into a marketer-facing summary, including GTM IDs and consent signals, without checking live event delivery."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "test",
+    "summary": "Scan page HTML for installed GTM containers, duplicate installations, and tracking configuration patterns.",
+    "examples": [
+      "detect_tracking_tags",
+      "find_duplicate_tags",
+      "tracking_summary"
+    ]
+  }
+}

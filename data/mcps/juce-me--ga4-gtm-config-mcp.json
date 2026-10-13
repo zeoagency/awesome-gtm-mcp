@@ -1,0 +1,490 @@
+{
+  "repo": "Juce-me/ga4-gtm-config-mcp",
+  "url": "https://github.com/Juce-me/ga4-gtm-config-mcp",
+  "commit": "23a934cb08862fab88520b425347ea6d8f0872a6",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Twelve registered tools implement local spec validation and real GA4 Admin/GTM v2 read, workspace upsert, version and publish operations.",
+  "method": "mixed",
+  "server": "src/server.ts buildServer / dist/server.js stdio",
+  "exposure": "All 12 tools are registered unconditionally, including writes and gated version/publish tools; dry_run defaults true for both apply tools. Publish handler additionally requires INCLUDE_PUBLISH_SCOPE=1.",
+  "sources": [
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/server.ts#L14-L39",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/applyTools.ts#L189-L271",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/applyTools.ts#L32-L78",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/applyTools.ts#L83-L184",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/diffTools.ts#L28-L94",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/previewTools.ts#L12-L46",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/publishTools.ts#L16-L64",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/readTools.ts#L29-L50",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/readTools.ts#L54-L88",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/readTools.ts#L92-L131",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/validateTools.ts#L13-L32",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/validateTools.ts#L36-L54",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/versionTools.ts#L17-L67",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/planner/applyPlan.ts#L66-L191",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/safety/versionGuards.ts#L26-L59",
+    "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/safety/publishGuards.ts#L19-L74"
+  ],
+  "limitations": [
+    "Only initialize and tools/list were executed with isolated HOME and stripped environment; no Google authentication or tool operations were invoked. Handler functionality is source-reviewed, not live-tested.",
+    "Version gate only checks existence of diff_report_path; handler passes unresolved_blocked_items=0 without reading report contents, and approval tokens are tested only for nonempty strings.",
+    "API list helpers return the first response page without pagination; large account/workspace states may be incomplete."
+  ],
+  "tools": [
+    {
+      "name": "read_mcp_execution_spec",
+      "description": "[read-only] Loads and returns the parsed mcp-execution.yaml at the given path. Does not call any Google API.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/readTools.ts#L29-L50",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "offline"
+      ],
+      "behavior": "Parses and returns the local YAML execution spec without calling Google APIs."
+    },
+    {
+      "name": "read_ga4_state",
+      "description": "[read-only] Returns normalized GA4 property, streams, custom dimensions, custom metrics, key events, and Measurement Protocol secret metadata only. Never returns secret values.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ga4_property_id": {
+            "type": "string"
+          },
+          "web_stream_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "ga4_property_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/readTools.ts#L54-L88",
+      "scope": "other",
+      "tags": [],
+      "behavior": "GA4: reads property, streams, dimensions, metrics, key events and optional stream secret metadata with secret values omitted."
+    },
+    {
+      "name": "read_gtm_state",
+      "description": "[read-only] Returns normalized GTM container state for the given account/container, including workspace capacity.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string"
+          },
+          "container_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/readTools.ts#L92-L131",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists workspaces and capacity and optionally reads built-in variables, variables, triggers and tags for a workspace."
+    },
+    {
+      "name": "validate_mcp_execution_spec",
+      "description": "[read-only] Runs schema and semantic validation on a spec file and returns ok/warnings/errors. Does not call any Google API.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/validateTools.ts#L13-L32",
+      "scope": "auxiliary",
+      "tags": [
+        "audit",
+        "offline"
+      ],
+      "behavior": "Reads the local spec and performs schema and semantic validation."
+    },
+    {
+      "name": "summarize_mcp_execution_spec",
+      "description": "[read-only] Returns a human-readable summary of the spec, including all four gate booleans.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/validateTools.ts#L36-L54",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "offline"
+      ],
+      "behavior": "Reads the local spec and summarizes its targets and execution gates."
+    },
+    {
+      "name": "diff_ga4_gtm_state",
+      "description": "[read-only] Reads current GA4 and GTM state, normalizes the spec into a desired state, and returns a deterministic diff. Performs no writes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "spec_path": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "container_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string"
+          },
+          "ga4_property_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "spec_path",
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "ga4_property_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/diffTools.ts#L28-L94",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Validates the spec, reads GA4/GTM entities and computes a normalized desired/current diff without writes."
+    },
+    {
+      "name": "create_gtm_workspace",
+      "description": "[write — non-live workspace only] Creates a new GTM workspace in the given container. Blocks if container is at capacity or if the operator targets the live/default workspace.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string"
+          },
+          "container_id": {
+            "type": "string"
+          },
+          "workspace_name": {
+            "type": "string"
+          },
+          "reuse_existing": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/applyTools.ts#L32-L78",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a workspace after capacity checks, or reuses an existing named workspace when requested and safe."
+    },
+    {
+      "name": "apply_gtm_workspace_changes",
+      "description": "[dry-run-capable write] Upserts approved variables, triggers, and tags into the given non-live workspace. Defaults to dry_run: true. Never deletes. Never modifies consent unless approved in spec.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "spec_path": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "container_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string"
+          },
+          "dry_run": {
+            "default": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "spec_path",
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/applyTools.ts#L83-L184",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Validates spec and consent guards, reads workspace entities and applies ordered upserts and built-in enables only when dry_run is false."
+    },
+    {
+      "name": "apply_ga4_admin_changes",
+      "description": "[dry-run-capable write] Upserts approved GA4 custom dimensions, custom metrics, and key events. Defaults to dry_run: true. Never archives. Never stores Measurement Protocol secret values.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "spec_path": {
+            "type": "string"
+          },
+          "ga4_property_id": {
+            "type": "string"
+          },
+          "dry_run": {
+            "default": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "spec_path",
+          "ga4_property_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/applyTools.ts#L189-L271",
+      "scope": "other",
+      "tags": [],
+      "behavior": "GA4: validates the spec, reads dimensions/metrics/key events and applies their upserts only when dry_run is false."
+    },
+    {
+      "name": "get_gtm_preview_info",
+      "description": "[read-only] Returns workspace metadata and a fixed manual Tag Assistant / DebugView checklist. Does not create a version.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string"
+          },
+          "container_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/previewTools.ts#L12-L46",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "test",
+        "workspace"
+      ],
+      "behavior": "Returns workspace metadata and a fixed manual Tag Assistant/DebugView checklist, falling back to the checklist when API access fails."
+    },
+    {
+      "name": "create_gtm_container_version_gated",
+      "description": "[gated dangerous] Creates a GTM container version from the named workspace. Note: this removes the workspace. Requires spec.execution.create_container_version_allowed: true and an explicit approval_token.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "spec_path": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "container_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string"
+          },
+          "approval_token": {
+            "type": "string"
+          },
+          "diff_report_path": {
+            "type": "string"
+          },
+          "version_name": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "spec_path",
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "approval_token",
+          "diff_report_path",
+          "version_name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/versionTools.ts#L17-L67",
+      "scope": "gtm",
+      "tags": [
+        "release",
+        "workspace"
+      ],
+      "behavior": "Creates a container version after spec, nonempty token, workspace, semantic-validation and existing diff-file gates; the diff blocked count passed to the gate is hardcoded zero."
+    },
+    {
+      "name": "publish_gtm_version_gated",
+      "description": "[gated dangerous] Publishes a GTM container version. Default behavior is to refuse. Requires every publish-guard condition to pass plus an explicit approval_token.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "spec_path": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "string"
+          },
+          "container_id": {
+            "type": "string"
+          },
+          "version_id": {
+            "type": "string"
+          },
+          "approval_token": {
+            "type": "string"
+          },
+          "validation_report_path": {
+            "type": "string"
+          },
+          "environment": {
+            "type": "string"
+          },
+          "operator_requested_publish": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "spec_path",
+          "account_id",
+          "container_id",
+          "version_id",
+          "approval_token",
+          "validation_report_path",
+          "environment",
+          "operator_requested_publish"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Juce-me/ga4-gtm-config-mcp/blob/23a934cb08862fab88520b425347ea6d8f0872a6/src/tools/publishTools.ts#L16-L64",
+      "scope": "gtm",
+      "tags": [
+        "release"
+      ],
+      "behavior": "Publishes a version only after spec allowance, nonempty token/version, matching environment, explicit operator flag, validation and a report containing passed plus INCLUDE_PUBLISH_SCOPE=1 gates."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "changes",
+    "summary": "Compare YAML specifications with GA4/GTM state and preview or apply ordered workspace changes.",
+    "examples": [
+      "diff_ga4_gtm_state",
+      "apply_gtm_workspace_changes",
+      "create_gtm_workspace"
+    ]
+  }
+}

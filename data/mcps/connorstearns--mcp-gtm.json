@@ -1,0 +1,389 @@
+{
+  "repo": "connorstearns/mcp-gtm",
+  "url": "https://github.com/connorstearns/mcp-gtm",
+  "commit": "caac2734b363273f35ef14904756db3ba03391c6",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Seven implemented GTM tools with complete literal schemas; write bodies and CSV handling have implementation limitations requiring review.",
+  "method": "source",
+  "server": "app.py Flask JSON-RPC POST / (also /mcp/tools and discovery descriptor)",
+  "exposure": "All seven tools always listed. ALLOW_GTM_WRITES defaults to 0 and gates all creation/batch-apply invocations, including dryRun; optional MCP_SHARED_KEY gates POST requests.",
+  "sources": [
+    "https://github.com/connorstearns/mcp-gtm/blob/caac2734b363273f35ef14904756db3ba03391c6/app.py#L17-L37",
+    "https://github.com/connorstearns/mcp-gtm/blob/caac2734b363273f35ef14904756db3ba03391c6/app.py#L219-L311",
+    "https://github.com/connorstearns/mcp-gtm/blob/caac2734b363273f35ef14904756db3ba03391c6/app.py#L379-L703",
+    "https://github.com/connorstearns/mcp-gtm/blob/caac2734b363273f35ef14904756db3ba03391c6/app.py#L725-L789"
+  ],
+  "limitations": [
+    "Static AST extraction of the exact tools_descriptor literal; no GTM calls or runtime credential use. No defaults exist in advertised schemas; handler defaults are implementation-only.",
+    "batch_plan_from_csv/create_trigger row mapping omits eventName and useRegex, so CSV CUSTOM_EVENT triggers cannot be applied successfully (lines 616-632).",
+    "create_trigger advertises up to five filters, but direct calls have no schema maxItems or handler cap; ANY uses an unverified or condition with nested conditions in parameter (lines 120-139).",
+    "batch_apply_from_csv collects nested JSON-RPC error results in applied without inspecting isError and always reports ok=true (lines 662-694).",
+    "audit_container error path receives a tuple from mcp_invoke, leaves data=None and then calls data.get, obscuring the original audit error (lines 401-410, 732-735, 787-789).",
+    "Creation bodies have not been validated against live GTM; custom-event conditions, GA4 configuration tag references and trigger-specific parameter layouts need API compatibility review."
+  ],
+  "tools": [
+    {
+      "name": "list_workspaces",
+      "description": "List workspace IDs and names for a container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/connorstearns/mcp-gtm/blob/caac2734b363273f35ef14904756db3ba03391c6/app.py#L222-L226",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists GTM workspace IDs, names and descriptions through the Tag Manager v2 API."
+    },
+    {
+      "name": "audit_container",
+      "description": "Audit a GTM container and summarize GA4 tags/triggers with lint rules.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/connorstearns/mcp-gtm/blob/caac2734b363273f35ef14904756db3ba03391c6/app.py#L227-L231",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit"
+      ],
+      "behavior": "Lists workspace tags, triggers and variables and reports GA4 configuration/event lint findings."
+    },
+    {
+      "name": "create_ga4_config_tag",
+      "description": "Create a GA4 Configuration tag in a GTM workspace.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "measurementId": {
+            "type": "string"
+          },
+          "tagName": {
+            "type": "string"
+          },
+          "sendPageView": {
+            "type": "boolean"
+          },
+          "dryRun": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "measurementId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/connorstearns/mcp-gtm/blob/caac2734b363273f35ef14904756db3ba03391c6/app.py#L234-L246",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Creates a gaawc tag with measurementId and sendPageView parameters, or returns its planned body when dryRun is true.",
+      "exposure": "Always listed; invocation requires ALLOW_GTM_WRITES truthy, including dryRun. Default ALLOW_GTM_WRITES=0 disables invocation."
+    },
+    {
+      "name": "create_ga4_event_tag",
+      "description": "Create a GA4 Event tag. Provide either measurementId OR a GA4 Config tag reference (configTagId or configTagName).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "eventName": {
+            "type": "string"
+          },
+          "triggerIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "measurementId": {
+            "type": "string"
+          },
+          "configTagId": {
+            "type": "string"
+          },
+          "configTagName": {
+            "type": "string"
+          },
+          "eventParameters": {
+            "type": "object"
+          },
+          "tagName": {
+            "type": "string"
+          },
+          "dryRun": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "eventName",
+          "triggerIds"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/connorstearns/mcp-gtm/blob/caac2734b363273f35ef14904756db3ba03391c6/app.py#L247-L261",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Resolves trigger names and optional configuration tag names, then creates a gaawe event tag or returns its planned body.",
+      "exposure": "Always listed; invocation requires ALLOW_GTM_WRITES truthy, including dryRun. Default ALLOW_GTM_WRITES=0 disables invocation."
+    },
+    {
+      "name": "create_trigger",
+      "description": "Create a GTM Trigger (Pageview, DOM Ready, Window Loaded, Custom Event, Click, Link Click, Form Submission, History Change, Timer, JS Error, Element Visibility, YouTube Video, Trigger Group). Supports filter_logic + up to 5 filters.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "triggerKey": {
+            "type": "string"
+          },
+          "eventName": {
+            "type": "string"
+          },
+          "useRegex": {
+            "type": "boolean"
+          },
+          "waitForTags": {
+            "type": "boolean"
+          },
+          "waitForTagsTimeout": {
+            "type": "integer"
+          },
+          "checkValidation": {
+            "type": "boolean"
+          },
+          "selectionMethod": {
+            "type": "string",
+            "enum": [
+              "CSS_SELECTOR",
+              "ID"
+            ]
+          },
+          "selector": {
+            "type": "string"
+          },
+          "elementId": {
+            "type": "string"
+          },
+          "minPercentVisible": {
+            "type": "integer"
+          },
+          "observeDomChanges": {
+            "type": "boolean"
+          },
+          "fireOnce": {
+            "type": "boolean"
+          },
+          "captureStart": {
+            "type": "boolean"
+          },
+          "captureComplete": {
+            "type": "boolean"
+          },
+          "capturePause": {
+            "type": "boolean"
+          },
+          "captureProgress": {
+            "type": "boolean"
+          },
+          "progressThresholds": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "intervalMs": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "groupTriggerIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "filterLogic": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "ANY"
+            ]
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "var": {
+                  "type": "string"
+                },
+                "op": {
+                  "type": "string"
+                },
+                "val": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                }
+              },
+              "required": [
+                "var",
+                "op"
+              ]
+            }
+          },
+          "dryRun": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "type"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/connorstearns/mcp-gtm/blob/caac2734b363273f35ef14904756db3ba03391c6/app.py#L262-L297",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Maps supported trigger type names to GTM types, builds trigger parameters and filters, and creates a trigger or returns its planned body.",
+      "exposure": "Always listed; invocation requires ALLOW_GTM_WRITES truthy, including dryRun. Default ALLOW_GTM_WRITES=0 disables invocation."
+    },
+    {
+      "name": "batch_plan_from_csv",
+      "description": "Parse CSV text following the template and return a dry-run plan (no writes).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "csvText": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "csvText"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/connorstearns/mcp-gtm/blob/caac2734b363273f35ef14904756db3ba03391c6/app.py#L300-L304",
+      "scope": "gtm",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Parses CSV rows into ordered-action candidate arguments and counts without calling the GTM API."
+    },
+    {
+      "name": "batch_apply_from_csv",
+      "description": "Parse CSV text and apply in dependency order (Triggers -> GA4 Config -> GA4 Event). Respects dryRun in rows and ALLOW_GTM_WRITES.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "csvText": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "csvText"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/connorstearns/mcp-gtm/blob/caac2734b363273f35ef14904756db3ba03391c6/app.py#L305-L309",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Parses CSV rows and recursively calls trigger, GA4 configuration and GA4 event creation in dependency order.",
+      "exposure": "Always listed; invocation requires ALLOW_GTM_WRITES truthy, including dryRun. Default ALLOW_GTM_WRITES=0 disables invocation."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "changes",
+    "summary": "Plans CSV batches of tracking tags and triggers and exposes draft creation with dry-run bodies.",
+    "reason": "Seven implemented GTM tools with complete literal schemas; write bodies and CSV handling have implementation limitations requiring review.",
+    "examples": [
+      "batch_plan_from_csv",
+      "batch_apply_from_csv",
+      "audit_container"
+    ]
+  }
+}

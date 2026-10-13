@@ -1,0 +1,681 @@
+{
+  "repo": "gustavomkt/mcp-tagmanager",
+  "url": "https://github.com/gustavomkt/mcp-tagmanager",
+  "commit": "7255080de0c57d36b83ef1c5cd910ceb1c1b515b",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "All 13 registered tools target GTM; 12 have implemented API handlers, but list_versions calls nonexistent versions.list instead of version_headers.list.",
+  "method": "tools/list",
+  "server": "server.py: mcp = FastMCP(\"google-tag-manager\"); stdio by default, streamable-http when PORT is set",
+  "exposure": "All 13 tools registered unconditionally. pause_tag, resume_tag, create_version and publish_version require confirm=true (default false) before any API request. Dashboard custom HTTP routes are not MCP tools.",
+  "sources": [
+    "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L73-L553",
+    "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L764-L810"
+  ],
+  "limitations": [
+    "No GTM operation or authentication executed; handler functionality assessed from source and bundled offline discovery schema.",
+    "Dependencies are ranges without a lockfile; tools/list reflects locally installed MCP SDK, so SDK-derived output schema details may vary across supported versions.",
+    "list_versions is broken: Google Tag Manager v2 exposes version_headers.list, not versions.list.",
+    "List handlers do not paginate; results may omit resources after the first page.",
+    "Audit identifies duplicate candidates and consent only through simple source heuristics, not an exhaustive configuration validation.",
+    "Configured OAuth scopes omit edit.containerversions, which is required for creating versions; credentials must separately grant it."
+  ],
+  "tools": [
+    {
+      "name": "list_accounts",
+      "description": "Lista las cuentas de Google Tag Manager a las que tiene acceso esta credencial.",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_accountsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_accountsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L156-L163",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists accounts accessible to the configured GTM credentials."
+    },
+    {
+      "name": "list_containers",
+      "description": "Lista los contenedores dentro de una cuenta de GTM.\n\nArgs:\n    account_id: ID de la cuenta de GTM (obtenido de list_accounts).\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "list_containersArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_containersOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L166-L178",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists containers in the supplied account."
+    },
+    {
+      "name": "list_workspaces",
+      "description": "Lista los workspaces (áreas de trabajo) de un contenedor.\n\nArgs:\n    account_id: ID de la cuenta de GTM.\n    container_id: ID del contenedor.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_workspacesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_workspacesOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L181-L194",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists workspaces in the supplied container."
+    },
+    {
+      "name": "list_tags",
+      "description": "Lista los tags de un workspace, incluyendo cuáles están pausados.\n\nArgs:\n    account_id: ID de la cuenta de GTM.\n    container_id: ID del contenedor.\n    workspace_id: ID del workspace.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_tagsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_tagsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L207-L233",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists workspace tags and returns identifiers, names, types, paused state and firing/blocking trigger IDs."
+    },
+    {
+      "name": "get_tag",
+      "description": "Obtiene el detalle completo de un tag específico.\n\nArgs:\n    account_id: ID de la cuenta de GTM.\n    container_id: ID del contenedor.\n    workspace_id: ID del workspace.\n    tag_id: ID del tag.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id"
+        ],
+        "title": "get_tagArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_tagOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L236-L251",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Fetches the full specified workspace tag."
+    },
+    {
+      "name": "list_triggers",
+      "description": "Lista los triggers de un workspace.\n\nArgs:\n    account_id: ID de la cuenta de GTM.\n    container_id: ID del contenedor.\n    workspace_id: ID del workspace.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_triggersArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_triggersOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L254-L273",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists workspace triggers and returns identifiers, names and types."
+    },
+    {
+      "name": "list_variables",
+      "description": "Lista las variables de un workspace.\n\nArgs:\n    account_id: ID de la cuenta de GTM.\n    container_id: ID del contenedor.\n    workspace_id: ID del workspace.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_variablesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_variablesOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L276-L295",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists workspace variables and returns identifiers, names and types."
+    },
+    {
+      "name": "pause_tag",
+      "description": "Pausa un tag (deja de dispararse). No publica el contenedor.\n\nArgs:\n    account_id: ID de la cuenta de GTM.\n    container_id: ID del contenedor.\n    workspace_id: ID del workspace.\n    tag_id: ID del tag a pausar.\n    confirm: Debe ser True para ejecutar el cambio.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id"
+        ],
+        "title": "pause_tagArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "pause_tagOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L328-L341",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Requires confirm=true, fetches the tag and updates its paused field to true in the workspace without publishing."
+    },
+    {
+      "name": "resume_tag",
+      "description": "Reanuda (des-pausa) un tag. No publica el contenedor.\n\nArgs:\n    account_id: ID de la cuenta de GTM.\n    container_id: ID del contenedor.\n    workspace_id: ID del workspace.\n    tag_id: ID del tag a reanudar.\n    confirm: Debe ser True para ejecutar el cambio.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id"
+        ],
+        "title": "resume_tagArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "resume_tagOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L344-L357",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Requires confirm=true, fetches the tag and updates its paused field to false in the workspace without publishing."
+    },
+    {
+      "name": "audit_workspace",
+      "description": "Audita un workspace y regresa una lista estructurada de hallazgos:\ntags sin ningún trigger, triggers que no dispara ningún tag, posibles\ntags duplicados (mismo tipo + mismos triggers), y si algún tag tiene\nConsent Mode configurado. Es de solo lectura, no cambia nada.\n\nArgs:\n    account_id: ID de la cuenta de GTM.\n    container_id: ID del contenedor.\n    workspace_id: ID del workspace.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "audit_workspaceArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "audit_workspaceOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L364-L426",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit",
+        "workspace"
+      ],
+      "behavior": "Reads tags and triggers to report unpaused tags without firing triggers, unused triggers, equal type/firing-trigger signatures and consentStatus=NEEDED tags."
+    },
+    {
+      "name": "create_version",
+      "description": "Crea una nueva versión a partir de los cambios pendientes en el workspace.\nNO la publica — solo la deja lista para revisar y publicar después.\n\nArgs:\n    account_id: ID de la cuenta de GTM.\n    container_id: ID del contenedor.\n    workspace_id: ID del workspace.\n    name: Nombre de la versión.\n    notes: Descripción de qué cambió y por qué.\n    confirm: Debe ser True para ejecutar.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "default": "",
+            "title": "Notes",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "name"
+        ],
+        "title": "create_versionArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "create_versionOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L433-L476",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace",
+        "release"
+      ],
+      "behavior": "Requires confirm=true and calls workspaces.create_version with name/notes, returning version and compilation/sync metadata without publishing."
+    },
+    {
+      "name": "list_versions",
+      "description": "Lista el historial de versiones de un contenedor (para elegir a cuál\nhacer rollback, por ejemplo).\n\nArgs:\n    account_id: ID de la cuenta de GTM.\n    container_id: ID del contenedor.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_versionsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_versionsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L479-L502",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Attempts versions().list(), which is absent from Tag Manager API v2; the resulting error is caught and returned as ok=false."
+    },
+    {
+      "name": "publish_version",
+      "description": "Publica una versión — esto SÍ va a producción y afecta el sitio en vivo.\nÚsalo tanto para publicar una versión nueva como para hacer rollback a una\nversión anterior (pásale el version_id de la versión vieja).\n\nArgs:\n    account_id: ID de la cuenta de GTM.\n    container_id: ID del contenedor.\n    version_id: ID de la versión a publicar.\n    confirm: Debe ser True para ejecutar. Esta acción es de alto riesgo\n        porque afecta producción de inmediato.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "version_id": {
+            "title": "Version Id",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "version_id"
+        ],
+        "title": "publish_versionArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "publish_versionOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/gustavomkt/mcp-tagmanager/blob/7255080de0c57d36b83ef1c5cd910ceb1c1b515b/server.py#L505-L534",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "behavior": "Requires confirm=true and publishes the specified container version, including an older version for rollback."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "audit",
+    "summary": "Audits workspace configuration and pauses or resumes tags before separately confirmed publication.",
+    "reason": "All 13 registered tools target GTM; 12 have implemented API handlers, but list_versions calls nonexistent versions.list instead of version_headers.list.",
+    "examples": [
+      "audit_workspace",
+      "pause_tag",
+      "resume_tag"
+    ]
+  }
+}

@@ -1,0 +1,2420 @@
+{
+  "repo": "AINative-Studio/ainative-gtm-mcp",
+  "url": "https://github.com/AINative-Studio/ainative-gtm-mcp",
+  "commit": "b858f34ced754293a440898dce048869774fc661",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Implements 18 GTM account/container/workspace, tag, trigger, audit and release tools against googleapis Tag Manager v2; also exposes Google Ads tools on the same server.",
+  "method": "tools/list",
+  "server": "src/index.ts (stdio; bin ainative-gtm-mcp -> build/index.js)",
+  "exposure": "All seven imported tool arrays register unconditionally, including all Google Ads tools; credentials are loaded lazily inside handlers.",
+  "sources": [
+    "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/index.ts#L1-L43",
+    "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/lib/gtm-client.ts#L1-L48",
+    "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/package-lock.json"
+  ],
+  "limitations": [
+    "Only offline MCP initialize/tools/list was executed with an empty environment and isolated HOME; no handler, credential lookup or remote GTM/Ads operation was invoked.",
+    "GTM list handlers do not paginate, so audits and lists may cover only the first API page.",
+    "gtm_fix_conversion_tag_trigger always creates a fresh trigger, and its message can overstate exclusive event firing when other triggers remain.",
+    "gtm_publish returns published:true without interpreting compilerError.",
+    "Google Ads auxiliary product defects: audience mode is ignored, add_geo_target does not apply its promised presence-only settings, audit_conversion_goals fabricates zero activity, and PMax image creation supplies full_size.url without image bytes.",
+    "Pinned google-ads-api dependency exposes no adGroupAds.appeal implementation (rg source inspection), so gads_request_ad_review returns notAppealable; other Google Ads runtime behavior was not verified.",
+    "Several description-only copy length/file-format constraints are not enforced by the exposed schema; schemas retain the actual registration constraints.",
+    "GTM client requests edit.containers and publish scopes but omits edit.containerversions; version creation needs credentials granting that scope."
+  ],
+  "tools": [
+    {
+      "name": "gtm_list_accounts",
+      "description": "List all GTM accounts accessible to the service account",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/accounts.ts#L7-L19",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists GTM accounts using accounts.list."
+    },
+    {
+      "name": "gtm_list_containers",
+      "description": "List all containers in a GTM account",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "GTM account ID"
+          }
+        },
+        "required": [
+          "accountId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/accounts.ts#L19-L33",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists containers in the supplied GTM account."
+    },
+    {
+      "name": "gtm_get_container",
+      "description": "Get details of a specific GTM container",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/accounts.ts#L33-L49",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Fetches the supplied GTM container."
+    },
+    {
+      "name": "gtm_list_tags",
+      "description": "List all tags in a GTM workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "default": "1"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/tags.ts#L7-L25",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists tags in the supplied workspace."
+    },
+    {
+      "name": "gtm_get_tag",
+      "description": "Get full configuration of a specific GTM tag",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "default": "1"
+          },
+          "tagId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "tagId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/tags.ts#L25-L44",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Fetches a tag configuration from the supplied workspace."
+    },
+    {
+      "name": "gtm_update_tag",
+      "description": "Update an existing GTM tag (e.g. fix its trigger, rename it, update parameters)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "default": "1"
+          },
+          "tagId": {
+            "type": "string"
+          },
+          "updates": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Partial tag body — only fields to update"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "tagId",
+          "updates"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/tags.ts#L44-L71",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Fetches the tag, shallow-merges updates, and sends tags.update."
+    },
+    {
+      "name": "gtm_delete_tag",
+      "description": "Delete a GTM tag from a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "default": "1"
+          },
+          "tagId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "tagId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/tags.ts#L71-L89",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Deletes the supplied workspace tag."
+    },
+    {
+      "name": "gtm_list_triggers",
+      "description": "List all triggers in a GTM workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "default": "1"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/triggers.ts#L7-L25",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists triggers in the supplied workspace."
+    },
+    {
+      "name": "gtm_get_trigger",
+      "description": "Get full configuration of a specific GTM trigger",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "default": "1"
+          },
+          "triggerId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "triggerId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/triggers.ts#L25-L44",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Fetches a workspace trigger."
+    },
+    {
+      "name": "gtm_create_trigger",
+      "description": "Create a new trigger in a GTM workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "default": "1"
+          },
+          "trigger": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Full GTM trigger body"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "trigger"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/triggers.ts#L44-L64",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a workspace trigger from the unrestricted trigger object."
+    },
+    {
+      "name": "gtm_update_trigger",
+      "description": "Update an existing GTM trigger",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "default": "1"
+          },
+          "triggerId": {
+            "type": "string"
+          },
+          "updates": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Partial trigger body — only fields to update"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "triggerId",
+          "updates"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/triggers.ts#L64-L89",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Fetches the trigger, shallow-merges updates, and sends triggers.update."
+    },
+    {
+      "name": "gtm_audit_container",
+      "description": "Comprehensive container audit — finds broken tags, duplicate tags, misfiring conversion tags, tags missing triggers, and tags firing too broadly. Returns a health score 0–100.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "default": "1"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/audit.ts#L7-L83",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "audit"
+      ],
+      "behavior": "Lists tags, triggers and variables and calculates a heuristic score from missing triggers/types, duplicate names and conversion-like tags on a named All Pages trigger."
+    },
+    {
+      "name": "gtm_find_misfiring_conversion_tags",
+      "description": "Find conversion/purchase tags that are firing too broadly (e.g. on All Pages instead of a specific event). This is the most common GTM billing/analytics issue.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "default": "1"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/audit.ts#L83-L139",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "release",
+        "audit"
+      ],
+      "behavior": "Classifies conversion-like tag names as misfiring when attached to PAGEVIEW or named All Pages triggers."
+    },
+    {
+      "name": "gtm_fix_conversion_tag_trigger",
+      "description": "Fix a misfiring conversion tag by replacing its broad trigger (e.g. All Pages) with a specific Custom Event trigger. Creates the new trigger if needed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "default": "1"
+          },
+          "tagId": {
+            "type": "string",
+            "description": "Tag ID to fix"
+          },
+          "eventName": {
+            "type": "string",
+            "description": "Custom event name to fire on (e.g. \"purchase_confirmed\")"
+          },
+          "removeBroadTriggers": {
+            "type": "boolean",
+            "default": true,
+            "description": "Remove All Pages / broad triggers from this tag"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "tagId",
+          "eventName"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/audit.ts#L139-L211",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace",
+        "release",
+        "audit"
+      ],
+      "behavior": "Always creates a new Custom Event trigger, optionally removes PAGEVIEW/All Pages triggers and updates the tag; it does not reuse an existing event trigger."
+    },
+    {
+      "name": "gtm_list_workspaces",
+      "description": "List workspaces in a GTM container",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/versions.ts#L7-L24",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists workspaces belonging to the supplied container."
+    },
+    {
+      "name": "gtm_get_workspace_status",
+      "description": "Get pending (unsaved) changes in a workspace before publishing",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "default": "1"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/versions.ts#L24-L42",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Fetches workspace changes and conflicts through getStatus."
+    },
+    {
+      "name": "gtm_create_version",
+      "description": "Create a container version from current workspace changes",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "default": "1"
+          },
+          "name": {
+            "type": "string",
+            "description": "Version name"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Version notes / changelog"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/versions.ts#L42-L65",
+      "scope": "gtm",
+      "tags": [
+        "workspace",
+        "release"
+      ],
+      "behavior": "Creates a container version from the supplied workspace with a name and optional notes."
+    },
+    {
+      "name": "gtm_publish",
+      "description": "Publish the current workspace — makes all changes live immediately",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string",
+            "default": "1"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/versions.ts#L65-L95",
+      "scope": "gtm",
+      "tags": [
+        "workspace",
+        "release"
+      ],
+      "behavior": "Creates a new version and publishes it, returning compilerError without checking it before reporting published true."
+    },
+    {
+      "name": "gads_list_conversion_actions",
+      "description": "List all Google Ads conversion actions for the account — name, ID, counting type, status, and category. Use this to audit which conversions are set up and how they are counted.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID (dashes optional). Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L53-L95",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes GAQL query using the supplied parameters."
+    },
+    {
+      "name": "gads_update_conversion_counting",
+      "description": "Update the counting type of a Google Ads conversion action. Common fix: change counting_type from MANY_PER_CLICK to ONE_PER_CLICK for purchase conversions to avoid inflated counts.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "conversionActionId": {
+            "type": "string",
+            "description": "Numeric conversion action ID (from gads_list_conversion_actions)"
+          },
+          "countingType": {
+            "type": "string",
+            "enum": [
+              "ONE_PER_CLICK",
+              "MANY_PER_CLICK"
+            ],
+            "description": "ONE_PER_CLICK = count once per ad click (recommended for purchases). MANY_PER_CLICK = count every conversion."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "conversionActionId",
+          "countingType"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L95-L129",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes conversionActions.update using the supplied parameters."
+    },
+    {
+      "name": "gads_update_campaign_budget",
+      "description": "Update the daily budget of a Google Ads campaign. Provide the campaign budget ID (from the campaign) and the new daily amount in dollars. Use to scale spend up or down.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignBudgetId": {
+            "type": "string",
+            "description": "Numeric campaign budget ID (campaign_budget.id, from a campaign query)."
+          },
+          "dailyAmountUsd": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "New daily budget in USD (e.g. 50 for $50/day)."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignBudgetId",
+          "dailyAmountUsd"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L129-L165",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes campaignBudgets.update using the supplied parameters."
+    },
+    {
+      "name": "gads_audit_conversion_goals",
+      "description": "Audit all Google Ads conversion goals — find misconfigured counting types, inactive conversions, and conversions with no recent activity. Returns a prioritized fix list.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L165-L254",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: queries static conversion action data but initializes activity and conversion counts to false/zero without querying recent activity."
+    },
+    {
+      "name": "gads_get_account_performance",
+      "description": "Get top-level Google Ads account performance — impressions, clicks, cost, conversions for a date range. Quick health check for ad spend efficiency.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          },
+          "dateRange": {
+            "type": "string",
+            "enum": [
+              "LAST_7_DAYS",
+              "LAST_14_DAYS",
+              "LAST_30_DAYS",
+              "THIS_MONTH",
+              "LAST_MONTH"
+            ],
+            "default": "LAST_30_DAYS"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L254-L339",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes GAQL query using the supplied parameters."
+    },
+    {
+      "name": "gads_create_keyword",
+      "description": "Add a keyword to an ad group. Use this to move high-performing keywords between campaigns.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "adGroupId": {
+            "type": "string",
+            "description": "Ad group ID to add the keyword to"
+          },
+          "keyword": {
+            "type": "string",
+            "description": "The keyword text"
+          },
+          "matchType": {
+            "type": "string",
+            "enum": [
+              "BROAD",
+              "PHRASE",
+              "EXACT"
+            ],
+            "description": "Keyword match type"
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "adGroupId",
+          "keyword",
+          "matchType"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L339-L373",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes adGroupCriteria.create using the supplied parameters."
+    },
+    {
+      "name": "gads_pause_campaign",
+      "description": "Pause a Google Ads campaign. Stops all ad serving immediately.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign ID to pause"
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L373-L402",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes campaigns.update using the supplied parameters."
+    },
+    {
+      "name": "gads_set_campaign_status",
+      "description": "Set a Google Ads campaign status to ENABLED or PAUSED. Use ENABLED to (re)enable a paused campaign — this is the enable capability the server previously lacked (only pause existed), so agents no longer need the UI to resume a campaign. Refs #5444.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign ID to update"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ENABLED",
+              "PAUSED"
+            ],
+            "description": "Target status: ENABLED (serve) or PAUSED (stop)."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignId",
+          "status"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L402-L438",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes campaigns.update using the supplied parameters."
+    },
+    {
+      "name": "gads_remove_keyword",
+      "description": "Remove (pause) a keyword from an ad group.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "adGroupId": {
+            "type": "string",
+            "description": "Ad group ID"
+          },
+          "criterionId": {
+            "type": "string",
+            "description": "Keyword criterion ID to remove"
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "adGroupId",
+          "criterionId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L438-L470",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: pauses the keyword criterion rather than removing it."
+    },
+    {
+      "name": "gads_remove_campaign_criterion",
+      "description": "Remove a campaign-level criterion (targeted location/geo, placement, or keyword) by its criterion ID. Use to stop targeting a geo that is bringing invalid traffic — e.g. remove a positively-targeted country. Note: you cannot add a NEGATIVE location for a geo that is positively targeted; remove the positive criterion instead.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign ID that owns the criterion"
+          },
+          "criterionId": {
+            "type": "string",
+            "description": "Criterion ID to remove (campaign_criterion.criterion_id). For a geo target this is the geo_target_constant id, e.g. 2356 for India."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignId",
+          "criterionId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L470-L501",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes campaignCriteria.remove using the supplied parameters."
+    },
+    {
+      "name": "gads_add_negative_placement",
+      "description": "Add a negative PLACEMENT (website URL or mobile app) exclusion to a campaign so ads never serve there. Use to block click-fraud / low-quality placements (e.g. qureka.com, omegleweb.io, junk Google Play apps).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign ID to add the exclusion to"
+          },
+          "placementUrl": {
+            "type": "string",
+            "description": "Placement to exclude — a website URL (e.g. \"qureka.com\") or app id."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignId",
+          "placementUrl"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L501-L558",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes campaignCriteria.create using the supplied parameters."
+    },
+    {
+      "name": "gads_set_conversion_goal_inclusion",
+      "description": "Control whether a conversion action counts toward the primary \"Conversions\" metric (and thus Smart Bidding). Set biddable=false to keep an action TRACKED but stop it optimizing bids — the fix for a PAGE_VIEW action inflating conversions. Operates on the customer-level conversion goal for the action category.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "conversionActionId": {
+            "type": "string",
+            "description": "Numeric conversion action ID (from gads_list_conversion_actions)"
+          },
+          "biddable": {
+            "type": "boolean",
+            "description": "true = include in Conversions metric / bidding; false = tracked only, excluded from bidding."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "conversionActionId",
+          "biddable"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L558-L625",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: finds the conversion action category and updates all customer goals for that category across origins."
+    },
+    {
+      "name": "gads_list_recommendation_subscriptions",
+      "description": "List Google Ads auto-apply recommendation subscriptions (type + status). ENABLED means that recommendation type auto-applies without review — the mechanism that can silently raise budgets/bids. Use to audit what auto-applies.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L625-L656",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes query using the supplied parameters."
+    },
+    {
+      "name": "gads_set_recommendation_subscription",
+      "description": "Turn Google Ads auto-apply recommendations ON or OFF. Set enabled=false to PAUSE (stop auto-applying — recommendations are still suggested, just not applied automatically). Pass all=true to apply to every resolvable subscription (the fix for runaway auto-applied budget/bid changes). Subscriptions with an UNKNOWN type/resource name cannot be mutated by the API and are skipped and reported.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "true = ENABLED (auto-apply on); false = PAUSED (auto-apply off)."
+          },
+          "all": {
+            "type": "boolean",
+            "description": "If true, apply to every resolvable subscription. Ignores resourceName."
+          },
+          "resourceName": {
+            "type": "string",
+            "description": "Specific subscription resource_name to set (from gads_list_recommendation_subscriptions). Required when all is not true."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "enabled"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L656-L727",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: updates specific or all resolvable recommendation subscriptions and skips resources ending in /UNKNOWN."
+    },
+    {
+      "name": "gads_create_campaign",
+      "description": "Create a NEW Google Ads campaign with its own dedicated budget. Handles the full create correctly: makes a non-shared CampaignBudget first, then the campaign referencing it, with network settings (Search Partners OFF, Display Expansion OFF) and MAXIMIZE_CONVERSIONS bidding. Defaults to PAUSED so you review before it serves. Refs #5739.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Campaign name (also used for the budget name)."
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "SEARCH",
+              "DISPLAY"
+            ],
+            "description": "SEARCH or DISPLAY campaign."
+          },
+          "dailyBudgetUsd": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "Daily budget in USD (e.g. 14 for $14/day)."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ENABLED",
+              "PAUSED"
+            ],
+            "default": "PAUSED",
+            "description": "ENABLED to serve immediately (after ad review), PAUSED to review first. Default PAUSED."
+          },
+          "biddingStrategy": {
+            "type": "string",
+            "enum": [
+              "MAXIMIZE_CONVERSIONS",
+              "MANUAL_CPC"
+            ],
+            "default": "MAXIMIZE_CONVERSIONS",
+            "description": "Bidding strategy. Default MAXIMIZE_CONVERSIONS."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "name",
+          "channel",
+          "dailyBudgetUsd"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L727-L815",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: creates a dedicated budget then a Search/Display campaign with explicit network settings; partial creations are not rolled back."
+    },
+    {
+      "name": "gads_create_ad_group",
+      "description": "Create an ad group inside a campaign. Refs #5740.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign ID to add the ad group to."
+          },
+          "name": {
+            "type": "string",
+            "description": "Ad group name."
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "SEARCH",
+              "DISPLAY"
+            ],
+            "default": "SEARCH",
+            "description": "SEARCH_STANDARD or DISPLAY_STANDARD ad group type."
+          },
+          "cpcBidUsd": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "Optional default max CPC bid in USD."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ENABLED",
+              "PAUSED"
+            ],
+            "default": "ENABLED",
+            "description": "Default ENABLED."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignId",
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L815-L856",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes adGroups.create using the supplied parameters."
+    },
+    {
+      "name": "gads_create_responsive_search_ad",
+      "description": "Create a Responsive Search Ad in an ad group. 3–15 headlines (≤30 chars), 2–4 descriptions (≤90 chars), and final URL(s). Validates lengths before sending. Refs #5741.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "adGroupId": {
+            "type": "string",
+            "description": "Ad group ID to add the ad to."
+          },
+          "headlines": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 3,
+            "maxItems": 15,
+            "description": "3–15 headlines, each ≤30 chars."
+          },
+          "descriptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 2,
+            "maxItems": 4,
+            "description": "2–4 descriptions, each ≤90 chars."
+          },
+          "finalUrl": {
+            "type": "string",
+            "description": "Landing page URL (e.g. https://ainative.studio/opencode)."
+          },
+          "path1": {
+            "type": "string",
+            "description": "Optional display path 1 (≤15 chars)."
+          },
+          "path2": {
+            "type": "string",
+            "description": "Optional display path 2 (≤15 chars)."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ENABLED",
+              "PAUSED"
+            ],
+            "default": "ENABLED",
+            "description": "Default ENABLED."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "adGroupId",
+          "headlines",
+          "descriptions",
+          "finalUrl"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L856-L913",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes adGroupAds.create using the supplied parameters."
+    },
+    {
+      "name": "gads_add_geo_target",
+      "description": "Add a geographic target (or exclusion) to a campaign, using PRESENCE-only targeting by default (people IN the location, not merely interested) — this is the India-fraud-safe setting. Pass negative:true to exclude a geo. Common geo IDs: 2840=US, 2826=UK, 2124=CA, 2036=AU, 2276=DE, 2356=India. Refs #5742.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign ID."
+          },
+          "geoTargetConstantId": {
+            "type": "string",
+            "description": "geo_target_constant id, e.g. \"2840\" for US."
+          },
+          "negative": {
+            "type": "boolean",
+            "default": false,
+            "description": "true = exclude this geo. Default false (positive target)."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignId",
+          "geoTargetConstantId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L913-L951",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: creates a location campaign criterion; despite its description it does not change presence-only geo settings."
+    },
+    {
+      "name": "gads_set_presence_only",
+      "description": "Set a campaign to PRESENCE-only geo targeting (target users physically IN the targeted locations, not those merely interested). This is the setting that prevents the India interest-traffic fraud. Refs #5742.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign ID."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L951-L982",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes campaigns.update using the supplied parameters."
+    },
+    {
+      "name": "gads_add_negative_keyword",
+      "description": "Add a negative keyword at the CAMPAIGN level (blocks the term across the campaign). Refs #5743.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign ID."
+          },
+          "keyword": {
+            "type": "string",
+            "description": "Negative keyword text (e.g. \"free\")."
+          },
+          "matchType": {
+            "type": "string",
+            "enum": [
+              "BROAD",
+              "PHRASE",
+              "EXACT"
+            ],
+            "default": "BROAD",
+            "description": "Match type. Default BROAD."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignId",
+          "keyword"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L982-L1014",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes campaignCriteria.create using the supplied parameters."
+    },
+    {
+      "name": "gads_search",
+      "description": "Run a read-only GAQL query and return rows — for looking up campaign/budget/ad_group/criterion IDs without the google-ads MCP. SELECT queries only. Refs #5745.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gaql": {
+            "type": "string",
+            "description": "A GAQL SELECT query, e.g. \"SELECT campaign.id, campaign.name FROM campaign\"."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "gaql"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L1014-L1032",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: rejects queries without an initial SELECT keyword then runs a GAQL query."
+    },
+    {
+      "name": "gads_upload_image_asset",
+      "description": "Upload an image file from local disk as a Google Ads image Asset (for Display banners / Responsive Display Ads). Returns the asset resource_name to reference in an ad. Refs #5744.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filePath": {
+            "type": "string",
+            "description": "Absolute path to a PNG/JPG image file on disk (<150KB, standard IAB size)."
+          },
+          "name": {
+            "type": "string",
+            "description": "Asset name (must be unique in the account)."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "filePath",
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L1032-L1065",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes assets.create using the supplied parameters."
+    },
+    {
+      "name": "gads_create_responsive_display_ad",
+      "description": "Create a Responsive Display Ad in a DISPLAY ad group from uploaded image assets + text. Provide marketing image asset resource_names (landscape 1.91:1) and square (1:1), plus headlines, descriptions, business name, and final URL. Refs #5744.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "adGroupId": {
+            "type": "string",
+            "description": "DISPLAY ad group ID."
+          },
+          "marketingImageAssets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Resource names of landscape (1.91:1) image assets."
+          },
+          "squareImageAssets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Resource names of square (1:1) image assets."
+          },
+          "headlines": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 5,
+            "description": "1–5 short headlines (≤30 chars)."
+          },
+          "longHeadline": {
+            "type": "string",
+            "description": "One long headline (≤90 chars)."
+          },
+          "descriptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 5,
+            "description": "1–5 descriptions (≤90 chars)."
+          },
+          "businessName": {
+            "type": "string",
+            "description": "Business name (≤25 chars), e.g. \"AINative\"."
+          },
+          "finalUrl": {
+            "type": "string",
+            "description": "Landing page URL."
+          },
+          "logoImageAssets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional square logo image asset resource names."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ENABLED",
+              "PAUSED"
+            ],
+            "default": "ENABLED"
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "adGroupId",
+          "marketingImageAssets",
+          "squareImageAssets",
+          "headlines",
+          "longHeadline",
+          "descriptions",
+          "businessName",
+          "finalUrl"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L1065-L1130",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes adGroupAds.create using the supplied parameters."
+    },
+    {
+      "name": "gads_upload_media_bundle",
+      "description": "Upload an HTML5 ad ZIP file from disk as a Google Ads MEDIA_BUNDLE asset (for HTML5 display upload ads). The zip must be self-contained (no external refs), define ad.size, include a clickTag, and be <150KB. Returns the asset resource_name. Refs #5744.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "filePath": {
+            "type": "string",
+            "description": "Absolute path to a self-contained HTML5 ad .zip."
+          },
+          "name": {
+            "type": "string",
+            "description": "Asset name (unique in the account)."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "filePath",
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L1130-L1164",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes assets.create using the supplied parameters."
+    },
+    {
+      "name": "gads_create_html5_ad",
+      "description": "Create an HTML5 display upload ad (DisplayUploadAd, HTML5_UPLOAD_AD) in a DISPLAY ad group from a previously-uploaded MEDIA_BUNDLE asset. This is the real animated HTML5 creative served via API — no manual UI upload. Note: the account must be eligible for HTML5 upload ads (enforced at create time; a policy error means it is not yet allowlisted). Refs #5744.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "adGroupId": {
+            "type": "string",
+            "description": "DISPLAY ad group ID."
+          },
+          "mediaBundleAsset": {
+            "type": "string",
+            "description": "resource_name of the uploaded MEDIA_BUNDLE asset (from gads_upload_media_bundle)."
+          },
+          "finalUrl": {
+            "type": "string",
+            "description": "Landing page URL (must match the clickTag domain)."
+          },
+          "name": {
+            "type": "string",
+            "description": "Optional ad name."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ENABLED",
+              "PAUSED"
+            ],
+            "default": "ENABLED"
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "adGroupId",
+          "mediaBundleAsset",
+          "finalUrl"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads.ts#L1164-L1209",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes adGroupAds.create using the supplied parameters."
+    },
+    {
+      "name": "gads_set_bidding_strategy",
+      "description": "Change an existing campaign's bidding strategy (MAXIMIZE_CLICKS, MAXIMIZE_CONVERSIONS, TARGET_CPA, TARGET_ROAS, MANUAL_CPC). CRITICAL: switching a standard strategy with an empty payload is a silent no-op in the client — this tool forces a non-empty sub-field and READS BACK bidding_strategy_type to confirm the swap actually landed. Use MAXIMIZE_CLICKS with a cpcBidCeilingUsd to break a new-campaign cold-start (no conversion history). Refs #5764.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign ID to update."
+          },
+          "strategy": {
+            "type": "string",
+            "enum": [
+              "MAXIMIZE_CLICKS",
+              "MAXIMIZE_CONVERSIONS",
+              "TARGET_CPA",
+              "TARGET_ROAS",
+              "MANUAL_CPC"
+            ],
+            "description": "Target bidding strategy."
+          },
+          "cpcBidCeilingUsd": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "For MAXIMIZE_CLICKS: max CPC ceiling in USD (strongly recommended to avoid runaway CPC). Required for MAXIMIZE_CLICKS."
+          },
+          "targetCpaUsd": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "For TARGET_CPA: target cost per acquisition in USD."
+          },
+          "targetRoas": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "For TARGET_ROAS: target return on ad spend as a fraction (e.g. 3.0 = 300%)."
+          },
+          "enhancedCpc": {
+            "type": "boolean",
+            "description": "For MANUAL_CPC: enable Enhanced CPC. Default false."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignId",
+          "strategy"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads-lifecycle.ts#L33-L121",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: validates strategy-specific required values, updates the campaign and queries its resulting bidding strategy type."
+    },
+    {
+      "name": "gads_set_ad_group_bid",
+      "description": "Set the default max CPC bid (USD) on an existing ad group. Use to raise/lower delivery on a specific ad group under Manual CPC / Maximize Clicks. Refs #5764.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "adGroupId": {
+            "type": "string",
+            "description": "Ad group ID."
+          },
+          "cpcBidUsd": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "New default max CPC bid in USD."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "adGroupId",
+          "cpcBidUsd"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads-lifecycle.ts#L121-L143",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes adGroups.update using the supplied parameters."
+    },
+    {
+      "name": "gads_set_keyword_bid",
+      "description": "Set the max CPC bid (USD) on a specific keyword (ad group criterion). Refs #5764.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "adGroupId": {
+            "type": "string",
+            "description": "Ad group ID that owns the keyword."
+          },
+          "criterionId": {
+            "type": "string",
+            "description": "Keyword criterion ID (ad_group_criterion.criterion_id)."
+          },
+          "cpcBidUsd": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "New max CPC bid in USD for this keyword."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "adGroupId",
+          "criterionId",
+          "cpcBidUsd"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads-lifecycle.ts#L143-L171",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes adGroupCriteria.update using the supplied parameters."
+    },
+    {
+      "name": "gads_set_ad_status",
+      "description": "Set an individual ad's status to ENABLED, PAUSED, or REMOVED (ad_group_ad). Use to pause a throttled/underperforming ad or remove a rejected one without touching the ad group. Refs #5764.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "adGroupId": {
+            "type": "string",
+            "description": "Ad group ID that owns the ad."
+          },
+          "adId": {
+            "type": "string",
+            "description": "Ad ID (ad_group_ad.ad.id)."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ENABLED",
+              "PAUSED",
+              "REMOVED"
+            ],
+            "description": "Target status."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "adGroupId",
+          "adId",
+          "status"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads-lifecycle.ts#L171-L202",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes adGroupAds.remove, adGroupAds.update using the supplied parameters."
+    },
+    {
+      "name": "gads_request_ad_review",
+      "description": "Request re-review (appeal) of a disapproved or approved-limited ad via the API. Uses the AdGroupAd appeal (promote to review) mechanism. NOTE: only a subset of policy topics are API-appealable; MISLEADING_AD_DESIGN and some others must still be appealed in the UI — this tool returns a clear notAppealable result in that case rather than pretending it worked. Refs #5764.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "adGroupId": {
+            "type": "string",
+            "description": "Ad group ID that owns the ad."
+          },
+          "adId": {
+            "type": "string",
+            "description": "Ad ID to request review for."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "adGroupId",
+          "adId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads-lifecycle.ts#L202-L253",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: checks for adGroupAds.appeal, returns notAppealable when absent, and otherwise attempts an appeal with errors surfaced."
+    },
+    {
+      "name": "gads_add_sitelink",
+      "description": "Create a sitelink asset (link text + final URL, optional 2 description lines) and attach it to a campaign. Refs #5764.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign to attach the sitelink to."
+          },
+          "linkText": {
+            "type": "string",
+            "maxLength": 25,
+            "description": "Sitelink text (≤25 chars)."
+          },
+          "finalUrl": {
+            "type": "string",
+            "description": "Destination URL."
+          },
+          "description1": {
+            "type": "string",
+            "maxLength": 35,
+            "description": "Optional description line 1 (≤35 chars)."
+          },
+          "description2": {
+            "type": "string",
+            "maxLength": 35,
+            "description": "Optional description line 2 (≤35 chars)."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignId",
+          "linkText",
+          "finalUrl"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads-lifecycle.ts#L253-L292",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes assets.create, campaignAssets.create using the supplied parameters."
+    },
+    {
+      "name": "gads_add_callout",
+      "description": "Create a callout asset (short promotional phrase, e.g. \"Free 7-Day Trial\") and attach it to a campaign. Refs #5764.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign to attach the callout to."
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 25,
+            "description": "Callout text (≤25 chars)."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignId",
+          "text"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads-lifecycle.ts#L292-L318",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes assets.create, campaignAssets.create using the supplied parameters."
+    },
+    {
+      "name": "gads_add_structured_snippet",
+      "description": "Create a structured snippet asset (a header like \"Services\" or \"Types\" + up to 10 values) and attach it to a campaign. Refs #5764.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign to attach the snippet to."
+          },
+          "header": {
+            "type": "string",
+            "description": "Snippet header (must be a valid Google header, e.g. \"Types\", \"Services\", \"Brands\", \"Features\")."
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 3,
+            "maxItems": 10,
+            "description": "3–10 snippet values."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignId",
+          "header",
+          "values"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads-lifecycle.ts#L318-L347",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes assets.create, campaignAssets.create using the supplied parameters."
+    },
+    {
+      "name": "gads_add_call_extension",
+      "description": "Create a call asset (phone number) and attach it to a campaign so ads can show a call button. Refs #5764.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign to attach the call extension to."
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Phone number in national format, e.g. \"415-555-0100\"."
+          },
+          "countryCode": {
+            "type": "string",
+            "default": "US",
+            "description": "2-letter country code. Default US."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignId",
+          "phoneNumber"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads-lifecycle.ts#L347-L380",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes assets.create, campaignAssets.create using the supplied parameters."
+    },
+    {
+      "name": "gads_add_audience_to_ad_group",
+      "description": "Attach an audience segment (user_list resource) to an ad group. mode=OBSERVATION measures the audience without restricting reach; mode=TARGETING restricts serving to it. Refs #5764.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "adGroupId": {
+            "type": "string",
+            "description": "Ad group ID."
+          },
+          "userListResource": {
+            "type": "string",
+            "description": "user_list resource name (e.g. customers/123/userLists/456)."
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "OBSERVATION",
+              "TARGETING"
+            ],
+            "default": "OBSERVATION",
+            "description": "OBSERVATION = measure only (recommended); TARGETING = restrict serving."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "adGroupId",
+          "userListResource"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads-lifecycle.ts#L380-L421",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: creates a user-list ad-group criterion but ignores mode when setting targeting, so TARGETING does not restrict reach."
+    },
+    {
+      "name": "gads_create_conversion_action",
+      "description": "Create an offline conversion action (type UPLOAD_CLICKS) for importing real outcomes — e.g. \"Signup (offline)\" or \"Paid Subscription (offline)\" — keyed by gclid. Returns the conversion action id + resource name to use with gads_upload_click_conversion. Refs #5764.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Conversion action name, e.g. \"Signup (offline gclid)\"."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "SIGNUP",
+              "PURCHASE",
+              "SUBMIT_LEAD_FORM",
+              "DEFAULT"
+            ],
+            "default": "SIGNUP",
+            "description": "Conversion category."
+          },
+          "countingType": {
+            "type": "string",
+            "enum": [
+              "ONE_PER_CLICK",
+              "MANY_PER_CLICK"
+            ],
+            "default": "ONE_PER_CLICK",
+            "description": "ONE_PER_CLICK for signups/subscriptions. Default ONE_PER_CLICK."
+          },
+          "defaultValueUsd": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Optional default conversion value in USD."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads-lifecycle.ts#L421-L467",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes conversionActions.create using the supplied parameters."
+    },
+    {
+      "name": "gads_upload_click_conversion",
+      "description": "Upload an OFFLINE click conversion keyed by gclid — the attribution backbone that ties a real signup/subscription back to the Google Ads click that drove it. Feeds Smart Bidding with real outcomes instead of pageviews. gclid is captured at signup. conversionDateTime must be after the click and in \"yyyy-mm-dd hh:mm:ss+|-hh:mm\" format. NOTE (2026): Google now routes NEW integrations to the Data Manager API — the legacy ConversionUploadService this calls is limited to existing users and returns a clear \"use the Data Manager API\" error for new accounts. If you get that error, the account needs the Data Manager path (see #5765). The tool surfaces the real error rather than silently failing. Refs #5764.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "conversionActionId": {
+            "type": "string",
+            "description": "Conversion action ID (from gads_create_conversion_action / gads_list_conversion_actions)."
+          },
+          "gclid": {
+            "type": "string",
+            "description": "Google click ID captured at signup (users.gclid)."
+          },
+          "conversionDateTime": {
+            "type": "string",
+            "description": "Conversion time, format \"yyyy-mm-dd hh:mm:ss+hh:mm\" (must be AFTER the click)."
+          },
+          "valueUsd": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Optional conversion value in USD."
+          },
+          "currencyCode": {
+            "type": "string",
+            "default": "USD",
+            "description": "Currency code. Default USD."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "conversionActionId",
+          "gclid",
+          "conversionDateTime"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads-lifecycle.ts#L467-L531",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: invokes legacy conversionUploads.uploadClickConversions with partial_failure and reports partial or thrown errors."
+    },
+    {
+      "name": "gads_create_pmax_campaign",
+      "description": "ONE-CALL Performance Max \"campaign builder\": creates a PERFORMANCE_MAX campaign + dedicated budget + an asset group with the required assets (3-15 headlines ≤30, 1 long headline ≤90, 2-5 descriptions ≤90, business name, and marketing/square/logo images by URL), then Google's AI auto-optimizes across Search/Display/YouTube/Gmail. Defaults PAUSED so you review first. This is the closest programmatic equivalent to Google's AI Campaign Builder. Refs #5764.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Campaign name (also names the budget + asset group)."
+          },
+          "dailyBudgetUsd": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "Daily budget in USD."
+          },
+          "finalUrl": {
+            "type": "string",
+            "description": "Landing page URL."
+          },
+          "businessName": {
+            "type": "string",
+            "maxLength": 25,
+            "description": "Business name (≤25 chars), e.g. \"AINative Studio\"."
+          },
+          "headlines": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 3,
+            "maxItems": 15,
+            "description": "3–15 headlines, each ≤30 chars."
+          },
+          "longHeadline": {
+            "type": "string",
+            "maxLength": 90,
+            "description": "One long headline ≤90 chars."
+          },
+          "descriptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 2,
+            "maxItems": 5,
+            "description": "2–5 descriptions, each ≤90 chars."
+          },
+          "marketingImageUrl": {
+            "type": "string",
+            "description": "Landscape 1.91:1 marketing image URL (≥600x314)."
+          },
+          "squareImageUrl": {
+            "type": "string",
+            "description": "Square 1:1 marketing image URL (≥300x300)."
+          },
+          "logoImageUrl": {
+            "type": "string",
+            "description": "Square logo URL (≥128x128, 1:1)."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ENABLED",
+              "PAUSED"
+            ],
+            "default": "PAUSED",
+            "description": "Default PAUSED."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "name",
+          "dailyBudgetUsd",
+          "finalUrl",
+          "businessName",
+          "headlines",
+          "longHeadline",
+          "descriptions",
+          "marketingImageUrl",
+          "squareImageUrl",
+          "logoImageUrl"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads-lifecycle.ts#L531-L667",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: sequentially creates budget, PMax campaign, image/text assets and asset-group links; images use full_size.url rather than uploaded bytes, and partial creations are not rolled back."
+    },
+    {
+      "name": "gads_add_language_target",
+      "description": "Add a language target to a campaign so ads serve to users with that language setting. Common language constant ids: 1000=English, 1003=Spanish, 1001=German, 1002=French. Refs #5764.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign ID."
+          },
+          "languageConstantId": {
+            "type": "string",
+            "default": "1000",
+            "description": "language_constant id. 1000=English (default)."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Google Ads customer ID. Defaults to GOOGLE_ADS_CUSTOMER_ID env var."
+          }
+        },
+        "required": [
+          "campaignId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/AINative-Studio/ainative-gtm-mcp/blob/b858f34ced754293a440898dce048869774fc661/src/tools/google-ads-lifecycle.ts#L667-L692",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Ads: executes campaignCriteria.create using the supplied parameters."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "audit",
+    "summary": "Audits container configuration, finds broadly triggered conversion tags, and creates replacement event triggers.",
+    "reason": "Implements 18 GTM account/container/workspace, tag, trigger, audit and release tools against googleapis Tag Manager v2; also exposes Google Ads tools on the same server.",
+    "examples": [
+      "gtm_find_misfiring_conversion_tags",
+      "gtm_fix_conversion_tag_trigger",
+      "gtm_audit_container"
+    ]
+  }
+}

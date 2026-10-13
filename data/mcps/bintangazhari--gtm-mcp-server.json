@@ -1,0 +1,604 @@
+{
+  "repo": "bintangazhari/gtm-mcp-server",
+  "url": "https://github.com/bintangazhari/gtm-mcp-server",
+  "commit": "eb317c1112b4a95da0013a0cfb51768794f57a43",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Nineteen registered GTM tools with real API handlers, but list_versions invokes a nonexistent v2 method and publish_workspace creates a version without publishing it.",
+  "method": "source",
+  "server": "index.js (authenticated SSE at port 2000 /sse with POST /message)",
+  "exposure": "All 19 tools are unconditionally registered; startup requires GCP_SERVICE_ACCOUNT_B64 and HTTP requests require AUTH_TOKEN. No conditional groups.",
+  "sources": [
+    "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L69-L261",
+    "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L263-L399",
+    "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L14-L66",
+    "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L401-L407",
+    "https://tagmanager.googleapis.com/$discovery/rest?version=v2"
+  ],
+  "limitations": [
+    "Static extraction of the exact ListToolsRequestSchema array; server was not started and no GTM operations were invoked.",
+    "list_versions uses versions.list, absent from the official v2 discovery snapshot fetched 2026-10-13; version_headers.list is the actual version listing endpoint.",
+    "publish_workspace promises live publication but only invokes workspaces.create_version.",
+    "List handlers do not follow pagination tokens.",
+    "Nested parameter/filter objects are unrestricted in the actual exposed schema; no omitted nested fields were inferred.",
+    "Startup loads and deletes a local .env file; extraction evaluated only the literal tool array in an isolated VM."
+  ],
+  "tools": [
+    {
+      "name": "list_accounts",
+      "description": "List GTM accounts",
+      "inputSchema": {
+        "type": "object"
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L72-L72",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists the first page of GTM accounts and returns the account array."
+    },
+    {
+      "name": "list_containers",
+      "description": "List GTM containers",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountPath": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountPath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L73-L77",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists the first page of containers under accountPath and returns the container array."
+    },
+    {
+      "name": "list_workspaces",
+      "description": "List workspaces in a container",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "containerPath": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "containerPath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L78-L82",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists the first page of workspaces under containerPath and returns the workspace array."
+    },
+    {
+      "name": "list_tags",
+      "description": "List all tags in a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspacePath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L83-L87",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists the first page of tags under workspacePath and returns the tag array."
+    },
+    {
+      "name": "list_triggers",
+      "description": "List all triggers in a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspacePath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L88-L92",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists the first page of triggers under workspacePath and returns the trigger array."
+    },
+    {
+      "name": "list_variables",
+      "description": "List all variables in a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspacePath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L93-L97",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists the first page of variables under workspacePath and returns the variable array."
+    },
+    {
+      "name": "list_versions",
+      "description": "List historical container versions (useful for identifying rollback targets)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "containerPath": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "containerPath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L98-L102",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Calls tagmanager.accounts.containers.versions.list, which does not exist in the v2 API; the caught error is returned as an MCP tool error."
+    },
+    {
+      "name": "create_workspace",
+      "description": "Create a new workspace in a container",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "containerPath": {
+            "type": "string",
+            "description": "Path of the container"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the new workspace"
+          }
+        },
+        "required": [
+          "containerPath",
+          "name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L103-L114",
+      "scope": "gtm",
+      "tags": [
+        "workspace",
+        "edit"
+      ],
+      "behavior": "Creates a workspace under containerPath with the supplied name."
+    },
+    {
+      "name": "create_tag",
+      "description": "Create a new tag in a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string",
+            "description": "Path of the workspace"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the new tag"
+          },
+          "type": {
+            "type": "string",
+            "description": "Tag type (e.g., html, ga4, etc.)"
+          },
+          "parameter": {
+            "type": "array",
+            "description": "Array of parameter objects {type, key, value}",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "workspacePath",
+          "name",
+          "type"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L115-L128",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Creates a tag with name, type and parameter (defaulting to an empty array); it supplies no firing trigger IDs."
+    },
+    {
+      "name": "update_tag",
+      "description": "Update/Rename an existing tag",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tagPath": {
+            "type": "string",
+            "description": "Full path of the tag"
+          },
+          "name": {
+            "type": "string",
+            "description": "Updated name of the tag"
+          },
+          "type": {
+            "type": "string",
+            "description": "Updated tag type"
+          },
+          "parameter": {
+            "type": "array",
+            "description": "Updated parameters",
+            "items": {
+              "type": "object"
+            }
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "Current fingerprint of the tag (required)"
+          }
+        },
+        "required": [
+          "tagPath",
+          "name",
+          "type",
+          "fingerprint"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L129-L143",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Updates a tag using path and fingerprint with name, type and parameter (defaulting to an empty array)."
+    },
+    {
+      "name": "delete_tag",
+      "description": "Delete a tag from a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tagPath": {
+            "type": "string",
+            "description": "Full path of the tag to delete"
+          }
+        },
+        "required": [
+          "tagPath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L144-L154",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Deletes the tag at tagPath."
+    },
+    {
+      "name": "create_trigger",
+      "description": "Create a new trigger in a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string",
+            "description": "Path of the workspace"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the new trigger"
+          },
+          "type": {
+            "type": "string",
+            "description": "Trigger type (e.g., pageview, customEvent, click)"
+          },
+          "customEventFilter": {
+            "type": "array",
+            "description": "Optional array of filters for custom events",
+            "items": {
+              "type": "object"
+            }
+          },
+          "filter": {
+            "type": "array",
+            "description": "Optional array of firing conditions",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "workspacePath",
+          "name",
+          "type"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L155-L169",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Creates a trigger with name, type, customEventFilter and filter, defaulting both filter arrays to empty."
+    },
+    {
+      "name": "update_trigger",
+      "description": "Update/Rename an existing trigger",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "triggerPath": {
+            "type": "string",
+            "description": "Full path of the trigger"
+          },
+          "name": {
+            "type": "string",
+            "description": "Updated name of the trigger"
+          },
+          "type": {
+            "type": "string",
+            "description": "Updated trigger type"
+          },
+          "customEventFilter": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "filter": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "Current fingerprint of the trigger (required)"
+          }
+        },
+        "required": [
+          "triggerPath",
+          "name",
+          "type",
+          "fingerprint"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L170-L185",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Updates a trigger using path and fingerprint with name, type and both filter arrays, defaulting missing arrays to empty."
+    },
+    {
+      "name": "delete_trigger",
+      "description": "Delete a trigger from a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "triggerPath": {
+            "type": "string",
+            "description": "Full path of the trigger to delete"
+          }
+        },
+        "required": [
+          "triggerPath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L186-L196",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Deletes the trigger at triggerPath."
+    },
+    {
+      "name": "create_variable",
+      "description": "Create a new variable in a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string",
+            "description": "Path of the workspace"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the new variable"
+          },
+          "type": {
+            "type": "string",
+            "description": "Variable type"
+          },
+          "parameter": {
+            "type": "array",
+            "description": "Array of parameter objects",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "workspacePath",
+          "name",
+          "type"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L197-L210",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Creates a variable with name, type and parameter, defaulting parameters to an empty array."
+    },
+    {
+      "name": "update_variable",
+      "description": "Update/Rename an existing variable",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variablePath": {
+            "type": "string",
+            "description": "Full path of the variable"
+          },
+          "name": {
+            "type": "string",
+            "description": "Updated name of the variable"
+          },
+          "type": {
+            "type": "string",
+            "description": "Updated variable type"
+          },
+          "parameter": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "Current fingerprint of the variable (required)"
+          }
+        },
+        "required": [
+          "variablePath",
+          "name",
+          "type",
+          "fingerprint"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L211-L225",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Updates a variable using path and fingerprint with name, type and parameter, defaulting parameters to an empty array."
+    },
+    {
+      "name": "delete_variable",
+      "description": "Delete a variable from a workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variablePath": {
+            "type": "string",
+            "description": "Full path of the variable to delete"
+          }
+        },
+        "required": [
+          "variablePath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L226-L236",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Deletes the variable at variablePath."
+    },
+    {
+      "name": "publish_workspace",
+      "description": "Create a version and publish the current workspace changes live",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspacePath": {
+            "type": "string",
+            "description": "Path of the workspace to publish"
+          },
+          "versionName": {
+            "type": "string",
+            "description": "Name for the new published version"
+          }
+        },
+        "required": [
+          "workspacePath",
+          "versionName"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L237-L248",
+      "scope": "gtm",
+      "tags": [
+        "workspace",
+        "release"
+      ],
+      "behavior": "Creates a container version from the workspace via create_version and returns it, but never calls versions.publish, so changes are not published live."
+    },
+    {
+      "name": "publish_version",
+      "description": "Publish a specific historical container version (used to perform a Rollback)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "versionPath": {
+            "type": "string",
+            "description": "Full path of the target container version (e.g. accounts/X/containers/Y/versions/Z)"
+          }
+        },
+        "required": [
+          "versionPath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/bintangazhari/gtm-mcp-server/blob/eb317c1112b4a95da0013a0cfb51768794f57a43/index.js#L249-L259",
+      "scope": "gtm",
+      "tags": [
+        "release"
+      ],
+      "behavior": "Publishes the historical container version at versionPath."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "manage",
+    "summary": "Creates and edits tags, triggers, and variables and publishes existing versions.",
+    "reason": "Nineteen registered GTM tools with real API handlers, but list_versions invokes a nonexistent v2 method and publish_workspace creates a version without publishing it.",
+    "examples": [
+      "create_tag",
+      "update_trigger",
+      "publish_version"
+    ]
+  }
+}

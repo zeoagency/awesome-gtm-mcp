@@ -1,0 +1,1228 @@
+{
+  "repo": "hedayetulislamhadi/genius-gtm-mcp",
+  "url": "https://github.com/hedayetulislamhadi/genius-gtm-mcp",
+  "commit": "ba2bc077fd804542decb9018cc88acd4face3b05",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Substantial implemented GTM coverage, but several advertised actions use missing SDK methods or incorrect built-in-variable parameters; Stape handler leaks credentials to stderr.",
+  "method": "source",
+  "server": "cli.js -> server.js (stdio)",
+  "exposure": "All 27 tools are unconditionally listed together after mandatory Google OAuth client ID, secret and refresh token startup gate; Cloudflare, Stape and Meta credentials are checked by their handlers.",
+  "sources": [
+    "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L98-L236",
+    "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L85-L96",
+    "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L239-L621",
+    "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L624-L647"
+  ],
+  "limitations": [
+    "Static literal registration extracted without executing server or invoking any API operations; SDK method availability inspected offline with googleapis 144.0.0.",
+    "Upstream package-lock resolves googleapis 173.0.0 while package.json requests ^144.0.0; npm ci fails; offline inspection used package.json-compatible npm install in isolated scratch.",
+    "gtm_version list calls absent versions.list; gtm_gtag_config revert calls absent gtag_config.revert.",
+    "Built-in-variable disable uses workspace path without built_in_variables suffix; revert supplies array types where SDK expects singular string and uses workspace path contrary to declared SDK path.",
+    "Action-specific required IDs/payload fields are mostly not required by exposed schemas; handlers do not validate these before API calls.",
+    "No remote API functionality tested; Cloudflare, Stape and Meta HTTP endpoints and API-version support remain unverified.",
+    "stape_container_manager logs API key to stderr; default create region differs from schema description.",
+    "genius_capi_validator only produces sample payloads and performs no actual validation; shared other-product tools are retained in catalog.",
+    "List endpoints do not paginate; responses are truncated at 60000 characters."
+  ],
+  "tools": [
+    {
+      "name": "gtm_account",
+      "description": "Manage GTM accounts. actions: list | get | update.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "update"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L98-L98",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Lists, reads or updates GTM accounts using the v2 accounts resource."
+    },
+    {
+      "name": "gtm_container",
+      "description": "Manage containers. actions: list | get | create | update | delete | snippet | lookup | combine | move_tag_id.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "update",
+              "delete",
+              "snippet",
+              "lookup",
+              "combine",
+              "move_tag_id"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "destinationId": {
+            "type": "string"
+          },
+          "tagId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action",
+          "accountId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L99-L99",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Dispatches container CRUD, snippet, lookup, combine and move_tag_id requests to the v2 containers resource."
+    },
+    {
+      "name": "gtm_workspace",
+      "description": "Manage workspaces. actions: list | get | create | update | delete | sync | get_status | quick_preview | resolve_conflict.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "update",
+              "delete",
+              "sync",
+              "get_status",
+              "quick_preview",
+              "resolve_conflict"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L100-L100",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace",
+        "test"
+      ],
+      "behavior": "Dispatches workspace CRUD, sync, status, quick preview and conflict resolution to the v2 workspaces resource."
+    },
+    {
+      "name": "gtm_tag",
+      "description": "Manage tags.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "update",
+              "delete",
+              "revert"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L101-L101",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Dispatches workspace tag list/get/create/update/delete/revert operations through the common GTM resource helper."
+    },
+    {
+      "name": "gtm_trigger",
+      "description": "Manage triggers.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "update",
+              "delete",
+              "revert"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L102-L102",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Dispatches workspace trigger list/get/create/update/delete/revert operations through the common GTM resource helper."
+    },
+    {
+      "name": "gtm_variable",
+      "description": "Manage user-defined variables.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "update",
+              "delete",
+              "revert"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L103-L103",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Dispatches workspace variable list/get/create/update/delete/revert operations through the common GTM resource helper."
+    },
+    {
+      "name": "gtm_built_in_variable",
+      "description": "Manage built-in variables.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "enable",
+              "disable",
+              "revert"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L104-L104",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Lists/enables built-in variables; disable passes a workspace path without /built_in_variables, and revert passes an array where the SDK expects one type."
+    },
+    {
+      "name": "gtm_folder",
+      "description": "Manage folders.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "update",
+              "delete",
+              "revert",
+              "move_entities",
+              "entities"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L105-L105",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Dispatches folder CRUD/revert/entity inspection and moves payload tagIds, triggerIds and variableIds into a folder."
+    },
+    {
+      "name": "gtm_client",
+      "description": "sGTM clients.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "update",
+              "delete",
+              "revert"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L106-L106",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace",
+        "server-side"
+      ],
+      "behavior": "Dispatches workspace client list/get/create/update/delete/revert operations through the common GTM resource helper."
+    },
+    {
+      "name": "gtm_zone",
+      "description": "Zones (sub-containers).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "update",
+              "delete",
+              "revert"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L107-L107",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Dispatches workspace zone list/get/create/update/delete/revert operations through the common GTM resource helper."
+    },
+    {
+      "name": "gtm_template",
+      "description": "Custom tag/variable templates with full .tpl support.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "update",
+              "delete",
+              "revert"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L108-L108",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Dispatches workspace template list/get/create/update/delete/revert operations through the common GTM resource helper."
+    },
+    {
+      "name": "gtm_transformation",
+      "description": "Server-container transformations.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "update",
+              "delete",
+              "revert"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L109-L109",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace",
+        "server-side"
+      ],
+      "behavior": "Dispatches workspace transformation list/get/create/update/delete/revert operations through the common GTM resource helper."
+    },
+    {
+      "name": "gtm_gtag_config",
+      "description": "Google tag config.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "update",
+              "delete",
+              "revert"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L110-L110",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Dispatches Google tag configuration CRUD through the workspace helper; advertised revert calls a nonexistent SDK method."
+    },
+    {
+      "name": "gtm_version",
+      "description": "Container versions.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "live",
+              "publish",
+              "undelete",
+              "set_latest",
+              "create_from_workspace"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "versionId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L111-L111",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release",
+        "workspace"
+      ],
+      "behavior": "Gets live/specific versions, publishes, undeletes, sets latest or creates from workspace; list calls nonexistent versions.list in googleapis 144."
+    },
+    {
+      "name": "gtm_version_header",
+      "description": "Version metadata.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "latest"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L112-L112",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Lists version headers or retrieves the latest header."
+    },
+    {
+      "name": "gtm_environment",
+      "description": "Environments.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "update",
+              "delete",
+              "reauthorize"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L113-L113",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "release"
+      ],
+      "behavior": "Lists, gets, creates, updates, deletes or reauthorizes container environments."
+    },
+    {
+      "name": "gtm_destination",
+      "description": "GA4 destinations.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "link"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "containerId": {
+            "type": "string"
+          },
+          "destinationId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action",
+          "accountId",
+          "containerId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L114-L114",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Lists/gets destinations or links a destination with allowUserPermissionFeatureUpdate always true; payload is ignored."
+    },
+    {
+      "name": "gtm_user_permission",
+      "description": "User permissions.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "update",
+              "delete"
+            ]
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "userPermissionId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L115-L115",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "access"
+      ],
+      "behavior": "Lists, gets, creates, updates or deletes account user permissions."
+    },
+    {
+      "name": "gtm_raw",
+      "description": "UNIVERSAL escape hatch.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string"
+          },
+          "params": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L116-L119",
+      "scope": "gtm",
+      "tags": [
+        "generic-api",
+        "inspect",
+        "edit",
+        "workspace",
+        "release"
+      ],
+      "behavior": "Traverses an arbitrary dot-separated method on the GTM v2 client and invokes it with unrestricted params."
+    },
+    {
+      "name": "genius_datalayer_builder",
+      "description": "Generate advanced, server-side optimized e-commerce DataLayer snippet for GA4.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "eventName": {
+            "type": "string",
+            "description": "Event name e.g., view_item, purchase"
+          },
+          "includeItems": {
+            "type": "boolean",
+            "description": "Include demo ecommerce items?"
+          }
+        },
+        "required": [
+          "eventName"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L120-L131",
+      "scope": "auxiliary",
+      "tags": [
+        "offline",
+        "edit"
+      ],
+      "behavior": "Generates a local dataLayer.push script with hardcoded demo ecommerce items or placeholder custom parameters, interpolating eventName directly."
+    },
+    {
+      "name": "genius_capi_validator",
+      "description": "Validate and generate Meta CAPI / TikTok Server payload from browser data.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "meta",
+              "tiktok",
+              "snapchat"
+            ],
+            "description": "Target platform"
+          },
+          "eventName": {
+            "type": "string",
+            "description": "Standard event name"
+          }
+        },
+        "required": [
+          "platform",
+          "eventName"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L132-L145",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Generates local hardcoded sample Meta, TikTok or Snapchat event payloads with placeholder hashed identity data; performs no validation of browser data."
+    },
+    {
+      "name": "cloudflare_zone_lookup",
+      "description": "Find Cloudflare Zone ID automatically using your domain name.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domainName": {
+            "type": "string",
+            "description": "Your website domain name (e.g., example.com)"
+          }
+        },
+        "required": [
+          "domainName"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L146-L156",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Cloudflare: fetches zones by domain name and returns the first matching zone ID."
+    },
+    {
+      "name": "cloudflare_dns_manager",
+      "description": "Add, list or delete DNS records (TXT, CNAME, A, etc.) in Cloudflare for domain verification or Stape.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "create",
+              "delete"
+            ]
+          },
+          "zoneId": {
+            "type": "string",
+            "description": "Cloudflare Zone ID"
+          },
+          "recordId": {
+            "type": "string",
+            "description": "DNS Record ID (needed for delete)"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "TXT",
+              "CNAME",
+              "A",
+              "AAAA"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "Record name e.g., _stape or metrics"
+          },
+          "content": {
+            "type": "string",
+            "description": "Record value/target"
+          },
+          "proxied": {
+            "type": "boolean",
+            "description": "True for Orange Cloud (Same Origin), False for Grey cloud (DNS only)"
+          }
+        },
+        "required": [
+          "action",
+          "zoneId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L157-L173",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Cloudflare: lists, creates with ttl 3600 and proxied default false, or deletes DNS records, returning raw API JSON."
+    },
+    {
+      "name": "cloudflare_worker_deploy",
+      "description": "Deploy or update a Cloudflare Worker script for Same-Origin server-side tracking proxy.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workerName": {
+            "type": "string",
+            "description": "Name of the Cloudflare Worker"
+          },
+          "scriptContent": {
+            "type": "string",
+            "description": "The complete JavaScript code for the Worker"
+          }
+        },
+        "required": [
+          "workerName",
+          "scriptContent"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L174-L187",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Cloudflare: uploads scriptContent via PUT to a Workers script endpoint; does not configure routes or bindings."
+    },
+    {
+      "name": "stape_container_manager",
+      "description": "Manage Stape.io sGTM server containers: list, get status, create new container, or delete.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "get",
+              "create",
+              "delete"
+            ],
+            "description": "Action to perform on Stape"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "Stape Container ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Container Name (for create)"
+          },
+          "gtmServerContainerConfig": {
+            "type": "string",
+            "description": "sGTM Container Config string from Google GTM"
+          },
+          "region": {
+            "type": "string",
+            "description": "Server region e.g., us, eu, sg (default: us)"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L188-L202",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "edit",
+        "hosting",
+        "server-side"
+      ],
+      "behavior": "Calls Stape v2 container list/get/create/delete endpoints; create defaults zone.type to apd despite schema description saying us, and logs the API key to stderr."
+    },
+    {
+      "name": "stape_domain_manager",
+      "description": "Add a custom domain to a Stape sGTM container and fetch the required DNS verification records.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "add",
+              "verify",
+              "delete"
+            ],
+            "description": "Domain action"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "Stape Container ID"
+          },
+          "domain": {
+            "type": "string",
+            "description": "Custom domain name e.g., metrics.yoursite.com"
+          },
+          "domainId": {
+            "type": "string",
+            "description": "Stape Domain ID (required for verify/delete)"
+          }
+        },
+        "required": [
+          "action",
+          "containerId"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L203-L218",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect",
+        "edit",
+        "hosting",
+        "server-side"
+      ],
+      "behavior": "Calls Stape v2 domain list/add/verify/delete endpoints and returns API responses as DNS instructions when adding."
+    },
+    {
+      "name": "meta_pixel_capi_manager",
+      "description": "Manage Meta Pixels, fetch ad accounts and pixels, or send server-side events via Conversions API (CAPI).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list_ad_accounts",
+              "list_pixels",
+              "send_capi_event"
+            ],
+            "description": "Action to perform"
+          },
+          "adAccountId": {
+            "type": "string",
+            "description": "Optional Meta Ad Account ID (e.g. act_313006043640351)"
+          },
+          "pixel_id": {
+            "type": "string",
+            "description": "Facebook Pixel ID or Dataset ID. Falls back to your saved default Pixel ID from meta-auth if omitted."
+          },
+          "event_name": {
+            "type": "string",
+            "description": "Standard event name e.g., Purchase, Lead, ViewContent"
+          },
+          "event_source_url": {
+            "type": "string",
+            "description": "Website URL where the event occurred"
+          },
+          "test_event_code": {
+            "type": "string",
+            "description": "Optional Test Event Code from Meta Events Manager"
+          },
+          "user_data": {
+            "type": "object",
+            "description": "Hashed user data (em, ph, client_ip_address, etc.)"
+          },
+          "custom_data": {
+            "type": "object",
+            "description": "Custom parameters like currency, value"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/hedayetulislamhadi/genius-gtm-mcp/blob/ba2bc077fd804542decb9018cc88acd4face3b05/server.js#L219-L235",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Meta: lists ad accounts, scans accounts for pixels or posts CAPI events to Graph API v19.0 with timestamp and fallback event/user data; does not hash supplied identity data."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "server-side",
+    "summary": "Configures server clients, transformations, and templates alongside container entity operations.",
+    "reason": "Substantial implemented GTM coverage, but several advertised actions use missing SDK methods or incorrect built-in-variable parameters; Stape handler leaks credentials to stderr.",
+    "examples": [
+      "gtm_client",
+      "gtm_transformation",
+      "gtm_raw"
+    ]
+  }
+}

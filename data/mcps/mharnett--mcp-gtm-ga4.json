@@ -1,0 +1,507 @@
+{
+  "repo": "mharnett/mcp-gtm-ga4",
+  "url": "https://github.com/mharnett/mcp-gtm-ga4",
+  "commit": "539cc67f638bd2a8c7678d5f93b84d68e49b0564",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "18 fully registered tools have implemented handlers, but advertised sandbox/health guarantees exceed implementation and preview bypasses the default write gate.",
+  "method": "source",
+  "server": "src/index.ts (stdio; dist/index.js packaged entrypoint)",
+  "exposure": "11 tools exposed by default; 7 tools in WRITE_TOOLS hidden and calls refused unless GTM_GA4_MCP_WRITE=true. All 18 included here. GA4 tools remain exposed even without GA4_PROPERTY_ID.",
+  "sources": [
+    "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L1-L25",
+    "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L271-L635",
+    "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/writeGate.ts#L1-L66",
+    "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/consent.ts#L1-L61"
+  ],
+  "limitations": [
+    "Literal tool registration extracted offline without loading server or contacting Google; no tools/list runtime or API functionality verification performed.",
+    "Workspace resolution uses GTM_SANDBOX_WORKSPACE_ID directly or selects Default Workspace; there is no separate sandbox-name validation or SafetyError check claimed by README (src/index.ts lines 318-335).",
+    "gtm_preview calls quick_preview while omitted from WRITE_TOOLS, so available in default read-only exposure; handler returns API payload rather than a constructed Preview URL.",
+    "gtm_get_client_context returns healthy without verifying connectivity and reports auto-detect rather than actual resolved workspace ID.",
+    "GTM tag/trigger/variable lists and consent audit do not follow nextPageToken; advertised all-tag audits may be partial. Consent audit measures status heuristically, not actual consent integration.",
+    "GA4_PROPERTY_ID is optional at startup, but all GA4 handlers construct properties/ even when absent.",
+    "Input JSON bodies are strings by upstream schema; no nested GTM body schema, enums, or defaults are registered. Described/handler defaults are deliberately not invented as schema defaults.",
+    "Backlog gtm_list_versions is proposed, not registered or implemented, and excluded from tool catalog."
+  ],
+  "tools": [
+    {
+      "name": "gtm_get_client_context",
+      "description": "Health check and status overview. Returns GTM container path, workspace ID, GA4 property ID, and server version. Use this to verify connectivity.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L5-L5",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Returns configured paths and version with a hard-coded healthy status; does not contact Google or resolve the actual workspace.",
+      "exposure": "Exposed by default.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L585-L592"
+    },
+    {
+      "name": "gtm_list_tags",
+      "description": "List all tags in the sandbox GTM workspace with name, type, consent status, and firing triggers.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L7-L7",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists the first API page of workspace tags and returns IDs, types, consent status, pause state and firing triggers.",
+      "exposure": "Exposed by default.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L338-L351"
+    },
+    {
+      "name": "gtm_get_tag",
+      "description": "Get full details of a single tag by ID from the sandbox workspace.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "tag_id": {
+            "type": "string",
+            "description": "The tag ID"
+          }
+        },
+        "required": [
+          "tag_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L8-L8",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Gets one tag from the resolved workspace.",
+      "exposure": "Exposed by default.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L353-L360"
+    },
+    {
+      "name": "gtm_update_tag",
+      "description": "Update a tag in the sandbox workspace. Fetches current tag, merges updates, then saves. Safety: only operates on sandbox workspace.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "tag_id": {
+            "type": "string",
+            "description": "The tag ID"
+          },
+          "updates_json": {
+            "type": "string",
+            "description": "JSON object with fields to update (e.g. consentSettings, parameter)"
+          }
+        },
+        "required": [
+          "tag_id",
+          "updates_json"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L9-L9",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Reads the tag, parses updates_json, shallow-merges fields, and updates with its current fingerprint.",
+      "exposure": "Only exposed/callable when GTM_GA4_MCP_WRITE=true.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L362-L374"
+    },
+    {
+      "name": "gtm_create_tag",
+      "description": "Create a new tag in the sandbox workspace. Safety: only operates on sandbox workspace.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "tag_json": {
+            "type": "string",
+            "description": "Full GTM tag JSON"
+          }
+        },
+        "required": [
+          "tag_json"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L10-L10",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Parses tag_json and creates a tag in the resolved workspace.",
+      "exposure": "Only exposed/callable when GTM_GA4_MCP_WRITE=true.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L376-L384"
+    },
+    {
+      "name": "gtm_list_triggers",
+      "description": "List all triggers in the sandbox GTM workspace.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L11-L11",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists the first API page of workspace triggers as IDs, names and types.",
+      "exposure": "Exposed by default.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L386-L394"
+    },
+    {
+      "name": "gtm_list_variables",
+      "description": "List all variables in the sandbox GTM workspace.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L12-L12",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists the first API page of workspace variables as IDs, names and types.",
+      "exposure": "Exposed by default.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L396-L404"
+    },
+    {
+      "name": "gtm_get_variable",
+      "description": "Get full details of a single variable by ID from the sandbox workspace.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "variable_id": {
+            "type": "string",
+            "description": "The variable ID"
+          }
+        },
+        "required": [
+          "variable_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L13-L13",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Gets one variable from the resolved workspace.",
+      "exposure": "Exposed by default.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L406-L413"
+    },
+    {
+      "name": "gtm_create_variable",
+      "description": "Create a new variable in the sandbox workspace. Safety: only operates on sandbox workspace.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "variable_json": {
+            "type": "string",
+            "description": "Full GTM variable JSON (must include name, type, and type-appropriate parameter array)"
+          }
+        },
+        "required": [
+          "variable_json"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L14-L14",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Parses variable_json and creates a variable in the resolved workspace.",
+      "exposure": "Only exposed/callable when GTM_GA4_MCP_WRITE=true.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L429-L437"
+    },
+    {
+      "name": "gtm_update_variable",
+      "description": "Update a variable in the sandbox workspace. Fetches current variable, merges updates, then saves. Safety: only operates on sandbox workspace.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "variable_id": {
+            "type": "string",
+            "description": "The variable ID"
+          },
+          "updates_json": {
+            "type": "string",
+            "description": "JSON object with fields to update (e.g. parameter, name)"
+          }
+        },
+        "required": [
+          "variable_id",
+          "updates_json"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L15-L15",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Reads the variable, parses updates_json, shallow-merges fields, and updates with its current fingerprint.",
+      "exposure": "Only exposed/callable when GTM_GA4_MCP_WRITE=true.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L415-L427"
+    },
+    {
+      "name": "gtm_delete_variable",
+      "description": "Delete a variable from the sandbox workspace. Destructive. Safety: only operates on sandbox workspace.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "variable_id": {
+            "type": "string",
+            "description": "The variable ID"
+          }
+        },
+        "required": [
+          "variable_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L16-L16",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Deletes one variable in the resolved workspace.",
+      "exposure": "Only exposed/callable when GTM_GA4_MCP_WRITE=true.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L439-L446"
+    },
+    {
+      "name": "gtm_audit_consent",
+      "description": "Scan all tags in the sandbox workspace and report consent compliance. Returns tags with no consent, NOT_NEEDED tags, properly configured tags, and recommendations.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L17-L17",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit",
+        "workspace"
+      ],
+      "behavior": "Fetches tags twice and classifies first-page consent status with tag-type/name-based recommendations; does not validate consent wiring.",
+      "exposure": "Exposed by default.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L448-L477"
+    },
+    {
+      "name": "gtm_preview",
+      "description": "Generate a GTM Preview URL for the sandbox workspace.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L18-L18",
+      "scope": "gtm",
+      "tags": [
+        "test",
+        "workspace"
+      ],
+      "behavior": "Calls workspace quick_preview and returns its API response without constructing a preview URL.",
+      "exposure": "Exposed by default.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L479-L486"
+    },
+    {
+      "name": "gtm_create_version",
+      "description": "Create a version (snapshot) of the sandbox workspace. Does NOT publish.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Version name (e.g., \"Consent fixes v1\")"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional version notes"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L19-L19",
+      "scope": "gtm",
+      "tags": [
+        "release",
+        "workspace"
+      ],
+      "behavior": "Creates a container version from the resolved workspace and returns its ID, name and path without publishing.",
+      "exposure": "Only exposed/callable when GTM_GA4_MCP_WRITE=true.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L488-L498"
+    },
+    {
+      "name": "gtm_ga4_run_report",
+      "description": "Query GA4 historical report for the property linked to this GTM container.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "dimensions": {
+            "type": "string",
+            "description": "Comma-separated dimensions (e.g., \"eventName,date\")"
+          },
+          "metrics": {
+            "type": "string",
+            "description": "Comma-separated metrics (e.g., \"eventCount,activeUsers\")"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "Start date (YYYY-MM-DD or \"7daysAgo\")"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "End date (YYYY-MM-DD or \"today\")"
+          },
+          "dimension_filter": {
+            "type": "string",
+            "description": "Optional equality filter (e.g., \"eventName==page_view\")"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Max rows (default 100)"
+          }
+        }
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L21-L21",
+      "scope": "other",
+      "tags": [],
+      "behavior": "GA4: runs a historical report using configured property ID, comma-separated fields and optional equality filter; handler defaults eventName/eventCount, 7daysAgo/today and 100 rows.",
+      "exposure": "Exposed by default.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L514-L530"
+    },
+    {
+      "name": "gtm_ga4_realtime_report",
+      "description": "Query GA4 Realtime Report (last 30 minutes) for the property linked to this GTM container.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "dimensions": {
+            "type": "string",
+            "description": "Comma-separated dimensions"
+          },
+          "metrics": {
+            "type": "string",
+            "description": "Comma-separated metrics"
+          },
+          "dimension_filter": {
+            "type": "string",
+            "description": "Optional equality filter"
+          }
+        }
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L22-L22",
+      "scope": "other",
+      "tags": [],
+      "behavior": "GA4: runs a realtime report using configured property ID, comma-separated fields and optional equality filter; defaults eventName/eventCount.",
+      "exposure": "Exposed by default.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L532-L546"
+    },
+    {
+      "name": "gtm_ga4_list_custom_dimensions",
+      "description": "List all registered custom dimensions for the GA4 property linked to this GTM container.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L23-L23",
+      "scope": "other",
+      "tags": [],
+      "behavior": "GA4: lists registered custom dimensions using the Analytics Admin client.",
+      "exposure": "Exposed by default.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L548-L555"
+    },
+    {
+      "name": "gtm_ga4_create_custom_dimension",
+      "description": "Register a new custom dimension in the GA4 property linked to this GTM container.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+          "parameter_name": {
+            "type": "string",
+            "description": "Event parameter name (e.g., \"form_type\")"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Human-readable name (e.g., \"Form Type\")"
+          },
+          "scope": {
+            "type": "string",
+            "description": "\"EVENT\" or \"USER\" (default: EVENT)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description"
+          }
+        },
+        "required": [
+          "parameter_name",
+          "display_name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/tools.ts#L24-L24",
+      "scope": "other",
+      "tags": [],
+      "behavior": "GA4: creates a custom dimension; maps scope USER to USER and every other value to EVENT.",
+      "exposure": "Only exposed/callable when GTM_GA4_MCP_WRITE=true.",
+      "implementationSource": "https://github.com/mharnett/mcp-gtm-ga4/blob/539cc67f638bd2a8c7678d5f93b84d68e49b0564/src/index.ts#L557-L566"
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "audit",
+    "summary": "Inspect tag consent settings, preview workspace compilation, and create or update draft tracking resources.",
+    "examples": [
+      "gtm_audit_consent",
+      "gtm_preview",
+      "gtm_update_tag"
+    ]
+  }
+}

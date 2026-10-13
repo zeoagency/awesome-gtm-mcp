@@ -1,136 +1,153 @@
 # Awesome Google Tag Manager (GTM) MCP [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-> A curated list of Google Tag Manager MCP servers, CLIs, and SDKs.
+> Discover what Google Tag Manager MCP tools actually do.
 
-**87 projects** for managing, auditing, testing, or integrating Google Tag Manager. Multi-product projects are listed for their GTM features.
+**61 MCP servers · 1678 GTM tool definitions · 690 distinct GTM tool names.**
 
-## Quick comparison
+[Find a tool by name](TOOL_INDEX.md) · [CLIs and SDKs](SUPPORTING_TOOLS.md) · [Review decisions](REVIEW.md)
 
-| Tool type | GTM use |
-|---|---|
-| [MCP servers](#mcp-servers-65) | Connect AI assistants to GTM management, auditing, and testing tools. |
-| [CLIs](#clis-11) | Manage, export, compare, or generate GTM configurations from the terminal. |
-| [Tag Manager API SDKs](#tag-manager-api-sdks-7) | Build applications that manage GTM resources through the Google API. |
-| [Website integration SDKs](#website-integration-sdks-4) | Load GTM containers and send dataLayer events from websites. |
+Grouped by inspected GTM handlers. Detail pages preserve complete server inventories, including supporting and other-product tools.
 
 ## Contents
 
-- [MCP servers (65)](#mcp-servers-65)
-- [CLIs (11)](#clis-11)
-- [Tag Manager API SDKs (7)](#tag-manager-api-sdks-7)
-- [Website integration SDKs (4)](#website-integration-sdks-4)
+- [Audit containers and tracking (7)](#audit)
+- [Inspect websites and dataLayer (3)](#test)
+- [Edit exported containers offline (1)](#offline)
+- [Manage server-side clients and transformations (9)](#server-side)
+- [Stage compare and release changes (7)](#changes)
+- [Manage containers tags triggers and variables (23)](#manage)
+- [Inspect containers without edit tools (3)](#inspect)
+- [Call GTM through generic and discovery tools (8)](#generic)
 
-## MCP servers (65)
+<a id="audit"></a>
 
-*65 projects. MCP implementations and hosted services with GTM management, auditing, or testing tools.*
+## Audit containers and tracking
 
-| Project | What it does |
-|---|---|
-| [**A1-x-Tech/mcp-google-tagmanager**](https://github.com/A1-x-Tech/mcp-google-tagmanager) | Manages GTM accounts and container entities through TypeScript MCP tools with serialized API calls and configurable retry handling. |
-| [**acamolese/gtm-audit-mcp**](https://github.com/acamolese/gtm-audit-mcp) | Audits GTM workspace snapshots for unused entities and tracking issues. |
-| [**adtechnacity/gtm-mcp**](https://github.com/adtechnacity/gtm-mcp) | Manages GTM entities with batch tag edits and firing-option tools. |
-| [**ag2-mcp-servers/tag-manager-api**](https://github.com/ag2-mcp-servers/tag-manager-api) | Exposes generated Google Tag Manager API endpoints through an MCP proxy. |
-| [**AINative-Studio/ainative-gtm-mcp**](https://github.com/AINative-Studio/ainative-gtm-mcp) | Reads and edits GTM accounts and workspace entities through MCP tools. |
-| [**AlexStansfield/gtm-mcp-server**](https://github.com/AlexStansfield/gtm-mcp-server) | Reads and updates GTM tags, triggers, variables, workspaces, and versions through a TypeScript MCP server. |
-| [**ambit1977/GTM-MCP**](https://github.com/ambit1977/GTM-MCP) | Lists and edits GTM tags, triggers, variables, and container versions. |
-| [**andylackie/google-marketing-mcp-servers**](https://github.com/andylackie/google-marketing-mcp-servers) | Provides a dedicated TypeScript GTM MCP server for managing container configurations. |
-| [**archievi/climbpast-mcp**](https://github.com/archievi/climbpast-mcp) | Provides a hosted MCP server for inspecting and editing GTM workspaces, tags, triggers, and container releases. |
-| [**b-buller/gtm-mcp**](https://github.com/b-buller/gtm-mcp) | Builds grouped GTM MCP tools from Google's live API discovery document. |
-| [**baptlagae-hue/gtm-mcp**](https://github.com/baptlagae-hue/gtm-mcp) | Reads and edits GTM workspaces while enforcing a workspace naming prefix. |
-| [**beuch26/webguru-gtm-mcp**](https://github.com/beuch26/webguru-gtm-mcp) | Reads GTM workspace entities and creates Ads conversion tags using project credentials stored in Supabase. |
-| [**bintangazhari/gtm-mcp-server**](https://github.com/bintangazhari/gtm-mcp-server) | Lists and edits GTM tags, triggers, and variables and creates or publishes container versions through a JavaScript MCP server. |
-| [**bryangoncalvespro-hub/google-tag-manager-mcp-server**](https://github.com/bryangoncalvespro-hub/google-tag-manager-mcp-server) | Lists and edits GTM tags and triggers and publishes container versions. |
-| [**brynj-digital/gtm-mcp-server**](https://github.com/brynj-digital/gtm-mcp-server) | Inspects GTM accounts, containers, workspaces, tags, and versions through a read-only Python MCP server. |
-| [**burhan29ee/google-analytics-gtm-mcp**](https://github.com/burhan29ee/google-analytics-gtm-mcp) | Manages GTM accounts, containers, workspaces, tags, triggers, and variables through Python MCP tools. |
-| [**bypixels/SEO-MCP-PRO**](https://github.com/bypixels/SEO-MCP-PRO) | Manages GTM accounts, tags, triggers, variables, and versions through MCP tools. |
-| [**CarC96/google-tag-manager-mcp**](https://github.com/CarC96/google-tag-manager-mcp) | Reads GTM account and container details and edits workspace tags, triggers, and variables through Python MCP tools. |
-| [**connorstearns/mcp-gtm**](https://github.com/connorstearns/mcp-gtm) | Inspects and edits GTM entities with write gates and bulk import helpers. |
-| [**creativedesignseo/google-tag-manager-mcp**](https://github.com/creativedesignseo/google-tag-manager-mcp) | Lists and manages GTM container entities through a JavaScript MCP server. |
-| [**CreativeMetrics/gtm-ga4-mcp**](https://github.com/CreativeMetrics/gtm-ga4-mcp) | Manages GTM entities and builds tags from detected tracking integrations. |
-| [**Dayuse-Labs/gtm-mcp**](https://github.com/Dayuse-Labs/gtm-mcp) | Stages and applies reviewable GTM changesets across web and server containers, with drift checks and rollback data. |
-| [**dgtlsunrise/dgtl-connector**](https://github.com/dgtlsunrise/dgtl-connector) | Reads GTM configurations and previews confirmed changes through MCP and HTTP interfaces. |
-| [**dhawalshah/google-tag-manager-mcp**](https://github.com/dhawalshah/google-tag-manager-mcp) | Manages GTM API resources through Python MCP tools with local or remote authentication and destructive-action confirmation. |
-| [**ErikTMA/gtm-mcp**](https://github.com/ErikTMA/gtm-mcp) | Manages GTM entities with account restrictions and parameter validation. |
-| [**fourdots/Google-Marketing-MCPs-G.Ads-GA4-GSC-GTM**](https://github.com/fourdots/Google-Marketing-MCPs-G.Ads-GA4-GSC-GTM) | Provides a Python GTM MCP server for managing accounts, containers, workspace entities, and versions. |
-| [**generalist-club/google-marketing-stack-mcp**](https://github.com/generalist-club/google-marketing-stack-mcp) | Reads GTM accounts, containers, workspaces, tags, triggers, and variables through MCP tools. |
-| [**gustavomkt/mcp-tagmanager**](https://github.com/gustavomkt/mcp-tagmanager) | Inspects and edits GTM entities, pauses tags, and publishes versions through Python MCP tools with explicit write confirmation. |
-| [**hedayetulislamhadi/genius-gtm-mcp**](https://github.com/hedayetulislamhadi/genius-gtm-mcp) | Manages GTM containers, tags, triggers, variables, and versions through JavaScript MCP tools. |
-| [**Insightful-Pipe/google-tag-manager-mcp-server**](https://github.com/Insightful-Pipe/google-tag-manager-mcp-server) | Provides hosted MCP tools to read and update GTM accounts, workspace entities, and container versions. |
-| [**jabeer4148-ops/google-measurement-mcp**](https://github.com/jabeer4148-ops/google-measurement-mcp) | Reads and edits GTM workspaces with preview and review tools. |
-| [**jamestomasino/mcp-gtm**](https://github.com/jamestomasino/mcp-gtm) | Inspects, edits, audits, and exports GTM container JSON files offline through MCP, including server-container entities. |
-| [**jayweezy247/tracking-stack-mcp**](https://github.com/jayweezy247/tracking-stack-mcp) | Creates GTM tracking entities through MCP tools with dry-run and create-only checks. |
-| [**jinchliu/google-tag-manager-mcp**](https://github.com/jinchliu/google-tag-manager-mcp) | Manages GTM resources using discovery-driven MCP tools, with schema inspection, workspace synchronization, and confirmation gates. |
-| [**jinchliu/tagmanager-mcp**](https://github.com/jinchliu/tagmanager-mcp) | Reads and edits GTM tags, triggers, variables, and versions through Python MCP tools with ADC authentication and quota throttling. |
-| [**Juce-me/ga4-gtm-config-mcp**](https://github.com/Juce-me/ga4-gtm-config-mcp) | Plans and applies GTM workspace changes, including entity upserts and container publication. |
-| [**K9Cloud/gtm-mcp**](https://github.com/K9Cloud/gtm-mcp) | Manages GTM containers by domain or public ID, with entity edits, version publishing, and local backup operations. |
-| [**kb223/gtm-ga4-mcp**](https://github.com/kb223/gtm-ga4-mcp) | Reads and edits GTM resources through Python MCP tools with privilege tiers and one-use deletion or publication confirmations. |
-| [**laiskickow/gtm-mcp-server**](https://github.com/laiskickow/gtm-mcp-server) | Manages GTM web and server-container entities through TypeScript MCP tools, including templates, clients, transformations, and conventions. |
-| [**lpecom/webaudit-mcp**](https://github.com/lpecom/webaudit-mcp) | Detects duplicate GTM installations in page HTML through MCP tools. |
-| [**lucasbueno-live/gtm-mcp-liveseo**](https://github.com/lucasbueno-live/gtm-mcp-liveseo) | Manages and audits GTM containers through a local Node.js MCP server with browser OAuth and read-only defaults. |
-| [**magdamarketinghackers/MCP-GTM**](https://github.com/magdamarketinghackers/MCP-GTM) | Reads and edits GTM entities through a multi-user HTTP MCP server. |
-| [**marwa-mrwan/google-clarity-mcp-codex**](https://github.com/marwa-mrwan/google-clarity-mcp-codex) | Reads and edits GTM configurations through MCP tools backed by the Tag Manager API v2. |
-| [**mharnett/mcp-gtm-ga4**](https://github.com/mharnett/mcp-gtm-ga4) | Inspects and edits GTM configurations through MCP tools with optional write gates. |
-| [**moonbirdai/puppeteer-plus-martech-mcp**](https://github.com/moonbirdai/puppeteer-plus-martech-mcp) | Inspects live GTM scripts and dataLayer values through a Puppeteer MCP server. |
-| [**neep305/mcp-for-gtm**](https://github.com/neep305/mcp-for-gtm) | Manages GTM entities through Python MCP tools and reusable component templates. |
-| [**noviq-ai/google-tagmanager-mcp**](https://github.com/noviq-ai/google-tagmanager-mcp) | Lists GTM accounts, containers, workspaces, tags, triggers, variables, and the live container version using Python MCP. |
-| [**oqva-digital/oqva-marketing-mcp**](https://github.com/oqva-digital/oqva-marketing-mcp) | Calls GTM API v2 endpoints alongside other marketing services. |
-| [**paolobietolini/gtm-mcp-server**](https://github.com/paolobietolini/gtm-mcp-server) | Manages GTM accounts, containers, workspaces, and server-container entities through a Go Streamable HTTP MCP server. |
-| [**pouyanafisi/gtm-mcp**](https://github.com/pouyanafisi/gtm-mcp) | Manages GTM accounts, workspaces, tags, templates, server clients, and versions through a TypeScript MCP server. |
-| [**rgellis/google-tag-manager-mcp**](https://github.com/rgellis/google-tag-manager-mcp) | Manages GTM API resources through Python FastMCP, with selectable tool groups and an optional read-only mode. |
-| [**RoyAzran/mcp-ads**](https://github.com/RoyAzran/mcp-ads) | Manages GTM accounts, containers, workspace entities, and versions through Python MCP tools. |
-| [**samarthanalytics-sj/samarth-analytics-mcp**](https://github.com/samarthanalytics-sj/samarth-analytics-mcp) | Manages and audits GTM web and server containers, with gated writes and website tracking checks. |
-| [**skiddgoddamn/google-seo-mcp**](https://github.com/skiddgoddamn/google-seo-mcp) | Lists and creates GTM workspace tags through MCP tools. |
-| [**stape-io/google-tag-manager-mcp-server**](https://github.com/stape-io/google-tag-manager-mcp-server) | Manages GTM web and server-container resources through hosted or local MCP servers and a reusable TypeScript core package. |
-| [**stape-io/stape-mcp-server**](https://github.com/stape-io/stape-mcp-server) | Provides a hosted MCP service for server-side GTM hosting on Stape, including container lifecycle, domains, monitoring, and logs. |
-| [**techdeveloper-org/mcp-gtm**](https://github.com/techdeveloper-org/mcp-gtm) | Reads and edits GTM container entities and versions through Python MCP tools with retry handling and rate limiting. |
-| [**thesyedyahya/gtm-mcp**](https://github.com/thesyedyahya/gtm-mcp) | Inspects and manages GTM resources through Python FastMCP with service-account authentication and writes disabled by default. |
-| [**tiojimbo/agent-gtm-ga4**](https://github.com/tiojimbo/agent-gtm-ga4) | Reads and edits GTM tags, triggers, variables, workspaces, and versions through MCP tools. |
-| [**valentineffi/zenda-tag-manager-mcp**](https://github.com/valentineffi/zenda-tag-manager-mcp) | Manages GTM accounts, containers, workspace entities, and versions through a TypeScript stdio MCP server. |
-| [**VasthavM/google-tag-manager-mcp**](https://github.com/VasthavM/google-tag-manager-mcp) | Manages GTM entities through a local Go stdio server with browser OAuth and confirmation for destructive operations. |
-| [**VKirill/ohmy-seo**](https://github.com/VKirill/ohmy-seo) | Manages GTM configurations with concurrency checks and confirmation gates. |
-| [**webanalyticsprobd-maker/tracking-mcp-server**](https://github.com/webanalyticsprobd-maker/tracking-mcp-server) | Validates dataLayer event payloads and generates GTM tracking snippets through MCP. |
-| [**wonyoungseong/gtmAgent**](https://github.com/wonyoungseong/gtmAgent) | Manages GTM entities and exports configurations through a bundled MCP server. |
-| [**zaaaato/gtm-mcp**](https://github.com/zaaaato/gtm-mcp) | Calls GTM API v2 through a generic authenticated MCP request tool. |
+*7 MCP servers. Find unused entities, inspect consent configuration, map tracking setups, and produce audit reports.*
 
-## CLIs (11)
+| MCP | What its tools do | Tool list |
+|---|---|---|
+| [**acamolese/gtm-audit-mcp**](https://github.com/acamolese/gtm-audit-mcp) | Audits container configuration, maps tracking setups, compares snapshots, and writes local reports. [`gtm_audit`](mcps/acamolese--gtm-audit-mcp.md#tool-gtm_audit-b95baa17), [`gtm_diff`](mcps/acamolese--gtm-audit-mcp.md#tool-gtm_diff-66946652), [`gtm_tracking_validation`](mcps/acamolese--gtm-audit-mcp.md#tool-gtm_tracking_validation-f42a6b1e). | [10 tools](mcps/acamolese--gtm-audit-mcp.md) |
+| [**AINative-Studio/ainative-gtm-mcp**](https://github.com/AINative-Studio/ainative-gtm-mcp) | Audits container configuration, finds broadly triggered conversion tags, and creates replacement event triggers. [`gtm_find_misfiring_conversion_tags`](mcps/ainative-studio--ainative-gtm-mcp.md#tool-gtm_find_misfiring_conversion_tags-49990754), [`gtm_fix_conversion_tag_trigger`](mcps/ainative-studio--ainative-gtm-mcp.md#tool-gtm_fix_conversion_tag_trigger-7803f98e), [`gtm_audit_container`](mcps/ainative-studio--ainative-gtm-mcp.md#tool-gtm_audit_container-a82e2cd2). | [18 GTM / 57 total](mcps/ainative-studio--ainative-gtm-mcp.md) |
+| [**generalist-club/google-marketing-stack-mcp**](https://github.com/generalist-club/google-marketing-stack-mcp) | Flags unbound triggers, duplicate tag names, and variables absent from tag and trigger references. [`gtm_audit`](mcps/generalist-club--google-marketing-stack-mcp.md#tool-gtm_audit-b95baa17), [`gtm_get_tag`](mcps/generalist-club--google-marketing-stack-mcp.md#tool-gtm_get_tag-3d242291), [`gtm_list_variables`](mcps/generalist-club--google-marketing-stack-mcp.md#tool-gtm_list_variables-81705a80). | [8 GTM / 44 total](mcps/generalist-club--google-marketing-stack-mcp.md) |
+| [**gustavomkt/mcp-tagmanager**](https://github.com/gustavomkt/mcp-tagmanager) | Audits workspace configuration and pauses or resumes tags before separately confirmed publication. [`audit_workspace`](mcps/gustavomkt--mcp-tagmanager.md#tool-audit_workspace-e9aaba68), [`pause_tag`](mcps/gustavomkt--mcp-tagmanager.md#tool-pause_tag-01b6db11), [`resume_tag`](mcps/gustavomkt--mcp-tagmanager.md#tool-resume_tag-dfde32d7). | [13 tools](mcps/gustavomkt--mcp-tagmanager.md) |
+| [**lucasbueno-live/gtm-mcp-liveseo**](https://github.com/lucasbueno-live/gtm-mcp-liveseo) | Report paused tags, unused-trigger and variable heuristics; manage web and server-container resources. [`gtm_audit_container`](mcps/lucasbueno-live--gtm-mcp-liveseo.md#tool-gtm_audit_container-a82e2cd2), [`gtm_client`](mcps/lucasbueno-live--gtm-mcp-liveseo.md#tool-gtm_client-dc17ee47), [`gtm_transformation`](mcps/lucasbueno-live--gtm-mcp-liveseo.md#tool-gtm_transformation-c270ba51). | [19 GTM / 21 total](mcps/lucasbueno-live--gtm-mcp-liveseo.md) |
+| [**mharnett/mcp-gtm-ga4**](https://github.com/mharnett/mcp-gtm-ga4) | Inspect tag consent settings, preview workspace compilation, and create or update draft tracking resources. [`gtm_audit_consent`](mcps/mharnett--mcp-gtm-ga4.md#tool-gtm_audit_consent-28f3aaa1), [`gtm_preview`](mcps/mharnett--mcp-gtm-ga4.md#tool-gtm_preview-111bbf1a), [`gtm_update_tag`](mcps/mharnett--mcp-gtm-ga4.md#tool-gtm_update_tag-23807743). | [13 GTM / 18 total](mcps/mharnett--mcp-gtm-ga4.md) |
+| [**thesyedyahya/gtm-mcp**](https://github.com/thesyedyahya/gtm-mcp) | Summarize container resources, find tags by type or variable reference, and optionally edit draft tags. [`container_summary`](mcps/thesyedyahya--gtm-mcp.md#tool-container_summary-2e5950a3), [`find_tags_using_variable`](mcps/thesyedyahya--gtm-mcp.md#tool-find_tags_using_variable-f9d514b7), [`find_tags_by_type`](mcps/thesyedyahya--gtm-mcp.md#tool-find_tags_by_type-177322e0). | [25 GTM / 26 total](mcps/thesyedyahya--gtm-mcp.md) |
 
-*11 projects. Commands that manage, inspect, export, generate, or install GTM configurations.*
+<a id="test"></a>
 
-| Project | What it does |
-|---|---|
-| [**ajaxbarcelonacruyff/gtm-auditor**](https://github.com/ajaxbarcelonacruyff/gtm-auditor) | Exports GTM inventories and version differences to Google Sheets. |
-| [**desdobroprod-eng/install-tags-10dobro — installer CLI**](https://github.com/desdobroprod-eng/install-tags-10dobro/blob/b166f68234f78b31efb2c1334179bf946e5d2bb1/scripts/install_tags.py) | Installs a shared GTM loader and noscript snippet into local HTML files, with backups and dry-run support. |
-| [**dreamfoundryai/gtm-audit-skill — export CLI**](https://github.com/dreamfoundryai/gtm-audit-skill/blob/067aba018a37cea57c47057fad85f79dc4deb4d7/scripts/fetch_gtm.py) | Exports GTM tags, triggers, variables, and folders with a Python CLI. |
-| [**EarthCraig/GTAG-Manager**](https://github.com/EarthCraig/GTAG-Manager) | Plans, applies, and publishes GTM tags, triggers, and variables from YAML specifications through a Python CLI. |
-| [**eugene-bear/google-site-setup**](https://github.com/eugene-bear/google-site-setup) | Provides commands to provision and publish web GTM containers and create GA4 event tags and triggers. |
-| [**lucianfialho/gmp-cli — GTM commands**](https://github.com/lucianfialho/gmp-cli/blob/main/src/commands/gtm.ts) | Provides read-only GTM inspection commands with JSON, table and CSV output. |
-| [**owgit/gtm-skill — generator CLI**](https://github.com/owgit/gtm-skill/blob/2d7759195812654fe3b7215db50d7dc3a51b019d/scripts/generate-gtm-import.js) | Generates GTM container import JSON with GA4 tags, click triggers, and variables using a standalone Node.js command. |
-| [**owntag/gtm-cli**](https://github.com/owntag/gtm-cli) | Provides terminal commands to manage GTM resources with OAuth or service-account authentication and JSON output. |
-| [**ToroSachi/tagops**](https://github.com/ToroSachi/tagops) | Audits, snapshots, diffs, deploys, and restores GTM container configurations through a TypeScript CLI and MCP tools. |
-| [**tyssejc/gallium**](https://github.com/tyssejc/gallium) | Inspects GTM container versions and dependencies with a read-only CLI. |
-| [**vaidik/gtm-tools**](https://github.com/vaidik/gtm-tools) | Provides commands to list, compare, copy and reset GTM workspace tags, triggers and variables. |
+## Inspect websites and dataLayer
 
-## Tag Manager API SDKs (7)
+*3 MCP servers. Find installed containers, examine page tracking, and validate dataLayer payloads.*
 
-*7 projects. Official Google clients with dedicated Tag Manager v2 interfaces.*
+| MCP | What its tools do | Tool list |
+|---|---|---|
+| [**lpecom/webaudit-mcp**](https://github.com/lpecom/webaudit-mcp) | Scan page HTML for installed GTM containers, duplicate installations, and tracking configuration patterns. [`detect_tracking_tags`](mcps/lpecom--webaudit-mcp.md#tool-detect_tracking_tags-f86a7da4), [`find_duplicate_tags`](mcps/lpecom--webaudit-mcp.md#tool-find_duplicate_tags-389f5e23), [`tracking_summary`](mcps/lpecom--webaudit-mcp.md#tool-tracking_summary-8beb3741). | [4 GTM / 7 total](mcps/lpecom--webaudit-mcp.md) |
+| [**moonbirdai/puppeteer-plus-martech-mcp**](https://github.com/moonbirdai/puppeteer-plus-martech-mcp) | Open pages in a browser to identify GTM, sample dataLayer events, and visualize installed tracking technologies. [`identify-tag-managers`](mcps/moonbirdai--puppeteer-plus-martech-mcp.md#tool-identify-tag-managers-114dcc70), [`scan-marketing-stack`](mcps/moonbirdai--puppeteer-plus-martech-mcp.md#tool-scan-marketing-stack-d3237a45), [`visualize-marketing-tech`](mcps/moonbirdai--puppeteer-plus-martech-mcp.md#tool-visualize-marketing-tech-0285c275). | [5 GTM / 16 total](mcps/moonbirdai--puppeteer-plus-martech-mcp.md) |
+| [**webanalyticsprobd-maker/tracking-mcp-server**](https://github.com/webanalyticsprobd-maker/tracking-mcp-server) | Check dataLayer event fields, generate GTM/gtag snippets, and score supplied tracking payloads with local heuristics. [`validate_datalayer_event`](mcps/webanalyticsprobd-maker--tracking-mcp-server.md#tool-validate_datalayer_event-08231b06), [`generate_tracking_code_snippet`](mcps/webanalyticsprobd-maker--tracking-mcp-server.md#tool-generate_tracking_code_snippet-cc155dd3), [`audit_tracking_readiness`](mcps/webanalyticsprobd-maker--tracking-mcp-server.md#tool-audit_tracking_readiness-99bb1c40). | [3 GTM / 4 total](mcps/webanalyticsprobd-maker--tracking-mcp-server.md) |
 
-| Project | What it does |
-|---|---|
-| [**Google API Go Client — Tag Manager v2**](https://pkg.go.dev/google.golang.org/api/tagmanager/v2) | Provides an official Go Tag Manager v2 client for managing GTM resources. |
-| [**Google API Java Client — Tag Manager v2**](https://github.com/googleapis/google-api-java-client-services/tree/main/clients/google-api-services-tagmanager/v2) | Provides an official Java Tag Manager v2 client for managing GTM resources. |
-| [**Google API Node.js Client — Tag Manager v2**](https://github.com/googleapis/google-api-nodejs-client/tree/main/src/apis/tagmanager) | Provides an official Node.js and TypeScript Tag Manager v2 client for managing GTM resources. |
-| [**Google API PHP Client Services — TagManager**](https://github.com/googleapis/google-api-php-client-services/blob/main/src/TagManager.php) | Provides official PHP Tag Manager v2 service and resource classes for managing GTM resources. |
-| [**Google API Python Client — Tag Manager v2**](https://googleapis.github.io/google-api-python-client/docs/dyn/tagmanager_v2.html) | Provides an official Python Tag Manager v2 client for managing GTM resources. |
-| [**google-apis-tagmanager_v2**](https://github.com/googleapis/google-api-ruby-client/tree/main/generated/google-apis-tagmanager_v2) | Provides an official Ruby Tag Manager v2 client for managing GTM resources. |
-| [**Google.Apis.TagManager.v2**](https://github.com/googleapis/google-api-dotnet-client/tree/main/Src/Generated/Google.Apis.TagManager.v2) | Provides an official .NET Tag Manager v2 client for managing GTM resources. |
+<a id="offline"></a>
 
-## Website integration SDKs (4)
+## Edit exported containers offline
 
-*4 projects. Libraries that load GTM and send dataLayer events; these do not manage accounts or containers through the API.*
+*1 MCP servers. Inspect and change exported container files without calling the live Tag Manager API.*
 
-| Project | What it does |
-|---|---|
-| [**@gtm-support/core**](https://github.com/gtm-support/core) | Loads GTM containers and sends data-layer events from framework-independent TypeScript applications. |
-| [**@gtm-support/vue-gtm**](https://github.com/gtm-support/vue-gtm) | Loads GTM containers and sends events and Vue Router navigation updates from Vue 3 applications. |
-| [**@next/third-parties — Google Tag Manager**](https://nextjs.org/docs/app/guides/third-party-libraries#google-tag-manager) | Loads GTM containers and sends data-layer events through Next.js components and helpers. |
-| [**angular-google-tag-manager**](https://github.com/mzuccaroli/angular-google-tag-manager) | Loads GTM containers and pushes data-layer events from Angular applications. |
+| MCP | What its tools do | Tool list |
+|---|---|---|
+| [**jamestomasino/mcp-gtm**](https://github.com/jamestomasino/mcp-gtm) | Edits exported container JSON, manages server-side entities, analyzes dependencies, and supports undo and redo. [`gtm_analyze_consent_setup`](mcps/jamestomasino--mcp-gtm.md#tool-gtm_analyze_consent_setup-a300d377), [`gtm_diff_containers`](mcps/jamestomasino--mcp-gtm.md#tool-gtm_diff_containers-ff0fbf12), [`gtm_export_container`](mcps/jamestomasino--mcp-gtm.md#tool-gtm_export_container-7583f2b1). | [47 tools](mcps/jamestomasino--mcp-gtm.md) |
+
+<a id="server-side"></a>
+
+## Manage server-side clients and transformations
+
+*9 MCP servers. Configure server-container clients, transformations, templates, and event routing settings.*
+
+| MCP | What its tools do | Tool list |
+|---|---|---|
+| [**hedayetulislamhadi/genius-gtm-mcp**](https://github.com/hedayetulislamhadi/genius-gtm-mcp) | Configures server clients, transformations, and templates alongside container entity operations. [`gtm_client`](mcps/hedayetulislamhadi--genius-gtm-mcp.md#tool-gtm_client-dc17ee47), [`gtm_transformation`](mcps/hedayetulislamhadi--genius-gtm-mcp.md#tool-gtm_transformation-c270ba51), [`gtm_raw`](mcps/hedayetulislamhadi--genius-gtm-mcp.md#tool-gtm_raw-5c9b23ae). | [19 GTM / 27 total](mcps/hedayetulislamhadi--genius-gtm-mcp.md) |
+| [**laiskickow/gtm-mcp-server**](https://github.com/laiskickow/gtm-mcp-server) | Configure server-container clients and transformations, manage templates, and deploy tracking presets. [`gtm_create_client`](mcps/laiskickow--gtm-mcp-server.md#tool-gtm_create_client-aefac744), [`gtm_create_transformation`](mcps/laiskickow--gtm-mcp-server.md#tool-gtm_create_transformation-321af14e), [`gtm_deploy_preset`](mcps/laiskickow--gtm-mcp-server.md#tool-gtm_deploy_preset-0e7f7805). | [96 GTM / 103 total](mcps/laiskickow--gtm-mcp-server.md) |
+| [**paolobietolini/gtm-mcp-server**](https://github.com/paolobietolini/gtm-mcp-server) | Manage server clients and transformations, import community templates, and synchronize workspace changes. [`create_transformation`](mcps/paolobietolini--gtm-mcp-server.md#tool-create_transformation-9ff603f0), [`import_gallery_template`](mcps/paolobietolini--gtm-mcp-server.md#tool-import_gallery_template-2fc7e72c), [`sync_workspace`](mcps/paolobietolini--gtm-mcp-server.md#tool-sync_workspace-4b02a6d9). | [94 GTM / 96 total](mcps/paolobietolini--gtm-mcp-server.md) |
+| [**pouyanafisi/gtm-mcp**](https://github.com/pouyanafisi/gtm-mcp) | Create server-container clients and transformations alongside web-container entities, templates, and environments. [`create_gtm_client`](mcps/pouyanafisi--gtm-mcp.md#tool-create_gtm_client-4d75da62), [`create_gtm_transformation`](mcps/pouyanafisi--gtm-mcp.md#tool-create_gtm_transformation-2b4cd640), [`import_gtm_template_from_gallery`](mcps/pouyanafisi--gtm-mcp.md#tool-import_gtm_template_from_gallery-dc33189f). | [104 tools](mcps/pouyanafisi--gtm-mcp.md) |
+| [**rgellis/google-tag-manager-mcp**](https://github.com/rgellis/google-tag-manager-mcp) | Manage server clients and transformations, find entities by name, and summarize container workspaces and live versions. [`create_client`](mcps/rgellis--google-tag-manager-mcp.md#tool-create_client-6142e83d), [`find_entities_by_name`](mcps/rgellis--google-tag-manager-mcp.md#tool-find_entities_by_name-683fd899), [`summarize_container`](mcps/rgellis--google-tag-manager-mcp.md#tool-summarize_container-ec30429b). | [111 GTM / 112 total](mcps/rgellis--google-tag-manager-mcp.md) |
+| [**samarthanalytics-sj/samarth-analytics-mcp**](https://github.com/samarthanalytics-sj/samarth-analytics-mcp) | Configure server-container URLs, clients, transformations, and templates alongside web-container resources. [`containers_set_tagging_server_urls`](mcps/samarthanalytics-sj--samarth-analytics-mcp.md#tool-containers_set_tagging_server_urls-3378fe63), [`clients_create`](mcps/samarthanalytics-sj--samarth-analytics-mcp.md#tool-clients_create-07f6fe45), [`transformations_create`](mcps/samarthanalytics-sj--samarth-analytics-mcp.md#tool-transformations_create-9e6cd227). | [121 GTM / 203 total](mcps/samarthanalytics-sj--samarth-analytics-mcp.md) |
+| [**stape-io/google-tag-manager-mcp-server**](https://github.com/stape-io/google-tag-manager-mcp-server) | Manage server clients, transformations, templates, and web-container resources through typed action tools. [`gtm_client`](mcps/stape-io--google-tag-manager-mcp-server.md#tool-gtm_client-dc17ee47), [`gtm_transformation`](mcps/stape-io--google-tag-manager-mcp-server.md#tool-gtm_transformation-c270ba51), [`gtm_template`](mcps/stape-io--google-tag-manager-mcp-server.md#tool-gtm_template-47833aba). | [18 GTM / 21 total](mcps/stape-io--google-tag-manager-mcp-server.md) |
+| [**VasthavM/google-tag-manager-mcp**](https://github.com/VasthavM/google-tag-manager-mcp) | Create and update server clients and transformations, import gallery templates, and manage tracking resources. [`create_client`](mcps/vasthavm--google-tag-manager-mcp.md#tool-create_client-6142e83d), [`update_transformation`](mcps/vasthavm--google-tag-manager-mcp.md#tool-update_transformation-67f8c3a8), [`import_gallery_template`](mcps/vasthavm--google-tag-manager-mcp.md#tool-import_gallery_template-2fc7e72c). | [46 GTM / 50 total](mcps/vasthavm--google-tag-manager-mcp.md) |
+| [**wonyoungseong/gtmAgent**](https://github.com/wonyoungseong/gtmAgent) | Manage server clients and transformations, export workspace resources, and prepare tracking workflow changes. [`gtm_client`](mcps/wonyoungseong--gtmagent.md#tool-gtm_client-dc17ee47), [`gtm_transformation`](mcps/wonyoungseong--gtmagent.md#tool-gtm_transformation-c270ba51), [`gtm_export_full`](mcps/wonyoungseong--gtmagent.md#tool-gtm_export_full-69fac504). | [20 GTM / 23 total](mcps/wonyoungseong--gtmagent.md) |
+
+<a id="changes"></a>
+
+## Stage compare and release changes
+
+*7 MCP servers. Plan changes, compare versions, synchronize workspaces, and review or publish releases.*
+
+| MCP | What its tools do | Tool list |
+|---|---|---|
+| [**adtechnacity/gtm-mcp**](https://github.com/adtechnacity/gtm-mcp) | Compares versions, synchronizes workspaces, reverts entities, and applies batch tag and consent changes. [`diff_gtm_container_versions`](mcps/adtechnacity--gtm-mcp.md#tool-diff_gtm_container_versions-5b4a4c19), [`update_tags_consent_settings_batch`](mcps/adtechnacity--gtm-mcp.md#tool-update_tags_consent_settings_batch-91c780d8), [`find_gtm_references`](mcps/adtechnacity--gtm-mcp.md#tool-find_gtm_references-2806738d). | [35 tools](mcps/adtechnacity--gtm-mcp.md) |
+| [**connorstearns/mcp-gtm**](https://github.com/connorstearns/mcp-gtm) | Plans CSV batches of tracking tags and triggers and exposes draft creation with dry-run bodies. [`batch_plan_from_csv`](mcps/connorstearns--mcp-gtm.md#tool-batch_plan_from_csv-4d1ed4fc), [`batch_apply_from_csv`](mcps/connorstearns--mcp-gtm.md#tool-batch_apply_from_csv-557064e2), [`audit_container`](mcps/connorstearns--mcp-gtm.md#tool-audit_container-8180158f). | [7 tools](mcps/connorstearns--mcp-gtm.md) |
+| [**dgtlsunrise/dgtl-connector**](https://github.com/dgtlsunrise/dgtl-connector) | Previews writes with dry runs, requires target confirmation, and creates and publishes container versions. [`sgtm_ingest_test`](mcps/dgtlsunrise--dgtl-connector.md#tool-sgtm_ingest_test-16c5e391), [`gtm_create_client`](mcps/dgtlsunrise--dgtl-connector.md#tool-gtm_create_client-aefac744), [`gtm_publish_container`](mcps/dgtlsunrise--dgtl-connector.md#tool-gtm_publish_container-513cc8f7). | [22 GTM / 187 total](mcps/dgtlsunrise--dgtl-connector.md) |
+| [**jabeer4148-ops/google-measurement-mcp**](https://github.com/jabeer4148-ops/google-measurement-mcp) | Inspects workspace state, previews entity writes, and reviews drafts before version creation and publication. [`gtm_preview_version`](mcps/jabeer4148-ops--google-measurement-mcp.md#tool-gtm_preview_version-939d33bd), [`gtm_create_tag`](mcps/jabeer4148-ops--google-measurement-mcp.md#tool-gtm_create_tag-c682840c), [`gtm_create_version`](mcps/jabeer4148-ops--google-measurement-mcp.md#tool-gtm_create_version-50a805d7). | [12 GTM / 28 total](mcps/jabeer4148-ops--google-measurement-mcp.md) |
+| [**Juce-me/ga4-gtm-config-mcp**](https://github.com/Juce-me/ga4-gtm-config-mcp) | Compare YAML specifications with GA4/GTM state and preview or apply ordered workspace changes. [`diff_ga4_gtm_state`](mcps/juce-me--ga4-gtm-config-mcp.md#tool-diff_ga4_gtm_state-b386bdda), [`apply_gtm_workspace_changes`](mcps/juce-me--ga4-gtm-config-mcp.md#tool-apply_gtm_workspace_changes-6f4c4a6c), [`create_gtm_workspace`](mcps/juce-me--ga4-gtm-config-mcp.md#tool-create_gtm_workspace-00287f7b). | [7 GTM / 12 total](mcps/juce-me--ga4-gtm-config-mcp.md) |
+| [**ToroSachi/tagops**](https://github.com/ToroSachi/tagops) | Detect drift against snapshots, plan restores, check policies, and promote changes between configured container profiles. [`gtm_detect_drift`](mcps/torosachi--tagops.md#tool-gtm_detect_drift-e8780874), [`gtm_plan_restore`](mcps/torosachi--tagops.md#tool-gtm_plan_restore-ad389725), [`gtm_promote`](mcps/torosachi--tagops.md#tool-gtm_promote-b0a37963). | [26 GTM / 29 total](mcps/torosachi--tagops.md) |
+| [**valentineffi/zenda-tag-manager-mcp**](https://github.com/valentineffi/zenda-tag-manager-mcp) | Inspect draft status, synchronize workspaces, create versions, and edit resources using raw object bodies. [`gtm_get_workspace_status`](mcps/valentineffi--zenda-tag-manager-mcp.md#tool-gtm_get_workspace_status-58373cea), [`gtm_sync_workspace`](mcps/valentineffi--zenda-tag-manager-mcp.md#tool-gtm_sync_workspace-c11e7d2f), [`gtm_create_version`](mcps/valentineffi--zenda-tag-manager-mcp.md#tool-gtm_create_version-50a805d7). | [42 tools](mcps/valentineffi--zenda-tag-manager-mcp.md) |
+
+<a id="manage"></a>
+
+## Manage containers tags triggers and variables
+
+*23 MCP servers. Create and edit container resources through dedicated Tag Manager API tools.*
+
+| MCP | What its tools do | Tool list |
+|---|---|---|
+| [**A1-x-Tech/mcp-google-tagmanager**](https://github.com/A1-x-Tech/mcp-google-tagmanager) | Creates and edits container entities, manages built-in variables, publishes versions, and accepts raw API requests. [`create_entity`](mcps/a1-x-tech--mcp-google-tagmanager.md#tool-create_entity-697caa14), [`update_entity`](mcps/a1-x-tech--mcp-google-tagmanager.md#tool-update_entity-a54a743a), [`manage_built_in_variables`](mcps/a1-x-tech--mcp-google-tagmanager.md#tool-manage_built_in_variables-645c7bba). | [19 GTM / 25 total](mcps/a1-x-tech--mcp-google-tagmanager.md) |
+| [**AlexStansfield/gtm-mcp-server**](https://github.com/AlexStansfield/gtm-mcp-server) | Edits tags, triggers, variables and built-ins, synchronizes workspaces, and publishes checked versions. [`gtm_update_tag`](mcps/alexstansfield--gtm-mcp-server.md#tool-gtm_update_tag-23807743), [`gtm_sync_workspace`](mcps/alexstansfield--gtm-mcp-server.md#tool-gtm_sync_workspace-c11e7d2f), [`gtm_publish_version`](mcps/alexstansfield--gtm-mcp-server.md#tool-gtm_publish_version-0cc97535). | [29 tools](mcps/alexstansfield--gtm-mcp-server.md) |
+| [**ambit1977/GTM-MCP**](https://github.com/ambit1977/GTM-MCP) | Manages account permissions, container entities, workspaces, previews, and version publication. [`create_user_permission`](mcps/ambit1977--gtm-mcp.md#tool-create_user_permission-ed2ceb20), [`quick_preview`](mcps/ambit1977--gtm-mcp.md#tool-quick_preview-3dec8646), [`create_trigger`](mcps/ambit1977--gtm-mcp.md#tool-create_trigger-71660c93). | [41 GTM / 45 total](mcps/ambit1977--gtm-mcp.md) |
+| [**andylackie/google-marketing-mcp-servers**](https://github.com/andylackie/google-marketing-mcp-servers) | Edits workspace entities and folders, enables built-ins, creates versions, and confirms publication. [`create_folder`](mcps/andylackie--google-marketing-mcp-servers.md#tool-create_folder-5b53fba3), [`enable_built_in_variable`](mcps/andylackie--google-marketing-mcp-servers.md#tool-enable_built_in_variable-0049036f), [`update_tag`](mcps/andylackie--google-marketing-mcp-servers.md#tool-update_tag-ff9e7962). | [27 tools](mcps/andylackie--google-marketing-mcp-servers.md) |
+| [**baptlagae-hue/gtm-mcp**](https://github.com/baptlagae-hue/gtm-mcp) | Browses container entities and creates tags, triggers, and variables only in workspaces matching a configured prefix. [`create_gtm_workspace`](mcps/baptlagae-hue--gtm-mcp.md#tool-create_gtm_workspace-00287f7b), [`create_gtm_tag`](mcps/baptlagae-hue--gtm-mcp.md#tool-create_gtm_tag-07815d6f), [`create_gtm_variable`](mcps/baptlagae-hue--gtm-mcp.md#tool-create_gtm_variable-3a356a91). | [10 tools](mcps/baptlagae-hue--gtm-mcp.md) |
+| [**beuch26/webguru-gtm-mcp**](https://github.com/beuch26/webguru-gtm-mcp) | Builds GA4 and Ads tags, form and click triggers, and auto-event variables from stored project settings. [`create_ga4_event_tag`](mcps/beuch26--webguru-gtm-mcp.md#tool-create_ga4_event_tag-c3cefbbb), [`create_form_submission_trigger`](mcps/beuch26--webguru-gtm-mcp.md#tool-create_form_submission_trigger-a154be7c), [`create_ads_conversion_tag`](mcps/beuch26--webguru-gtm-mcp.md#tool-create_ads_conversion_tag-49afc6a7). | [16 GTM / 18 total](mcps/beuch26--webguru-gtm-mcp.md) |
+| [**bintangazhari/gtm-mcp-server**](https://github.com/bintangazhari/gtm-mcp-server) | Creates and edits tags, triggers, and variables and publishes existing versions. [`create_tag`](mcps/bintangazhari--gtm-mcp-server.md#tool-create_tag-e71dcc44), [`update_trigger`](mcps/bintangazhari--gtm-mcp-server.md#tool-update_trigger-60ddeb77), [`publish_version`](mcps/bintangazhari--gtm-mcp-server.md#tool-publish_version-0628e4c5). | [19 tools](mcps/bintangazhari--gtm-mcp-server.md) |
+| [**bryangoncalvespro-hub/google-tag-manager-mcp-server**](https://github.com/bryangoncalvespro-hub/google-tag-manager-mcp-server) | Builds conversion tags and their variables and triggers, previews workspaces, and publishes versions. [`gtm_install_google_ads_conversion`](mcps/bryangoncalvespro-hub--google-tag-manager-mcp-server.md#tool-gtm_install_google_ads_conversion-01ace0ae), [`gtm_quick_preview`](mcps/bryangoncalvespro-hub--google-tag-manager-mcp-server.md#tool-gtm_quick_preview-125bde55), [`gtm_create_trigger`](mcps/bryangoncalvespro-hub--google-tag-manager-mcp-server.md#tool-gtm_create_trigger-99da4322). | [15 tools](mcps/bryangoncalvespro-hub--google-tag-manager-mcp-server.md) |
+| [**burhan29ee/google-analytics-gtm-mcp**](https://github.com/burhan29ee/google-analytics-gtm-mcp) | Creates and edits workspace resources from JSON strings and confirms deletions and version publication. [`gtm_get_live_version`](mcps/burhan29ee--google-analytics-gtm-mcp.md#tool-gtm_get_live_version-986da5ee), [`gtm_create_trigger`](mcps/burhan29ee--google-analytics-gtm-mcp.md#tool-gtm_create_trigger-99da4322), [`gtm_update_tag`](mcps/burhan29ee--google-analytics-gtm-mcp.md#tool-gtm_update_tag-23807743). | [21 GTM / 40 total](mcps/burhan29ee--google-analytics-gtm-mcp.md) |
+| [**bypixels/SEO-MCP-PRO**](https://github.com/bypixels/SEO-MCP-PRO) | Manages workspace entities with recursive parameter validation, version creation, and fingerprinted updates. [`gtm_create_variable`](mcps/bypixels--seo-mcp-pro.md#tool-gtm_create_variable-5b853337), [`gtm_update_tag`](mcps/bypixels--seo-mcp-pro.md#tool-gtm_update_tag-23807743), [`gtm_get_live_version`](mcps/bypixels--seo-mcp-pro.md#tool-gtm_get_live_version-986da5ee). | [25 GTM / 157 total](mcps/bypixels--seo-mcp-pro.md) |
+| [**CarC96/google-tag-manager-mcp**](https://github.com/CarC96/google-tag-manager-mcp) | Reads installation snippets and permissions, edits workspace entities, and retrieves complete versions. [`get_container_snippet`](mcps/carc96--google-tag-manager-mcp.md#tool-get_container_snippet-abfe46b2), [`get_workspace_status`](mcps/carc96--google-tag-manager-mcp.md#tool-get_workspace_status-23f21bb9), [`create_trigger`](mcps/carc96--google-tag-manager-mcp.md#tool-create_trigger-71660c93). | [29 tools](mcps/carc96--google-tag-manager-mcp.md) |
+| [**CreativeMetrics/gtm-ga4-mcp**](https://github.com/CreativeMetrics/gtm-ga4-mcp) | Copies templates, builds tags from website scans, manages permissions, and attempts cross-container duplication. [`gtm_copy_template`](mcps/creativemetrics--gtm-ga4-mcp.md#tool-gtm_copy_template-c5299fcf), [`create_tags_from_url`](mcps/creativemetrics--gtm-ga4-mcp.md#tool-create_tags_from_url-9ea9f60f), [`gtm_check_tag_health`](mcps/creativemetrics--gtm-ga4-mcp.md#tool-gtm_check_tag_health-2c453f64). | [26 GTM / 47 total](mcps/creativemetrics--gtm-ga4-mcp.md) |
+| [**ErikTMA/gtm-mcp**](https://github.com/ErikTMA/gtm-mcp) | Creates tags, triggers, and variables with account restrictions and publishes workspace versions. [`gtm_create_tag`](mcps/eriktma--gtm-mcp.md#tool-gtm_create_tag-c682840c), [`gtm_create_variable`](mcps/eriktma--gtm-mcp.md#tool-gtm_create_variable-5b853337), [`gtm_publish_container`](mcps/eriktma--gtm-mcp.md#tool-gtm_publish_container-513cc8f7). | [12 tools](mcps/eriktma--gtm-mcp.md) |
+| [**fourdots/Google-Marketing-MCPs-G.Ads-GA4-GSC-GTM**](https://github.com/fourdots/Google-Marketing-MCPs-G.Ads-GA4-GSC-GTM) | Builds trigger groups and typed variables, manages folders and built-ins, and publishes workspace versions. [`gtm_enable_built_in_variable`](mcps/fourdots--google-marketing-mcps-g.ads-ga4-gsc-gtm.md#tool-gtm_enable_built_in_variable-d374155c), [`gtm_create_folder`](mcps/fourdots--google-marketing-mcps-g.ads-ga4-gsc-gtm.md#tool-gtm_create_folder-a7f80e8c), [`gtm_update_trigger`](mcps/fourdots--google-marketing-mcps-g.ads-ga4-gsc-gtm.md#tool-gtm_update_trigger-ce48de45). | [27 tools](mcps/fourdots--google-marketing-mcps-g.ads-ga4-gsc-gtm.md) |
+| [**jayweezy247/tracking-stack-mcp**](https://github.com/jayweezy247/tracking-stack-mcp) | Creates tracking workspaces and ensures GA4 event tags with create-only and dry-run checks. [`gtm_list_containers`](mcps/jayweezy247--tracking-stack-mcp.md#tool-gtm_list_containers-e45afd2b), [`gtm_create_container`](mcps/jayweezy247--tracking-stack-mcp.md#tool-gtm_create_container-67c96447). | [2 GTM / 7 total](mcps/jayweezy247--tracking-stack-mcp.md) |
+| [**jinchliu/tagmanager-mcp**](https://github.com/jinchliu/tagmanager-mcp) | Paginated resource browsing, draft edits with current fingerprints, and explicit version publication. [`update_tag`](mcps/jinchliu--tagmanager-mcp.md#tool-update_tag-ff9e7962), [`get_workspace_status`](mcps/jinchliu--tagmanager-mcp.md#tool-get_workspace_status-23f21bb9), [`publish_version`](mcps/jinchliu--tagmanager-mcp.md#tool-publish_version-0628e4c5). | [24 tools](mcps/jinchliu--tagmanager-mcp.md) |
+| [**K9Cloud/gtm-mcp**](https://github.com/K9Cloud/gtm-mcp) | Find containers by domain, preview tag edits, and create tracking resources in workspace drafts. [`find_container`](mcps/k9cloud--gtm-mcp.md#tool-find_container-0a640aa5), [`pause_tag`](mcps/k9cloud--gtm-mcp.md#tool-pause_tag-01b6db11), [`create_trigger`](mcps/k9cloud--gtm-mcp.md#tool-create_trigger-71660c93). | [19 tools](mcps/k9cloud--gtm-mcp.md) |
+| [**magdamarketinghackers/MCP-GTM**](https://github.com/magdamarketinghackers/MCP-GTM) | Discover containers by public ID, preview draft changes, and manage versions, environments, and account access. [`discover_containers`](mcps/magdamarketinghackers--mcp-gtm.md#tool-discover_containers-1c24dd8a), [`quick_preview_workspace`](mcps/magdamarketinghackers--mcp-gtm.md#tool-quick_preview_workspace-2e1cb327), [`reauthorize_environment`](mcps/magdamarketinghackers--mcp-gtm.md#tool-reauthorize_environment-191d3333). | [74 GTM / 77 total](mcps/magdamarketinghackers--mcp-gtm.md) |
+| [**neep305/mcp-for-gtm**](https://github.com/neep305/mcp-for-gtm) | Browse live containers and generate local GA4 components; a separate entrypoint stores configuration metadata in SQLite. [`list_gtm_containers`](mcps/neep305--mcp-for-gtm.md#tool-list_gtm_containers-c6ad6269), [`test_gtm_connection`](mcps/neep305--mcp-for-gtm.md#tool-test_gtm_connection-8db86f4f), [`generate_ga4_template`](mcps/neep305--mcp-for-gtm.md#tool-generate_ga4_template-34e03135). | [7 GTM / 19 total](mcps/neep305--mcp-for-gtm.md) |
+| [**skiddgoddamn/google-seo-mcp**](https://github.com/skiddgoddamn/google-seo-mcp) | Browse GTM accounts and workspaces, create containers, and create tags from raw resource objects. [`gtm_container_create`](mcps/skiddgoddamn--google-seo-mcp.md#tool-gtm_container_create-94f11969), [`gtm_tag_create`](mcps/skiddgoddamn--google-seo-mcp.md#tool-gtm_tag_create-e30716c1), [`gtm_tags_get`](mcps/skiddgoddamn--google-seo-mcp.md#tool-gtm_tags_get-bc22fac9). | [6 GTM / 33 total](mcps/skiddgoddamn--google-seo-mcp.md) |
+| [**techdeveloper-org/mcp-gtm**](https://github.com/techdeveloper-org/mcp-gtm) | Create workspaces and tracking resources, merge selected tag edits, and publish explicitly created versions. [`update_tag`](mcps/techdeveloper-org--mcp-gtm.md#tool-update_tag-ff9e7962), [`create_workspace`](mcps/techdeveloper-org--mcp-gtm.md#tool-create_workspace-a1af8425), [`publish_version`](mcps/techdeveloper-org--mcp-gtm.md#tool-publish_version-0628e4c5). | [19 tools](mcps/techdeveloper-org--mcp-gtm.md) |
+| [**tiojimbo/agent-gtm-ga4**](https://github.com/tiojimbo/agent-gtm-ga4) | Create Google tags, GA4 event tags, custom HTML tags, and trigger/variable configurations in GTM drafts. [`gtm_create_google_tag`](mcps/tiojimbo--agent-gtm-ga4.md#tool-gtm_create_google_tag-9c7f783f), [`gtm_create_ga4_event_tag`](mcps/tiojimbo--agent-gtm-ga4.md#tool-gtm_create_ga4_event_tag-1561f4a3), [`gtm_create_custom_html_tag`](mcps/tiojimbo--agent-gtm-ga4.md#tool-gtm_create_custom_html_tag-acf63bb4). | [26 GTM / 56 total](mcps/tiojimbo--agent-gtm-ga4.md) |
+| [**VKirill/ohmy-seo**](https://github.com/VKirill/ohmy-seo) | Browse tracking resources, create workspace drafts, and preview confirmed trigger and variable edits. [`gtm_create_workspace`](mcps/vkirill--ohmy-seo.md#tool-gtm_create_workspace-6324597f), [`gtm_create_trigger`](mcps/vkirill--ohmy-seo.md#tool-gtm_create_trigger-99da4322), [`gtm_create_variable`](mcps/vkirill--ohmy-seo.md#tool-gtm_create_variable-5b853337). | [24 GTM / 33 total](mcps/vkirill--ohmy-seo.md) |
+
+<a id="inspect"></a>
+
+## Inspect containers without edit tools
+
+*3 MCP servers. Browse accounts, containers, workspaces, entities, and published versions through read tools.*
+
+| MCP | What its tools do | Tool list |
+|---|---|---|
+| [**brynj-digital/gtm-mcp-server**](https://github.com/brynj-digital/gtm-mcp-server) | Reads containers, environments, permissions, templates, server clients, transformations, and full version snapshots. [`get_live_version`](mcps/brynj-digital--gtm-mcp-server.md#tool-get_live_version-ffef26dc), [`list_templates`](mcps/brynj-digital--gtm-mcp-server.md#tool-list_templates-f9ffad71), [`list_clients`](mcps/brynj-digital--gtm-mcp-server.md#tool-list_clients-916df1aa). | [28 tools](mcps/brynj-digital--gtm-mcp-server.md) |
+| [**creativedesignseo/google-tag-manager-mcp**](https://github.com/creativedesignseo/google-tag-manager-mcp) | Lists accounts and containers and resolves firing-trigger names for tags in the first workspace. [`list_accounts`](mcps/creativedesignseo--google-tag-manager-mcp.md#tool-list_accounts-1090ba6a), [`list_containers`](mcps/creativedesignseo--google-tag-manager-mcp.md#tool-list_containers-a53dbc4d), [`list_tags`](mcps/creativedesignseo--google-tag-manager-mcp.md#tool-list_tags-86fc0f9c). | [3 tools](mcps/creativedesignseo--google-tag-manager-mcp.md) |
+| [**noviq-ai/google-tagmanager-mcp**](https://github.com/noviq-ai/google-tagmanager-mcp) | Read accounts, containers, workspaces, entities, and the currently published container version. [`get_live_container_version`](mcps/noviq-ai--google-tagmanager-mcp.md#tool-get_live_container_version-d10cfbe5), [`list_tags`](mcps/noviq-ai--google-tagmanager-mcp.md#tool-list_tags-86fc0f9c), [`list_triggers`](mcps/noviq-ai--google-tagmanager-mcp.md#tool-list_triggers-4ca44d74). | [7 tools](mcps/noviq-ai--google-tagmanager-mcp.md) |
+
+<a id="generic"></a>
+
+## Call GTM through generic and discovery tools
+
+*8 MCP servers. Use generic request tools or discovery-generated interfaces to reach Tag Manager endpoints.*
+
+| MCP | What its tools do | Tool list |
+|---|---|---|
+| [**b-buller/gtm-mcp**](https://github.com/b-buller/gtm-mcp) | Groups discovery operations into resource tools with read-only defaults and separate write, delete, and publish switches. [`gtm_templates`](mcps/b-buller--gtm-mcp.md#tool-gtm_templates-168a5acc), [`gtm_clients`](mcps/b-buller--gtm-mcp.md#tool-gtm_clients-3fa51ec5), [`gtm_zones`](mcps/b-buller--gtm-mcp.md#tool-gtm_zones-24eb69a8). | [18 tools](mcps/b-buller--gtm-mcp.md) |
+| [**dhawalshah/google-tag-manager-mcp**](https://github.com/dhawalshah/google-tag-manager-mcp) | Routes resource actions through shared GTM API tools, including conflict resolution and confirmed destructive changes. [`gtm_template`](mcps/dhawalshah--google-tag-manager-mcp.md#tool-gtm_template-47833aba), [`gtm_transformation`](mcps/dhawalshah--google-tag-manager-mcp.md#tool-gtm_transformation-c270ba51), [`gtm_workspace`](mcps/dhawalshah--google-tag-manager-mcp.md#tool-gtm_workspace-ee5e8b97). | [18 tools](mcps/dhawalshah--google-tag-manager-mcp.md) |
+| [**jinchliu/google-tag-manager-mcp**](https://github.com/jinchliu/google-tag-manager-mcp) | Discovery-backed resource operations, API schema lookup, bulk workspace updates, and template imports. [`gtm_describe_schema`](mcps/jinchliu--google-tag-manager-mcp.md#tool-gtm_describe_schema-ce4ad274), [`gtm_bulk_update_workspace`](mcps/jinchliu--google-tag-manager-mcp.md#tool-gtm_bulk_update_workspace-e5431e03), [`gtm_import_template_from_gallery`](mcps/jinchliu--google-tag-manager-mcp.md#tool-gtm_import_template_from_gallery-c54d3bda). | [31 tools](mcps/jinchliu--google-tag-manager-mcp.md) |
+| [**kb223/gtm-ga4-mcp**](https://github.com/kb223/gtm-ga4-mcp) | Read and change GTM resources through generic operations with separately enabled write and destructive tiers. [`gtm_permissions`](mcps/kb223--gtm-ga4-mcp.md#tool-gtm_permissions-19c046f4), [`gtm_update`](mcps/kb223--gtm-ga4-mcp.md#tool-gtm_update-b86785f1), [`gtm_publish`](mcps/kb223--gtm-ga4-mcp.md#tool-gtm_publish-54fdd062). | [7 GTM / 16 total](mcps/kb223--gtm-ga4-mcp.md) |
+| [**marwa-mrwan/google-clarity-mcp-codex**](https://github.com/marwa-mrwan/google-clarity-mcp-codex) | Inspect GTM container metadata and versions; reach additional endpoints through a generic request tool. [`gtm_container_snippet`](mcps/marwa-mrwan--google-clarity-mcp-codex.md#tool-gtm_container_snippet-2f066ac5), [`gtm_workspace_status`](mcps/marwa-mrwan--google-clarity-mcp-codex.md#tool-gtm_workspace_status-8ba0f1f4), [`gtm_api_call`](mcps/marwa-mrwan--google-clarity-mcp-codex.md#tool-gtm_api_call-a8ba7385). | [22 GTM / 205 total](mcps/marwa-mrwan--google-clarity-mcp-codex.md) |
+| [**oqva-digital/oqva-marketing-mcp**](https://github.com/oqva-digital/oqva-marketing-mcp) | Send GTM API requests with a chosen HTTP method, relative path, optional query, and raw JSON request body. [`gtm`](mcps/oqva-digital--oqva-marketing-mcp.md#tool-gtm-9e005213). | [1 GTM / 49 total](mcps/oqva-digital--oqva-marketing-mcp.md) |
+| [**RoyAzran/mcp-ads**](https://github.com/RoyAzran/mcp-ads) | Use a GTM action dispatcher or dedicated full-surface tools for resource operations, server clients, and workspace sync. [`gtm_action`](mcps/royazran--mcp-ads.md#tool-gtm_action-7110898a), [`gtm_sync_workspace`](mcps/royazran--mcp-ads.md#tool-gtm_sync_workspace-c11e7d2f), [`gtm_create_container`](mcps/royazran--mcp-ads.md#tool-gtm_create_container-67c96447). | [65 GTM / 3196 total](mcps/royazran--mcp-ads.md) |
+| [**zaaaato/gtm-mcp**](https://github.com/zaaaato/gtm-mcp) | Call GTM REST endpoints with arbitrary query/body objects and use dedicated tag, trigger, and variable wrappers. [`gtm_request`](mcps/zaaaato--gtm-mcp.md#tool-gtm_request-eab024f9), [`gtm_update_trigger`](mcps/zaaaato--gtm-mcp.md#tool-gtm_update_trigger-ce48de45), [`gtm_create_variable`](mcps/zaaaato--gtm-mcp.md#tool-gtm_create_variable-5b853337). | [16 GTM / 20 total](mcps/zaaaato--gtm-mcp.md) |

@@ -1,0 +1,2344 @@
+{
+  "repo": "valentineffi/zenda-tag-manager-mcp",
+  "url": "https://github.com/valentineffi/zenda-tag-manager-mcp",
+  "commit": "d65efb7ba3c2cf0489d802478ad11d3747ffc086",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "42 registered tools implement Google Tag Manager v2 resource operations through the googleapis client; no stubs found.",
+  "method": "tools/list",
+  "server": "src/index.ts (stdio)",
+  "exposure": "All 42 tools registered unconditionally; startup requires GTM_CLIENT_ID, GTM_CLIENT_SECRET and GTM_REFRESH_TOKEN. Container/workspace deletion intentionally not exposed.",
+  "sources": [
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/index.ts#L27-L37",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/schemas.ts#L1-L38",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/format.ts#L12-L17",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/auth.ts#L16-L57",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/accounts.ts#L17-L42",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/accounts.ts#L43-L66",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/containers.ts#L16-L40",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/containers.ts#L41-L68",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/containers.ts#L69-L99",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/containers.ts#L100-L137",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaces.ts#L17-L45",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaces.ts#L46-L76",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaces.ts#L77-L114",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaces.ts#L115-L141",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaces.ts#L142-L168",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaces.ts#L169-L204",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L88-L119",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L120-L146",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L147-L176",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L177-L216",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L217-L269",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/builtinVariables.ts#L24-L55",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/builtinVariables.ts#L56-L84",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/builtinVariables.ts#L85-L111",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/versions.ts#L19-L48",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/versions.ts#L49-L79",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/versions.ts#L80-L105",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/versions.ts#L106-L144",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/versions.ts#L145-L175",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/environments.ts#L16-L42",
+    "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/environments.ts#L43-L73"
+  ],
+  "limitations": [
+    "Catalog obtained offline by invoking original registration functions with an MCP client and in-memory transport, bypassing credential-gated main; no handlers or authenticated API operations executed.",
+    "Resource bodies intentionally accept unrestricted JSON records; detailed Google resource fields are not part of exposed input schemas.",
+    "Several list tools omit page-token input and response continuation; version-header list returns nextPageToken but cannot accept it. Markdown pagination advice in renderList uses a literal unexpanded token and pageToken instead of page_token."
+  ],
+  "tools": [
+    {
+      "name": "gtm_list_accounts",
+      "description": "List all Google Tag Manager accounts the authenticated user can access.\n\nThis is the entry point — every other tool needs an accountId from here. Read-only.\n\nArgs:\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: A list of accounts, each with accountId, name, and path.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/accounts.ts#L17-L42",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.list, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_get_account",
+      "description": "Get details for a single Google Tag Manager account. Read-only.\n\nArgs:\n  - account_id (string): GTM account ID\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: The account resource (accountId, name, shareData, features).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/accounts.ts#L43-L66",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.get, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_list_containers",
+      "description": "List all containers within a GTM account. Read-only.\n\nArgs:\n  - account_id (string): GTM account ID\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: A list of containers, each with containerId, name, publicId (GTM-XXXX), and usageContext (web/android/ios/server).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/containers.ts#L16-L40",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.list, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_get_container",
+      "description": "Get a single container's details. Read-only.\n\nArgs:\n  - account_id (string), container_id (string)\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: The container resource (containerId, name, publicId, usageContext, domainName, notes).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/containers.ts#L41-L68",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.get, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_create_container",
+      "description": "Create a new container in an account. Write operation.\n\nArgs:\n  - account_id (string)\n  - body (object): Container resource. Minimum: { name, usageContext: [\"web\"] }.\n    usageContext options: \"web\", \"android\", \"ios\", \"server\".\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: The created container, including the generated containerId and publicId.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "The full GTM resource object as JSON (matches the API v2 resource schema). For a tag: { name, type, parameter: [...], firingTriggerId: [...] }. For a trigger: { name, type, ... }. For a variable: { name, type, parameter: [...] }."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "body"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/containers.ts#L69-L99",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.create, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_update_container",
+      "description": "Update an existing container. Write operation.\n\nArgs:\n  - account_id (string), container_id (string)\n  - body (object): Full container resource with the updated fields (e.g. { name, notes }).\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: The updated container resource.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "The full GTM resource object as JSON (matches the API v2 resource schema). For a tag: { name, type, parameter: [...], firingTriggerId: [...] }. For a trigger: { name, type, ... }. For a variable: { name, type, parameter: [...] }."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "body"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/containers.ts#L100-L137",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.update, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_list_workspaces",
+      "description": "List workspaces in a container. Workspaces are isolated drafts where you edit tags/triggers/variables before publishing. Read-only.\n\nArgs:\n  - account_id (string), container_id (string)\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: A list of workspaces, each with workspaceId, name, and description.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaces.ts#L17-L45",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.list, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_get_workspace",
+      "description": "Get a single workspace. Read-only.\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaces.ts#L46-L76",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.get, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_create_workspace",
+      "description": "Create a new workspace (a fresh draft) in a container. Write operation.\n\nArgs:\n  - account_id, container_id (strings)\n  - body (object): { name, description? }\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: The created workspace with its workspaceId.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "The full GTM resource object as JSON (matches the API v2 resource schema). For a tag: { name, type, parameter: [...], firingTriggerId: [...] }. For a trigger: { name, type, ... }. For a variable: { name, type, parameter: [...] }."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "body"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaces.ts#L77-L114",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.create, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_get_workspace_status",
+      "description": "Show the uncommitted changes in a workspace (what was added/modified/deleted vs. the base version) plus any merge conflicts. Read-only. Use before creating a version to review the diff.\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n\nReturns: JSON with workspaceChange[] (each entry: changeStatus + the affected tag/trigger/variable) and mergeConflict[].",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaces.ts#L115-L141",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "audit"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.getStatus, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_sync_workspace",
+      "description": "Sync a workspace to the container's latest published version, surfacing any merge conflicts that must be resolved before a new version can be created. Write operation (modifies the workspace base).\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n\nReturns: JSON with syncStatus and any mergeConflict[].",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaces.ts#L142-L168",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.sync, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_create_version",
+      "description": "Freeze a workspace's current changes into a new container version. This does NOT publish — use gtm_publish_version to push the version live. Write operation.\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n  - name (string): Version name\n  - notes (string, optional): Version notes / changelog\n\nReturns: JSON with the created containerVersion (and its containerVersionId), plus any compilerError. After this, the workspace is typically consumed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Name for the new version"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional version notes / changelog"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaces.ts#L169-L204",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.create_version, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_list_tags",
+      "description": "List all tags in a workspace. Read-only.\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n  - page_token (string, optional): for pagination\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: A list of tags, each with tagId, name, and type. Includes nextPageToken when more results exist.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "page_token": {
+            "type": "string",
+            "description": "Pagination token from a previous list response's nextPageToken."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L88-L119",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace tag collection list, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_get_tag",
+      "description": "Get a single tag by ID. Read-only.\n\nArgs:\n  - account_id, container_id, workspace_id (strings), tag_id (string)\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "tag_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tagId (from gtm_list_tags)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L120-L146",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace tag collection get, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_create_tag",
+      "description": "Create a new tag in a workspace. Write operation (draft only — not live until a version is created and published).\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n  - body (object): Tag resource, shape: { name, type (e.g. \"ua\", \"gaawe\", \"html\"), parameter: [...], firingTriggerId: [...] }\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: The created tag with its generated tagId.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "The full GTM resource object as JSON (matches the API v2 resource schema). For a tag: { name, type, parameter: [...], firingTriggerId: [...] }. For a trigger: { name, type, ... }. For a variable: { name, type, parameter: [...] }."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "body"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L147-L176",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace tag collection create, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_update_tag",
+      "description": "Update an existing tag. Write operation (draft only). Send the full tag resource with your changes applied.\n\nArgs:\n  - account_id, container_id, workspace_id (strings), tag_id (string)\n  - body (object): Full Tag resource, shape: { name, type (e.g. \"ua\", \"gaawe\", \"html\"), parameter: [...], firingTriggerId: [...] }\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "tag_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tagId (from gtm_list_tags)."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "The full GTM resource object as JSON (matches the API v2 resource schema). For a tag: { name, type, parameter: [...], firingTriggerId: [...] }. For a trigger: { name, type, ... }. For a variable: { name, type, parameter: [...] }."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id",
+          "body"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L177-L216",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace tag collection update, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_delete_tag",
+      "description": "Delete a tag from a workspace. This is a draft change — it only affects production once a new version is created and published, and can be reverted before then. Destructive at the workspace level.\n\nIMPORTANT: Always confirm with the user before deleting. Do NOT set confirm=true on your own — only pass it after the user has explicitly approved deleting this specific tag.\n\nArgs:\n  - account_id, container_id, workspace_id (strings), tag_id (string)\n  - confirm (boolean): Must be true to proceed. Set this only after the user explicitly confirms the deletion.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "tag_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The tagId (from gtm_list_tags)."
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "Must be true to actually delete. Only set after the user explicitly confirms deleting this tag."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id",
+          "confirm"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L217-L269",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace tag collection delete, assembling the resource path from IDs. Requires confirm=true before deletion."
+    },
+    {
+      "name": "gtm_list_triggers",
+      "description": "List all triggers in a workspace. Read-only.\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n  - page_token (string, optional): for pagination\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: A list of triggers, each with triggerId, name, and type. Includes nextPageToken when more results exist.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "page_token": {
+            "type": "string",
+            "description": "Pagination token from a previous list response's nextPageToken."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L88-L119",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace trigger collection list, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_get_trigger",
+      "description": "Get a single trigger by ID. Read-only.\n\nArgs:\n  - account_id, container_id, workspace_id (strings), trigger_id (string)\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "trigger_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The triggerId (from gtm_list_triggers)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L120-L146",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace trigger collection get, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_create_trigger",
+      "description": "Create a new trigger in a workspace. Write operation (draft only — not live until a version is created and published).\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n  - body (object): Trigger resource, shape: { name, type (e.g. \"pageview\", \"click\", \"customEvent\"), filter: [...] }\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: The created trigger with its generated triggerId.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "The full GTM resource object as JSON (matches the API v2 resource schema). For a tag: { name, type, parameter: [...], firingTriggerId: [...] }. For a trigger: { name, type, ... }. For a variable: { name, type, parameter: [...] }."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "body"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L147-L176",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace trigger collection create, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_update_trigger",
+      "description": "Update an existing trigger. Write operation (draft only). Send the full trigger resource with your changes applied.\n\nArgs:\n  - account_id, container_id, workspace_id (strings), trigger_id (string)\n  - body (object): Full Trigger resource, shape: { name, type (e.g. \"pageview\", \"click\", \"customEvent\"), filter: [...] }\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "trigger_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The triggerId (from gtm_list_triggers)."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "The full GTM resource object as JSON (matches the API v2 resource schema). For a tag: { name, type, parameter: [...], firingTriggerId: [...] }. For a trigger: { name, type, ... }. For a variable: { name, type, parameter: [...] }."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger_id",
+          "body"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L177-L216",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace trigger collection update, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_delete_trigger",
+      "description": "Delete a trigger from a workspace. This is a draft change — it only affects production once a new version is created and published, and can be reverted before then. Destructive at the workspace level.\n\nIMPORTANT: Always confirm with the user before deleting. Do NOT set confirm=true on your own — only pass it after the user has explicitly approved deleting this specific trigger.\n\nArgs:\n  - account_id, container_id, workspace_id (strings), trigger_id (string)\n  - confirm (boolean): Must be true to proceed. Set this only after the user explicitly confirms the deletion.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "trigger_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The triggerId (from gtm_list_triggers)."
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "Must be true to actually delete. Only set after the user explicitly confirms deleting this trigger."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger_id",
+          "confirm"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L217-L269",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace trigger collection delete, assembling the resource path from IDs. Requires confirm=true before deletion."
+    },
+    {
+      "name": "gtm_list_variables",
+      "description": "List all variables in a workspace. Read-only.\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n  - page_token (string, optional): for pagination\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: A list of variables, each with variableId, name, and type. Includes nextPageToken when more results exist.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "page_token": {
+            "type": "string",
+            "description": "Pagination token from a previous list response's nextPageToken."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L88-L119",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace variable collection list, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_get_variable",
+      "description": "Get a single variable by ID. Read-only.\n\nArgs:\n  - account_id, container_id, workspace_id (strings), variable_id (string)\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "variable_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The variableId (from gtm_list_variables)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L120-L146",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace variable collection get, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_create_variable",
+      "description": "Create a new variable in a workspace. Write operation (draft only — not live until a version is created and published).\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n  - body (object): Variable resource, shape: { name, type (e.g. \"v\" for data-layer, \"c\" for constant, \"jsm\"), parameter: [...] }\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: The created variable with its generated variableId.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "The full GTM resource object as JSON (matches the API v2 resource schema). For a tag: { name, type, parameter: [...], firingTriggerId: [...] }. For a trigger: { name, type, ... }. For a variable: { name, type, parameter: [...] }."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "body"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L147-L176",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace variable collection create, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_update_variable",
+      "description": "Update an existing variable. Write operation (draft only). Send the full variable resource with your changes applied.\n\nArgs:\n  - account_id, container_id, workspace_id (strings), variable_id (string)\n  - body (object): Full Variable resource, shape: { name, type (e.g. \"v\" for data-layer, \"c\" for constant, \"jsm\"), parameter: [...] }\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "variable_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The variableId (from gtm_list_variables)."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "The full GTM resource object as JSON (matches the API v2 resource schema). For a tag: { name, type, parameter: [...], firingTriggerId: [...] }. For a trigger: { name, type, ... }. For a variable: { name, type, parameter: [...] }."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable_id",
+          "body"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L177-L216",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace variable collection update, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_delete_variable",
+      "description": "Delete a variable from a workspace. This is a draft change — it only affects production once a new version is created and published, and can be reverted before then. Destructive at the workspace level.\n\nIMPORTANT: Always confirm with the user before deleting. Do NOT set confirm=true on your own — only pass it after the user has explicitly approved deleting this specific variable.\n\nArgs:\n  - account_id, container_id, workspace_id (strings), variable_id (string)\n  - confirm (boolean): Must be true to proceed. Set this only after the user explicitly confirms the deletion.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "variable_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The variableId (from gtm_list_variables)."
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "Must be true to actually delete. Only set after the user explicitly confirms deleting this variable."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable_id",
+          "confirm"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L217-L269",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace variable collection delete, assembling the resource path from IDs. Requires confirm=true before deletion."
+    },
+    {
+      "name": "gtm_list_folders",
+      "description": "List all folders in a workspace. Read-only.\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n  - page_token (string, optional): for pagination\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: A list of folders, each with folderId, name, and type. Includes nextPageToken when more results exist.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "page_token": {
+            "type": "string",
+            "description": "Pagination token from a previous list response's nextPageToken."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L88-L119",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace folder collection list, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_get_folder",
+      "description": "Get a single folder by ID. Read-only.\n\nArgs:\n  - account_id, container_id, workspace_id (strings), folder_id (string)\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "folder_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The folderId (from gtm_list_folders)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "folder_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L120-L146",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace folder collection get, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_create_folder",
+      "description": "Create a new folder in a workspace. Write operation (draft only — not live until a version is created and published).\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n  - body (object): Folder resource, shape: { name }\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: The created folder with its generated folderId.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "The full GTM resource object as JSON (matches the API v2 resource schema). For a tag: { name, type, parameter: [...], firingTriggerId: [...] }. For a trigger: { name, type, ... }. For a variable: { name, type, parameter: [...] }."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "body"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L147-L176",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace folder collection create, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_update_folder",
+      "description": "Update an existing folder. Write operation (draft only). Send the full folder resource with your changes applied.\n\nArgs:\n  - account_id, container_id, workspace_id (strings), folder_id (string)\n  - body (object): Full Folder resource, shape: { name }\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "folder_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The folderId (from gtm_list_folders)."
+          },
+          "body": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "The full GTM resource object as JSON (matches the API v2 resource schema). For a tag: { name, type, parameter: [...], firingTriggerId: [...] }. For a trigger: { name, type, ... }. For a variable: { name, type, parameter: [...] }."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "folder_id",
+          "body"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L177-L216",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace folder collection update, assembling the resource path from IDs."
+    },
+    {
+      "name": "gtm_delete_folder",
+      "description": "Delete a folder from a workspace. This is a draft change — it only affects production once a new version is created and published, and can be reverted before then. Destructive at the workspace level.\n\nIMPORTANT: Always confirm with the user before deleting. Do NOT set confirm=true on your own — only pass it after the user has explicitly approved deleting this specific folder.\n\nArgs:\n  - account_id, container_id, workspace_id (strings), folder_id (string)\n  - confirm (boolean): Must be true to proceed. Set this only after the user explicitly confirms the deletion.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "folder_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The folderId (from gtm_list_folders)."
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "Must be true to actually delete. Only set after the user explicitly confirms deleting this folder."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "folder_id",
+          "confirm"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/workspaceEntities.ts#L217-L269",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 workspace folder collection delete, assembling the resource path from IDs. Requires confirm=true before deletion."
+    },
+    {
+      "name": "gtm_list_builtin_variables",
+      "description": "List the built-in variables currently enabled in a workspace (Page URL, Click Classes, etc.). Read-only.\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/builtinVariables.ts#L24-L55",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.built_in_variables.list, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_enable_builtin_variables",
+      "description": "Enable one or more built-in variables in a workspace. Write operation.\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n  - types (string[]): built-in variable type keys to enable\n\nReturns: JSON with the enabled builtInVariable[].",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "description": "Built-in variable type keys, e.g. [\"pageUrl\", \"clickClasses\", \"newHistoryFragment\"]. See the GTM API enum BuiltInVariable.Type."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "types"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/builtinVariables.ts#L56-L84",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.built_in_variables.create, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_disable_builtin_variables",
+      "description": "Disable one or more built-in variables in a workspace. Destructive at the workspace level (reversible before publish).\n\nArgs:\n  - account_id, container_id, workspace_id (strings)\n  - types (string[]): built-in variable type keys to disable",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM workspace ID, e.g. '3' (from gtm_list_workspaces)."
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "description": "Built-in variable type keys, e.g. [\"pageUrl\", \"clickClasses\", \"newHistoryFragment\"]. See the GTM API enum BuiltInVariable.Type."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "types"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/builtinVariables.ts#L85-L111",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.workspaces.built_in_variables.delete, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_list_version_headers",
+      "description": "List the version history of a container (lightweight headers, not full versions). Read-only.\n\nArgs:\n  - account_id, container_id (strings)\n  - response_format ('markdown' | 'json'): Output format (default: markdown)\n\nReturns: containerVersionHeader[] with containerVersionId, name, and counts. Includes nextPageToken when more exist.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/versions.ts#L19-L48",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.version_headers.list, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_get_version",
+      "description": "Get a full container version, including all its tags, triggers and variables. Read-only.\n\nArgs:\n  - account_id, container_id, version_id (strings)\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "version_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Container version ID (containerVersionId)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "version_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/versions.ts#L49-L79",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.versions.get, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_get_live_version",
+      "description": "Get the container version currently published live to production. Read-only.\n\nArgs:\n  - account_id, container_id (strings)\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/versions.ts#L80-L105",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.versions.live, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_publish_version",
+      "description": "Publish a container version LIVE to production. This immediately affects the real website/app. DESTRUCTIVE / high-impact — requires confirmation.\n\nArgs:\n  - account_id, container_id, version_id (strings)\n  - confirm (boolean): Must be true to publish.\n\nReturns: JSON with the published containerVersion and any compilerError.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "version_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Container version ID (containerVersionId)."
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "Must be true to publish live to production."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "version_id",
+          "confirm"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/versions.ts#L106-L144",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.versions.publish, assembling its resource path from supplied IDs. Requires confirm=true before publishing."
+    },
+    {
+      "name": "gtm_set_latest_version",
+      "description": "Mark a container version as the latest (without publishing it live). Write operation.\n\nArgs:\n  - account_id, container_id, version_id (strings)\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "version_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Container version ID (containerVersionId)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "version_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/versions.ts#L145-L175",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.versions.set_latest, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_list_environments",
+      "description": "List a container's environments (Live, Latest, and any custom ones like Staging). Read-only.\n\nArgs:\n  - account_id, container_id (strings)\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/environments.ts#L16-L42",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.environments.list, assembling its resource path from supplied IDs."
+    },
+    {
+      "name": "gtm_get_environment",
+      "description": "Get a single environment, including its authorization code/URL. Read-only.\n\nArgs:\n  - account_id, container_id, environment_id (strings)\n  - response_format ('markdown' | 'json'): Output format (default: markdown)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM account ID, e.g. '6000000000' (from gtm_list_accounts)."
+          },
+          "container_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "GTM container ID, e.g. '7000000000' (from gtm_list_containers)."
+          },
+          "environment_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Environment ID"
+          },
+          "response_format": {
+            "type": "string",
+            "enum": [
+              "markdown",
+              "json"
+            ],
+            "default": "markdown",
+            "description": "Output format: 'markdown' for a compact human-readable summary, 'json' for the full raw resource(s)."
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "environment_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/valentineffi/zenda-tag-manager-mcp/blob/d65efb7ba3c2cf0489d802478ad11d3747ffc086/src/tools/environments.ts#L43-L73",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls Google Tag Manager v2 accounts.containers.environments.get, assembling its resource path from supplied IDs."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "changes",
+    "summary": "Inspect draft status, synchronize workspaces, create versions, and edit resources using raw object bodies.",
+    "examples": [
+      "gtm_get_workspace_status",
+      "gtm_sync_workspace",
+      "gtm_create_version"
+    ]
+  }
+}

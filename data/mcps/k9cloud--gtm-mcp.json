@@ -1,0 +1,612 @@
+{
+  "repo": "K9Cloud/gtm-mcp",
+  "url": "https://github.com/K9Cloud/gtm-mcp",
+  "commit": "7e69a85b3e37f81f2eb2855cbb11356cb4686342",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "All 19 registered tools implement GTM v2 discovery, workspace edits, or version publishing; mutations default to dry-run.",
+  "method": "tools/list",
+  "server": "mcp-server/server.py (FastMCP gtm; stdio)",
+  "exposure": "All 19 @mcp.tool registrations are unconditional; no configured or read-only groups.",
+  "sources": [
+    "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L174-L906",
+    "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/README.md"
+  ],
+  "limitations": [
+    "Offline FastMCP list_tools used installed MCP 1.30.0; upstream does not pin dependencies, so framework-generated schemas may vary by installed version. No handler, authentication, or remote GTM call was executed.",
+    "Authentication depends on external hybrid-conversions OAuth token and helper paths not supplied by this repository.",
+    "Backup JSON files are historical artifacts; no backup/export/restore MCP tools or handlers are registered.",
+    "update_tag implements a shallow top-level patch despite its description claiming a deep merge; create_version_and_publish reports published=true even if publish response compilerError=true."
+  ],
+  "tools": [
+    {
+      "name": "list_accounts",
+      "description": "List all GTM accounts visible to the authenticated user.",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_accountsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L187-L200",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "access"
+      ],
+      "behavior": "Lists cached accessible GTM accounts using accounts.list."
+    },
+    {
+      "name": "list_containers",
+      "description": "List containers under a single GTM account.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "list_containersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L203-L222",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "access"
+      ],
+      "behavior": "Lists containers for the given GTM account."
+    },
+    {
+      "name": "find_container",
+      "description": "\nResolve a site domain (e.g. 'phoenixk9trainers.com') OR a GTM public ID\n(e.g. 'GTM-MM8HPN8L') to a container. Searches all accessible accounts.\n\nReturns container metadata + the default workspace path, which is what\nmost downstream tools (list_tags, list_triggers, etc.) require.\n",
+      "inputSchema": {
+        "properties": {
+          "domain_or_public_id": {
+            "title": "Domain Or Public Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain_or_public_id"
+        ],
+        "title": "find_containerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L225-L253",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "access"
+      ],
+      "behavior": "Scans accessible accounts for a domain or public ID and returns container metadata plus a default workspace path."
+    },
+    {
+      "name": "list_tags",
+      "description": "\nList all tags in a container's default workspace.\n\nPass either domain_or_public_id (e.g. 'phoenixk9trainers.com' or 'GTM-MM8HPN8L')\nOR workspace_path directly (faster if you already have it from find_container).\n\ntype_filter: case-insensitive substring match on tag.type (e.g. 'awct', 'awcc',\n'gaawe', 'html'). Empty = no filter.\n",
+      "inputSchema": {
+        "properties": {
+          "domain_or_public_id": {
+            "default": "",
+            "title": "Domain Or Public Id",
+            "type": "string"
+          },
+          "workspace_path": {
+            "default": "",
+            "title": "Workspace Path",
+            "type": "string"
+          },
+          "type_filter": {
+            "default": "",
+            "title": "Type Filter",
+            "type": "string"
+          }
+        },
+        "title": "list_tagsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L273-L315",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists workspace tags with an optional case-insensitive type substring filter."
+    },
+    {
+      "name": "get_tag",
+      "description": "\nFetch a single tag's full configuration by path\n(e.g. 'accounts/.../containers/.../workspaces/.../tags/N').\nUse this to see tag parameters before updating.\n",
+      "inputSchema": {
+        "properties": {
+          "tag_path": {
+            "title": "Tag Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tag_path"
+        ],
+        "title": "get_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L318-L331",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Fetches a tag and returns its full GTM configuration."
+    },
+    {
+      "name": "list_triggers",
+      "description": "List all triggers in a container's default workspace.",
+      "inputSchema": {
+        "properties": {
+          "domain_or_public_id": {
+            "default": "",
+            "title": "Domain Or Public Id",
+            "type": "string"
+          },
+          "workspace_path": {
+            "default": "",
+            "title": "Workspace Path",
+            "type": "string"
+          }
+        },
+        "title": "list_triggersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L334-L361",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists workspace triggers and selected metadata."
+    },
+    {
+      "name": "list_variables",
+      "description": "List all user-defined variables in a container's default workspace.",
+      "inputSchema": {
+        "properties": {
+          "domain_or_public_id": {
+            "default": "",
+            "title": "Domain Or Public Id",
+            "type": "string"
+          },
+          "workspace_path": {
+            "default": "",
+            "title": "Workspace Path",
+            "type": "string"
+          },
+          "type_filter": {
+            "default": "",
+            "title": "Type Filter",
+            "type": "string"
+          }
+        },
+        "title": "list_variablesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L364-L395",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists user-defined workspace variables with an optional case-insensitive type substring filter."
+    },
+    {
+      "name": "pause_tag",
+      "description": "\nPause or unpause a tag. Default action pauses (paused=True). Set paused=False\nto unpause an existing paused tag. Set dry_run=False to actually apply.\n\nNote: this only changes the workspace state — call create_version_and_publish\nafterward to push the change live to the container.\n",
+      "inputSchema": {
+        "properties": {
+          "tag_path": {
+            "title": "Tag Path",
+            "type": "string"
+          },
+          "paused": {
+            "default": true,
+            "title": "Paused",
+            "type": "boolean"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "tag_path"
+        ],
+        "title": "pause_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L400-L444",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Fetches a tag and updates its paused state when dry_run is false; returns a preview otherwise."
+    },
+    {
+      "name": "delete_tag",
+      "description": "\nDelete a tag from the workspace. Default dry_run=True. Set dry_run=False to apply.\nCall create_version_and_publish afterward to push the change live.\n",
+      "inputSchema": {
+        "properties": {
+          "tag_path": {
+            "title": "Tag Path",
+            "type": "string"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "tag_path"
+        ],
+        "title": "delete_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L447-L470",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Fetches a tag then previews or executes its workspace deletion."
+    },
+    {
+      "name": "delete_variable",
+      "description": "\nDelete a user-defined variable from the workspace. Default dry_run=True.\nCall create_version_and_publish afterward to push the change live.\n",
+      "inputSchema": {
+        "properties": {
+          "variable_path": {
+            "title": "Variable Path",
+            "type": "string"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "variable_path"
+        ],
+        "title": "delete_variableArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L473-L496",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Fetches a variable then previews or executes its workspace deletion."
+    },
+    {
+      "name": "delete_trigger",
+      "description": "\nDelete a trigger from the workspace. Default dry_run=True.\nCall create_version_and_publish afterward to push the change live.\n",
+      "inputSchema": {
+        "properties": {
+          "trigger_path": {
+            "title": "Trigger Path",
+            "type": "string"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "trigger_path"
+        ],
+        "title": "delete_triggerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L499-L522",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Fetches a trigger then previews or executes its workspace deletion."
+    },
+    {
+      "name": "create_version_and_publish",
+      "description": "\nCreate a container version from a workspace and immediately publish it live.\n\nworkspace_path: from find_container().default_workspace_path\nname: short version name (shown in GTM UI)\nnotes: longer description (shown in version detail)\ndry_run: True = preview only.\n\nGTM mutations stay in the workspace until a version is created + published.\nWithout this step, paused/deleted/updated tags do NOT take effect on the\ndeployed container.\n",
+      "inputSchema": {
+        "properties": {
+          "workspace_path": {
+            "title": "Workspace Path",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "default": "",
+            "title": "Notes",
+            "type": "string"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "workspace_path",
+          "name"
+        ],
+        "title": "create_version_and_publishArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L527-L577",
+      "scope": "gtm",
+      "tags": [
+        "workspace",
+        "release"
+      ],
+      "behavior": "Previews or creates a workspace container version and publishes the returned version path; reports compilerError."
+    },
+    {
+      "name": "list_workspaces",
+      "description": "\nList all workspaces in a container. After a publish, the default workspace is\nmarked 'submitted' and becomes read-only — `update_tag`/`delete_tag` will then\nfail with 400 'Workspace is already submitted.' Use create_workspace to spawn\na fresh writable one.\n",
+      "inputSchema": {
+        "properties": {
+          "domain_or_public_id": {
+            "default": "",
+            "title": "Domain Or Public Id",
+            "type": "string"
+          },
+          "container_path": {
+            "default": "",
+            "title": "Container Path",
+            "type": "string"
+          }
+        },
+        "title": "list_workspacesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L580-L613",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists container workspaces, resolving domain/public ID when needed."
+    },
+    {
+      "name": "create_workspace",
+      "description": "\nCreate a fresh workspace in a container. Use this when the default workspace\nis in 'submitted' (read-only) state after a recent publish, or to isolate\na multi-step change before publishing.\n\nA new workspace syncs from the latest published version, so all existing\ntags/triggers/variables are present and editable.\n\nPass either container_path directly or domain_or_public_id (the MCP will resolve).\n",
+      "inputSchema": {
+        "properties": {
+          "container_path": {
+            "default": "",
+            "title": "Container Path",
+            "type": "string"
+          },
+          "domain_or_public_id": {
+            "default": "",
+            "title": "Domain Or Public Id",
+            "type": "string"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "title": "create_workspaceArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L616-L666",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Requires a nonempty name and container resolution, then previews or creates a workspace."
+    },
+    {
+      "name": "delete_workspace",
+      "description": "\nDelete a workspace. Useful for cleaning up stale `fix-*` workspaces that\naccumulate from prior automation runs. Cannot delete the Default Workspace.\n",
+      "inputSchema": {
+        "properties": {
+          "workspace_path": {
+            "title": "Workspace Path",
+            "type": "string"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "workspace_path"
+        ],
+        "title": "delete_workspaceArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L669-L694",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Refuses a workspace named Default Workspace, then previews or deletes other workspaces."
+    },
+    {
+      "name": "update_tag",
+      "description": "\nGeneric tag update. Fetches the current tag, deep-merges `patch` over the\ntop, then writes it back. Use this for changes beyond pause/unpause —\nswapping a Clarity HTML body, changing an awct tag's conversion action ID,\nrenaming a tag, retargeting firing triggers, etc.\n\nExamples:\n  patch = {\"name\": \"Renamed Tag\"}\n  patch = {\"firingTriggerId\": [\"12345\"]}\n  patch = {\"parameter\": [{\"type\": \"TEMPLATE\", \"key\": \"html\",\n                          \"value\": \"<script>...</script>\"}]}\n\nNote: 'parameter' is REPLACED, not deep-merged — fetch via get_tag first\nto see the current parameter list, then provide the full replacement.\n",
+      "inputSchema": {
+        "properties": {
+          "tag_path": {
+            "title": "Tag Path",
+            "type": "string"
+          },
+          "patch": {
+            "additionalProperties": true,
+            "title": "Patch",
+            "type": "object"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "tag_path",
+          "patch"
+        ],
+        "title": "update_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L697-L746",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Fetches a tag and shallowly overwrites top-level fields with patch before previewing or updating it; the description incorrectly says deep-merges."
+    },
+    {
+      "name": "create_tag",
+      "description": "\nCreate a new tag in a workspace. Caller supplies the full GTM tag body dict.\n\nRequired keys in body: `name`, `type` (e.g. 'awct', 'awcc', 'gaawe', 'html').\nCommon optional keys: `parameter` (list of {type, key, value/list} dicts),\n`firingTriggerId` (list of trigger IDs), `blockingTriggerId`, `tagFiringOption`,\n`paused`.\n\nExample (Custom HTML / Clarity):\n  body = {\n    \"name\": \"Microsoft Clarity\",\n    \"type\": \"html\",\n    \"parameter\": [{\"type\": \"TEMPLATE\", \"key\": \"html\",\n                   \"value\": \"<script>(function(c,l,a,r,i,t,y){...})(...);</script>\"}],\n    \"firingTriggerId\": [\"2147479553\"]  # All Pages trigger\n  }\n\nFor complex tag types (awct, awcc, gaawe), inspect an existing same-type tag\nvia get_tag first and copy its parameter shape.\n",
+      "inputSchema": {
+        "properties": {
+          "workspace_path": {
+            "title": "Workspace Path",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "title": "Body",
+            "type": "object"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "workspace_path",
+          "body"
+        ],
+        "title": "create_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L749-L804",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Requires body name/type keys, then previews or creates a workspace tag using the unrestricted supplied object."
+    },
+    {
+      "name": "create_trigger",
+      "description": "\nCreate a new trigger in a workspace. Caller supplies the full GTM trigger body dict.\n\nRequired keys: `name`, `type` (e.g. 'pageview', 'linkClick', 'click', 'customEvent').\nOptional: `filter`, `customEventFilter`, `autoEventFilter` (each a list of\ncondition clauses with `type`, `parameter`).\n\nExample (click on tel: link):\n  body = {\n    \"name\": \"Click - tel: link\",\n    \"type\": \"linkClick\",\n    \"filter\": [\n      {\"type\": \"startsWith\",\n       \"parameter\": [\n         {\"type\": \"TEMPLATE\", \"key\": \"arg0\", \"value\": \"{{Click URL}}\"},\n         {\"type\": \"TEMPLATE\", \"key\": \"arg1\", \"value\": \"tel:\"}\n       ]}\n    ]\n  }\n\nFor complex trigger types, inspect an existing trigger via list_triggers\n+ the raw API response shape, then copy.\n",
+      "inputSchema": {
+        "properties": {
+          "workspace_path": {
+            "title": "Workspace Path",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "title": "Body",
+            "type": "object"
+          },
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "workspace_path",
+          "body"
+        ],
+        "title": "create_triggerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L807-L864",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Requires body name/type keys, then previews or creates a workspace trigger using the unrestricted supplied object."
+    },
+    {
+      "name": "list_versions",
+      "description": "List version headers (history) for a container. Pass either domain/public_id or container_path.",
+      "inputSchema": {
+        "properties": {
+          "domain_or_public_id": {
+            "default": "",
+            "title": "Domain Or Public Id",
+            "type": "string"
+          },
+          "container_path": {
+            "default": "",
+            "title": "Container Path",
+            "type": "string"
+          }
+        },
+        "title": "list_versionsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/K9Cloud/gtm-mcp/blob/7e69a85b3e37f81f2eb2855cbb11356cb4686342/mcp-server/server.py#L867-L898",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release",
+        "audit"
+      ],
+      "behavior": "Lists container version headers and selected history metadata."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "manage",
+    "summary": "Find containers by domain, preview tag edits, and create tracking resources in workspace drafts.",
+    "examples": [
+      "find_container",
+      "pause_tag",
+      "create_trigger"
+    ]
+  }
+}

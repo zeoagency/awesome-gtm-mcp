@@ -1,29 +1,28 @@
 # Editing this catalog
 
-This repository lists Google Tag Manager MCP servers, CLIs, and SDKs in plain English. `GTM` means Google Tag Manager.
+This repository documents Google Tag Manager MCP servers, CLIs, and SDKs in plain English. Apply [CONTRIBUTING.md](CONTRIBUTING.md) when changing an entry or its tool inventory.
 
-## Curation
+## Source of truth
 
-Apply the inclusion and evidence requirements in [CONTRIBUTING.md](CONTRIBUTING.md) to every added or changed entry. Inspect public implementation code as well as documentation; use the hosted-service evidence alternative for proprietary services. Describe only supported GTM capabilities; distinguish hosting an MCP server from managing server-side GTM.
+Edit reviewed MCP records in `data/mcps/`, then run `node scripts/build-catalog.mjs`. The README, MCP detail pages, tool index, and review decisions are generated together. Edit CLI and SDK entries in `SUPPORTING_TOOLS.md`. Record the complete set of inspected projects in `data/review-scope.json`, including exclusions.
 
-Keep one entry per project. Prefer the upstream project over a copy unless the fork provides a documented, implemented distinction. List multi-product tools only when their GTM functionality is implemented, and describe that functionality.
+## Review
 
-## Format
+Inspect actual tool registration, input validation, and handlers. Preserve exact names, descriptions, and complete schemas; keep advertised schemas separate from source validation when they differ. Record immutable source links and concrete limitations. Classify each MCP and choose examples from implemented GTM handlers. A shared server's complete inventory belongs on its detail page, with other products labeled; its homepage entry describes GTM capabilities only.
 
-Keep the README to a short introduction, navigation comparison, contents, and project tables. Use separate sections for MCP servers, CLIs, Tag Manager API SDKs, and website integration SDKs.
+If extraction is delegated, assign one MCP per agent and independently review its results before setting `review.status` to `reviewed`. Set an explicit keep/remove decision for every inspected project. Unavailable schemas remain evidence gaps, and those providers stay outside the main catalog.
 
-Use two-column tables (`Project`, `What it does`) with entries sorted alphabetically by label. Write one or two factual, verb-first sentences per entry, with at most 60 words. Link directly to the project or relevant SDK module. Keep counts in headings, contents, section summaries, and the total synchronized. Avoid volatile tool counts, unverified safety claims, and generic protocol or analytics explanations.
+## Completion
 
-## Verification
-
-Before committing, run:
+Run these checks before committing:
 
 ```sh
-npx --yes markdownlint-cli2@0.23.3 "**/*.md"
+node scripts/build-catalog.mjs --check
 node scripts/validate-catalog.mjs
+npx --yes markdownlint-cli2@0.23.3 "**/*.md"
 git diff --check
 ```
 
-The catalog validator checks project counts, local links, duplicate project URLs, and alphabetical order. Independently verify external links and GTM evidence; the validator does not establish that an external project works.
+These checks cover inventory completeness, schema references, generated documents, and local links. Check external source evidence separately; structural validation does not establish live GTM behavior.
 
 Use the commit format `docs(awesome-list): <summary>`.

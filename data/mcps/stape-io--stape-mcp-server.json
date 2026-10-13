@@ -1,0 +1,249 @@
+{
+  "repo": "stape-io/stape-mcp-server",
+  "url": "https://github.com/stape-io/stape-mcp-server",
+  "commit": "890a2de2f08dc7e5cb544e9cbf29a277304b4028",
+  "checkedAt": "2026-10-13",
+  "decision": "remove",
+  "reason": "Documented hosted Stape container hosting server is GTM-related (scope gtm), but schemas and implementation cannot be verified from this documentation-only repository.",
+  "method": "source",
+  "server": "https://mcp.stape.ai/mcp",
+  "exposure": "README documents 37 tools. Authorization header requires a Stape API key; optional X-Stape-Region: EU selects EU environment. Actual registration/configuration-dependent exposure is unavailable.",
+  "sources": [
+    "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L23-L29",
+    "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L200-L235"
+  ],
+  "limitations": [
+    "Source checkout tracks only README.md and LICENSE; no executable server or schema registrations.",
+    "README documents action selection and confirm: true for destructive actions, but does not specify full action enums, parameter schemas, defaults, or handler implementations.",
+    "Parent attempted public MCP initialize at <https://mcp.stape.ai/mcp> on 2026-10-13 and received HTTP 401. Registered descriptions, exact exposure, and complete input schemas remain unverified."
+  ],
+  "tools": [],
+  "gaps": [
+    {
+      "name": "stape_container_crud",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L229-L229",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_lifecycle",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L229-L229",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_domains",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L229-L229",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_schedules",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L229-L229",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_power_ups",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L229-L229",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_proxy_files",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L229-L229",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_connections",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L229-L229",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_resources",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L229-L229",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_monitoring",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L230-L230",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_monitoring_logs",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L230-L230",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_logs",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L230-L230",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_analytics",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L230-L230",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_statistics",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L230-L230",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_billing",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L231-L231",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_consolidated_invoicing",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L231-L231",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_invoices",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L231-L231",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_payment_links",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L231-L231",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_subscriptions",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L231-L231",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_subscription",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L231-L231",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_paddle",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L231-L231",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_account",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L232-L232",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_users",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L232-L232",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_user_api_keys",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L232-L232",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_company",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L232-L232",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_share_access",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L232-L232",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_partner",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L233-L233",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_partner_payouts",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L233-L233",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_score_report",
+      "description": "scan a website's tracking setup with Stape Score (create a scan, fetch results)",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L234-L234",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_container_resource",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L235-L235",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_domains_resource",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L235-L235",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_gateway_resource",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L235-L235",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_logs_resource",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L235-L235",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_monitoring_resource",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L235-L235",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_billing_resource",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L235-L235",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_partner_resource",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L235-L235",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_products",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L235-L235",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    },
+    {
+      "name": "stape_calculator",
+      "description": "",
+      "source": "https://github.com/stape-io/stape-mcp-server/blob/890a2de2f08dc7e5cb544e9cbf29a277304b4028/README.md#L235-L235",
+      "reason": "Only a documented tool name is available. Repository contains README.md and LICENSE only; no MCP registrations, full input schemas, exact registered descriptions, or handlers. Offline assignment prohibits remote tools/list and API operations."
+    }
+  ],
+  "review": {
+    "status": "reviewed",
+    "reason": "Hosted GTM hosting service with documented names but no complete public input schemas; unauthenticated initialize returns 401."
+  }
+}

@@ -1,0 +1,1418 @@
+{
+  "repo": "jabeer4148-ops/google-measurement-mcp",
+  "url": "https://github.com/jabeer4148-ops/google-measurement-mcp",
+  "commit": "9feb8a8e505289c86448dd8adc7207cf4421507b",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Implemented GTM read, diff and staging tools, but gtm_list_workspaces forwards encoded continuation cursors directly to Google, breaking subsequent paginated reads.",
+  "method": "source",
+  "server": "src/index.ts (stdio); src/tools/registry.ts shared GA4/GSC/GTM server",
+  "exposure": "All 28 tools captured: 20 default read tools and 8 opt-in write tools. Write mode via --enable-write or GMCP_ENABLE_WRITE=1/true/yes/on. No publishing, deletes, approval/review tokens or per-call confirm gate. Version preview is read-only snapshot. Default row cap is 25, configurable by GMCP_DEFAULT_ROW_LIMIT; hard cap 100000, GSC search cap 25000.",
+  "sources": [
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/index.ts#L1-L264",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/config.ts#L1-L86",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/registry.ts#L1-L27",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/schemas/index.ts#L1-L89",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/schemas/phase2.ts#L1-L233",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/schemas/phase3.ts#L1-L217",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/schemas/ga4-run-report.ts#L1-L76",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/lib/gtm-review.ts#L1-L75",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/lib/pagination.ts#L1-L46",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/diagnostics.ts#L1-L28",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/ga4-admin-write.ts#L1-L204",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/ga4-admin.ts#L1-L170",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/ga4-data.ts#L1-L208",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gsc-compare.ts#L1-L35",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gsc-write.ts#L1-L86",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gsc.ts#L1-L277",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm-review.ts#L1-L51",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm-write.ts#L1-L330",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm.ts#L1-L289",
+    "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/registry.ts#L1-L27"
+  ],
+  "limitations": [
+    "Offline registry construction from compiled source, matching the tools/list projection; no protocol request or Google tool handler was executed. Google endpoint behavior and credential scopes were not remotely verified.",
+    "gtm_list_workspaces sends input.pageToken directly to Google instead of upstreamPageToken, while pageRows returns gmcp-prefixed cursors.",
+    "Schemas preserved exactly as registered; runtime validations and defaults can exceed schema constraints (path normalization, date/filter checks, row caps and server configuration)."
+  ],
+  "tools": [
+    {
+      "name": "ga4_get_metadata",
+      "description": "Discover valid GA4 field names, descriptions and custom definitions for a property before reporting. Does not guarantee every combination is compatible.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/ga4-data.ts#L72-L207",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: reads dimensions and metrics metadata and truncates each collection.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "Discover GA4 dimensions and metrics",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "ga4_run_report",
+      "description": "Runs a Google Analytics 4 report and returns rows as flat objects. Requires the NUMERIC GA4 propertyId (e.g. 123456789), not the G-XXXXXXX measurement ID. If the user does not know it, it appears in any GA4 URL as the digits after 'p' (analytics.google.com/analytics/web/#/a<account>p<property>/...), or under GA4 Admin -> Property details -> PROPERTY ID. Returns at most 25 rows unless `limit` is raised; prefer narrowing the date range or dimensions over raising it. Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 numeric property ID, with or without the 'properties/' prefix. Call ga4_list_account_summaries to discover it. This is NOT the G-XXXXXXX measurement ID."
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start of the range. Accepts YYYY-MM-DD, 'today', 'yesterday', or 'NdaysAgo' (e.g. '28daysAgo')."
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End of the range, inclusive. Same formats as startDate."
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "GA4 dimension API names, e.g. ['date','sessionSource','country']. Omit for totals only."
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "GA4 metric API names, e.g. ['activeUsers','sessions','conversions']. At least one is required."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum rows to return. Defaults to 25 to protect the context window. Prefer narrowing the query over raising this."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Zero-based row offset, for paging through a large report."
+          },
+          "dimensionFilter": {
+            "type": "object",
+            "description": "Google Data API FilterExpression for dimensions."
+          },
+          "metricFilter": {
+            "type": "object",
+            "description": "Google Data API FilterExpression for metrics."
+          },
+          "orderBys": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Google Data API OrderBy objects (metric or dimension)."
+          },
+          "keepEmptyRows": {
+            "type": "boolean",
+            "description": "When true, returns rows whose metrics are all zero. Defaults to false."
+          }
+        },
+        "required": [
+          "propertyId",
+          "startDate",
+          "endDate",
+          "metrics"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/ga4-data.ts#L89-L207",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: runs a standard report, validates dates/filters/order, flattens rows and supports offset continuation.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "Run a GA4 report",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "ga4_run_realtime_report",
+      "description": "Returns activity from roughly the last 30 minutes. Requires the NUMERIC GA4 propertyId (call ga4_list_account_summaries to find it). IMPORTANT: the realtime schema is a SUBSET of the standard reporting schema — 'date', 'sessionSource' and most session-scoped fields are unavailable and will error. Common realtime dimensions: country, city, deviceCategory, unifiedScreenName, eventName. Common realtime metrics: activeUsers, screenPageViews, eventCount. For anything older than 30 minutes use ga4_run_report instead. Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "Numeric GA4 property ID, with or without the 'properties/' prefix. Not the G-XXXXXXX measurement ID."
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Realtime dimension API names, e.g. ['country','unifiedScreenName','deviceCategory']. Note the realtime schema is a SUBSET of the standard reporting schema — 'date' and most session-scoped dimensions are unavailable."
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Realtime metric API names, e.g. ['activeUsers','screenPageViews']."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum rows to return. Defaults to 25 to protect the context window. Prefer narrowing the query over raising this."
+          }
+        },
+        "required": [
+          "propertyId",
+          "metrics"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/ga4-data.ts#L152-L207",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: runs a realtime report and flattens capped rows.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "Run a GA4 realtime report",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "ga4_list_account_summaries",
+      "description": "Lists every Google Analytics account the authenticated user can see, with the properties under each. Use this FIRST to discover the numeric propertyId that other GA4 tools require. Returns account name, display name, and for each property its ID and display name. Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum rows to return. Defaults to 25 to protect the context window. Prefer narrowing the query over raising this."
+          },
+          "pageToken": {
+            "type": "string",
+            "description": "Opaque token from a previous response's `nextPageToken`, to fetch the following page. Paging is manual so the caller controls cost."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/ga4-admin.ts#L34-L169",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: lists account summaries and property IDs with cursor pagination.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "List GA4 accounts and properties",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "ga4_list_custom_dimensions",
+      "description": "Lists custom dimensions configured on a GA4 property, with parameter name, display name, and scope (EVENT/USER/ITEM). Useful for discovering which custom dimensions exist before referencing them in ga4_run_report. Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "Numeric GA4 property ID, with or without the 'properties/' prefix. Call ga4_list_account_summaries to discover it."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum rows to return. Defaults to 25 to protect the context window. Prefer narrowing the query over raising this."
+          },
+          "pageToken": {
+            "type": "string",
+            "description": "Opaque token from a previous response's `nextPageToken`, to fetch the following page. Paging is manual so the caller controls cost."
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/ga4-admin.ts#L80-L169",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: lists property custom dimensions with cursor pagination.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "List GA4 custom dimensions",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "ga4_list_key_events",
+      "description": "Lists key events (formerly 'conversions') on a GA4 property, with counting method and whether each is deletable. Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "Numeric GA4 property ID, with or without the 'properties/' prefix. Call ga4_list_account_summaries to discover it."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum rows to return. Defaults to 25 to protect the context window. Prefer narrowing the query over raising this."
+          },
+          "pageToken": {
+            "type": "string",
+            "description": "Opaque token from a previous response's `nextPageToken`, to fetch the following page. Paging is manual so the caller controls cost."
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/ga4-admin.ts#L125-L169",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: lists property key events with cursor pagination.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "List GA4 key events",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gsc_list_sites",
+      "description": "Lists every Search Console property the authenticated user can access, with their permission level. Use this FIRST to get the exact siteUrl string other Search Console tools need — the format is significant ('https://example.com/' for URL-prefix properties, 'sc-domain:example.com' for Domain properties). Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum rows to return. Defaults to 25 to protect the context window. Prefer narrowing the query over raising this."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gsc.ts#L50-L276",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Search Console: lists accessible properties and permission levels with capped results.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "List Search Console properties",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gsc_search_analytics_query",
+      "description": "Returns clicks, impressions, CTR and average position from Search Console, grouped by the dimensions you choose. This is the primary SEO analysis tool. siteUrl must be the exact string from gsc_list_sites. Dates are YYYY-MM-DD only — relative forms like '28daysAgo' are NOT supported here (unlike the GA4 tools). Data lags roughly 2-3 days; use dataState='all' to include fresh partial data. Returns at most 25 rows by default while the API itself allows up to 25,000, so do not assume you are seeing everything — raise `limit` deliberately or narrow with filters. Page with `startRow`. Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "siteUrl": {
+            "type": "string",
+            "description": "Exact property string from Search Console: 'https://example.com/' (URL-prefix) or 'sc-domain:example.com' (Domain). Call gsc_list_sites for valid values."
+          },
+          "startDate": {
+            "type": "string",
+            "description": "YYYY-MM-DD. Relative dates are NOT supported."
+          },
+          "endDate": {
+            "type": "string",
+            "description": "YYYY-MM-DD, inclusive."
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "query",
+                "page",
+                "country",
+                "device",
+                "searchAppearance",
+                "date",
+                "hour"
+              ]
+            },
+            "description": "Group by these. 'hour' requires dataState='hourly_all'. Results are keyed in the order supplied."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "web",
+              "image",
+              "video",
+              "news",
+              "googleNews",
+              "discover"
+            ],
+            "description": "Search surface. Defaults to 'web'. Replaces the deprecated `searchType`."
+          },
+          "dimensionFilterGroups": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Filter groups: [{ groupType: 'and', filters: [{ dimension, operator, expression }] }]. Operators: contains, equals, notContains, notEquals, includingRegex, excludingRegex (RE2 syntax). You may filter on a dimension without grouping by it."
+          },
+          "aggregationType": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "byPage",
+              "byProperty",
+              "byNewsShowcasePanel"
+            ],
+            "description": "Defaults to 'auto'. Cannot be 'byProperty' when grouping or filtering by page."
+          },
+          "dataState": {
+            "type": "string",
+            "enum": [
+              "final",
+              "all",
+              "hourly_all"
+            ],
+            "description": "'final' (default) excludes incomplete data. 'all' includes fresh partial data. 'hourly_all' enables the 'hour' dimension."
+          },
+          "startRow": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Zero-based offset for paging. Search Console uses an offset, not a page token."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum rows to return. Defaults to 25 to protect the context window. Prefer narrowing the query over raising this."
+          }
+        },
+        "required": [
+          "siteUrl",
+          "startDate",
+          "endDate"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gsc.ts#L79-L276",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Search Console: queries performance data, flattens dimension keys and supports startRow continuation.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "Query Search Console performance data",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gsc_list_sitemaps",
+      "description": "Lists sitemaps submitted for a Search Console property, with last-downloaded time, warning and error counts, and per-type indexed counts. Useful for diagnosing indexing problems. Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "siteUrl": {
+            "type": "string",
+            "description": "Exact property string from Search Console. Call gsc_list_sites for valid values."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum rows to return. Defaults to 25 to protect the context window. Prefer narrowing the query over raising this."
+          }
+        },
+        "required": [
+          "siteUrl"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gsc.ts#L156-L276",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Search Console: lists sitemap submission status and counts with capped results.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "List submitted sitemaps",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gsc_inspect_url",
+      "description": "Returns Google's index status for a single URL: coverage verdict, last crawl time, Google-selected vs user-declared canonical, mobile usability, and rich-results verdict. QUOTA: 2,000 queries per day and 600 per minute PER PROPERTY. Do not loop this over a list of URLs without checking the quota budget first — inspect specific URLs the user asked about, and prefer gsc_search_analytics_query for anything aggregate. Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "siteUrl": {
+            "type": "string",
+            "description": "The Search Console property that owns the URL being inspected."
+          },
+          "inspectionUrl": {
+            "type": "string",
+            "description": "Fully-qualified URL to inspect. Must belong to the siteUrl property."
+          },
+          "languageCode": {
+            "type": "string",
+            "description": "BCP-47 code for localized result text, e.g. 'en-US'. Optional."
+          }
+        },
+        "required": [
+          "siteUrl",
+          "inspectionUrl"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gsc.ts#L199-L276",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Search Console: reads URL inspection index status, mobile usability and rich results.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "Inspect a URL's index status",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gtm_list_accounts",
+      "description": "Lists every Google Tag Manager account the authenticated user can access. Use this FIRST to discover accountId, then gtm_list_containers, then gtm_list_workspaces. Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum rows to return. Defaults to 25 to protect the context window. Prefer narrowing the query over raising this."
+          },
+          "pageToken": {
+            "type": "string",
+            "description": "Opaque token from a previous response's `nextPageToken`, to fetch the following page. Paging is manual so the caller controls cost."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm.ts#L93-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "access"
+      ],
+      "behavior": "Lists accessible Google Tag Manager accounts with paged, capped results.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "List Tag Manager accounts",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gtm_list_containers",
+      "description": "Lists containers in a Tag Manager account. Call gtm_list_accounts first to get the accountId. NOTE the response has two different IDs: `containerId` is the numeric internal ID that every other GTM tool needs, while `publicId` is the GTM-XXXXXXX string shown in the UI. Pass the numeric one. Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "GTM account ID, with or without the 'accounts/' prefix. Call gtm_list_accounts to discover it."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum rows to return. Defaults to 25 to protect the context window. Prefer narrowing the query over raising this."
+          },
+          "pageToken": {
+            "type": "string",
+            "description": "Opaque token from a previous response's `nextPageToken`, to fetch the following page. Paging is manual so the caller controls cost."
+          }
+        },
+        "required": [
+          "accountId"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm.ts#L125-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists containers for a GTM account, including numeric container IDs and public IDs.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "List Tag Manager containers",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gtm_list_workspaces",
+      "description": "Lists workspaces in a container. Workspaces are the safe editing surface — all writes in this server operate on a workspace, never the live container. Accepts either a full container `path` or accountId + containerId (numeric internal ID). Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Full container path 'accounts/{a}/containers/{c}'. Alternative to supplying accountId and containerId separately."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM account ID. Ignored if `path` is supplied."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM container ID — the NUMERIC internal ID from gtm_list_containers, not the GTM-XXXXXXX public ID."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum rows to return. Defaults to 25 to protect the context window. Prefer narrowing the query over raising this."
+          },
+          "pageToken": {
+            "type": "string",
+            "description": "Opaque token from a previous response's `nextPageToken`, to fetch the following page. Paging is manual so the caller controls cost."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm.ts#L168-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists workspaces for a container; its handler incorrectly forwards the public continuation cursor directly to the Google pageToken parameter.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "List Tag Manager workspaces",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gtm_list_tags",
+      "description": "Lists tags in a Tag Manager workspace with their type, firing triggers and parameters. Accepts a full workspace `path` or accountId + containerId + workspaceId. Parameters are condensed to key/value pairs for readability. Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Full workspace path 'accounts/{a}/containers/{c}/workspaces/{w}'. Alternative to the three IDs."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM account ID. Ignored if `path` is supplied."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "Numeric internal container ID, not GTM-XXXXXXX."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "Workspace ID from gtm_list_workspaces."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum rows to return. Defaults to 25 to protect the context window. Prefer narrowing the query over raising this."
+          },
+          "pageToken": {
+            "type": "string",
+            "description": "Opaque token from a previous response's `nextPageToken`, to fetch the following page. Paging is manual so the caller controls cost."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm.ts#L211-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists workspace tags, condensing parameters to key/value pairs.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "List tags in a workspace",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gtm_list_triggers",
+      "description": "Lists triggers in a Tag Manager workspace with their type and firing conditions. Accepts a full workspace `path` or accountId + containerId + workspaceId. Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Full workspace path 'accounts/{a}/containers/{c}/workspaces/{w}'. Alternative to the three IDs."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM account ID. Ignored if `path` is supplied."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "Numeric internal container ID, not GTM-XXXXXXX."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "Workspace ID from gtm_list_workspaces."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum rows to return. Defaults to 25 to protect the context window. Prefer narrowing the query over raising this."
+          },
+          "pageToken": {
+            "type": "string",
+            "description": "Opaque token from a previous response's `nextPageToken`, to fetch the following page. Paging is manual so the caller controls cost."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm.ts#L236-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists workspace triggers and summarized conditions.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "List triggers in a workspace",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gtm_list_variables",
+      "description": "Lists user-defined variables in a Tag Manager workspace with their type and parameters. Note this returns user-defined variables only — built-in variables are a separate collection. Accepts a full workspace `path` or accountId + containerId + workspaceId. Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Full workspace path 'accounts/{a}/containers/{c}/workspaces/{w}'. Alternative to the three IDs."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM account ID. Ignored if `path` is supplied."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "Numeric internal container ID, not GTM-XXXXXXX."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "Workspace ID from gtm_list_workspaces."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Maximum rows to return. Defaults to 25 to protect the context window. Prefer narrowing the query over raising this."
+          },
+          "pageToken": {
+            "type": "string",
+            "description": "Opaque token from a previous response's `nextPageToken`, to fetch the following page. Paging is manual so the caller controls cost."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm.ts#L264-L288",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists user-defined workspace variables and summarized parameters.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "List variables in a workspace",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gtm_get_live_version",
+      "description": "Read the full currently published GTM version. Configuration is not proof a tag fired in a browser. May return a large container; choose a specific container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "accounts/{account}/containers/{container}"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm-review.ts#L13-L50",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Reads the full published container version through the GTM v2 live endpoint.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "Inspect the live GTM configuration",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gtm_preview_version",
+      "description": "READ ONLY. Compare a candidate version to the live version by stable entity IDs and configuration, including modified fields. This server cannot publish. Review full changes in Google Tag Manager before publishing there.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "versionPath": {
+            "type": "string",
+            "description": "accounts/{account}/containers/{container}/versions/{numericVersion}"
+          }
+        },
+        "required": [
+          "versionPath"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm-review.ts#L26-L50",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit",
+        "release"
+      ],
+      "behavior": "Reads candidate and live versions and computes a configuration delta without publication or an approval token.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "Review a GTM version before manual publishing",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gsc_compare_periods",
+      "description": "Compare web-search totals for two equal-length, non-overlapping date ranges using final data. Returns click/impression changes and CTR percentage-point change; zero baselines yield null percentage change. Uses two read requests.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "siteUrl": {
+            "type": "string",
+            "description": "Exact Search Console property."
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Current period start, YYYY-MM-DD."
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Current period end, inclusive."
+          },
+          "previousStartDate": {
+            "type": "string",
+            "description": "Previous period start."
+          },
+          "previousEndDate": {
+            "type": "string",
+            "description": "Previous period end, inclusive."
+          }
+        },
+        "required": [
+          "siteUrl",
+          "startDate",
+          "endDate",
+          "previousStartDate",
+          "previousEndDate"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gsc-compare.ts#L16-L34",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Search Console: compares totals from two queries for equal-length non-overlapping periods.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "Compare Search Console performance between periods",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gmcp_diagnostics",
+      "description": "Check credential availability and read/write mode without exposing tokens or client secrets. Does not guarantee access to any particular property. Never starts browser sign-in.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/diagnostics.ts#L11-L27",
+      "scope": "auxiliary",
+      "tags": [
+        "access",
+        "audit"
+      ],
+      "behavior": "Checks credential availability and operating mode without returning tokens; does not establish product resource access.",
+      "exposure": "Always registered, including default read-only mode.",
+      "annotations": {
+        "title": "Check connection and operating mode",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "ga4_create_custom_dimension",
+      "description": "CHANGES CONFIGURATION. Creates a custom dimension on a GA4 property. NOT REVERSIBLE: GA4 custom dimensions can only be ARCHIVED, never deleted, and this server does not implement archiving. Slots are limited (typically 50 event-scoped and 25 user-scoped per property) and archiving can free quota but cannot be undone. Do NOT create dimensions speculatively — confirm with the user that the parameter is actually being collected and that they want it registered. Note that creating a dimension does not start data collection; your tagging must already send the parameter, and data only appears going forward, never retroactively.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "Numeric GA4 property ID. Call ga4_list_account_summaries to discover it."
+          },
+          "parameterName": {
+            "type": "string",
+            "description": "The event parameter or user property name to register, e.g. 'article_author'. Must already be being sent by your tagging; creating the dimension does not start collection."
+          },
+          "displayName": {
+            "type": "string",
+            "description": "Human-readable name shown in GA4 reports. Max 82 characters."
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "EVENT",
+              "USER",
+              "ITEM"
+            ],
+            "description": "EVENT for event parameters, USER for user properties, ITEM for ecommerce item parameters. Cannot be changed after creation."
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description. Max 150 characters."
+          },
+          "disallowAdsPersonalization": {
+            "type": "boolean",
+            "description": "USER-scoped only. Marks the dimension as NPA (no ads personalization)."
+          }
+        },
+        "required": [
+          "propertyId",
+          "parameterName",
+          "displayName",
+          "scope"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/ga4-admin-write.ts#L33-L203",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: creates a custom dimension after local field checks; archiving is not exposed.",
+      "exposure": "Conditional: --enable-write or truthy GMCP_ENABLE_WRITE; no review token or confirm parameter.",
+      "annotations": {
+        "title": "Create a GA4 custom dimension",
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "ga4_create_key_event",
+      "description": "CHANGES CONFIGURATION. Marks an event as a key event (formerly 'conversion') on a GA4 property. REVERSIBLE, but not by this server: key events can be deleted, however deletion is deliberately not implemented here — remove it from the GA4 UI if unwanted. Marking a key event affects reporting and any Google Ads bidding that consumes it, so confirm intent with the user before calling.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "Numeric GA4 property ID."
+          },
+          "eventName": {
+            "type": "string",
+            "description": "The event name to mark as a key event, e.g. 'purchase' or 'generate_lead'. The event must already exist or be collected in future."
+          },
+          "countingMethod": {
+            "type": "string",
+            "enum": [
+              "ONCE_PER_EVENT",
+              "ONCE_PER_SESSION"
+            ],
+            "description": "ONCE_PER_EVENT counts every occurrence. ONCE_PER_SESSION counts at most one per session."
+          }
+        },
+        "required": [
+          "propertyId",
+          "eventName",
+          "countingMethod"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/ga4-admin-write.ts#L109-L203",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: creates a key event; deletion is not exposed.",
+      "exposure": "Conditional: --enable-write or truthy GMCP_ENABLE_WRITE; no review token or confirm parameter.",
+      "annotations": {
+        "title": "Create a GA4 key event",
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "ga4_update_key_event",
+      "description": "CHANGES CONFIGURATION. Updates the counting method of an existing key event. REVERSIBLE: call again with the previous value to restore it. Requires the full resource name from ga4_list_key_events, not just the event name.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full resource name of the key event, e.g. 'properties/123/keyEvents/456'. Get it from ga4_list_key_events."
+          },
+          "countingMethod": {
+            "type": "string",
+            "enum": [
+              "ONCE_PER_EVENT",
+              "ONCE_PER_SESSION"
+            ],
+            "description": "New counting method."
+          }
+        },
+        "required": [
+          "name",
+          "countingMethod"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/ga4-admin-write.ts#L158-L203",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: patches a key event counting method.",
+      "exposure": "Conditional: --enable-write or truthy GMCP_ENABLE_WRITE; no review token or confirm parameter.",
+      "annotations": {
+        "title": "Update a GA4 key event",
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gsc_submit_sitemap",
+      "description": "CHANGES CONFIGURATION. Submits a sitemap URL to Search Console for a property. REVERSIBLE, but not by this server: a submitted sitemap can be removed from the Search Console UI; deletion is deliberately not implemented here. Submitting does not force indexing and does not affect rankings — it tells Google where to find your URL list. Re-submitting an already-submitted sitemap is harmless and simply refreshes it.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "siteUrl": {
+            "type": "string",
+            "description": "Exact Search Console property string. Call gsc_list_sites for valid values."
+          },
+          "feedpath": {
+            "type": "string",
+            "description": "Fully-qualified sitemap URL, e.g. 'https://example.com/sitemap.xml'. Must be within the property."
+          }
+        },
+        "required": [
+          "siteUrl",
+          "feedpath"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gsc-write.ts#L27-L85",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Search Console: submits a sitemap URL after origin validation; deletion is not exposed.",
+      "exposure": "Conditional: --enable-write or truthy GMCP_ENABLE_WRITE; no review token or confirm parameter.",
+      "annotations": {
+        "title": "Submit a sitemap to Search Console",
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gtm_create_tag",
+      "description": "CHANGES A WORKSPACE. Creates a tag in a Tag Manager workspace. REVERSIBLE: the tag exists only in the workspace and affects no live site until a version is created and explicitly published. Delete it from the GTM UI, or discard the workspace changes. Consider passing paused: true when creating a tag unattended. Requires a workspace path (or accountId + numeric containerId + workspaceId) and the GTM type code — call gtm_list_tags on an existing container to see the codes GTM uses.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Full workspace path 'accounts/{a}/containers/{c}/workspaces/{w}'."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM account ID. Ignored if `path` is supplied."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "Numeric internal container ID, not GTM-XXXXXXX."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "Workspace ID from gtm_list_workspaces."
+          },
+          "name": {
+            "type": "string",
+            "description": "Tag name, unique within the workspace."
+          },
+          "type": {
+            "type": "string",
+            "description": "GTM tag type code, e.g. 'html' (Custom HTML), 'gaawe' (GA4 Event), 'gaawc' (GA4 Config). Call gtm_list_tags on an existing container to see the codes GTM uses."
+          },
+          "parameter": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "GTM parameter array: [{ type: 'template'|'boolean'|'integer'|'list'|'map', key: string, value: string }]. For a Custom HTML tag use [{ type: 'template', key: 'html', value: '<script>...</script>' }]."
+          },
+          "firingTriggerId": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Trigger IDs that fire this tag. Get them from gtm_list_triggers."
+          },
+          "blockingTriggerId": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Trigger IDs that block this tag."
+          },
+          "paused": {
+            "type": "boolean",
+            "description": "Create the tag paused. Recommended when an agent creates a tag unattended."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Free-text notes stored on the tag."
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm-write.ts#L31-L329",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a workspace tag; does not publish and has no per-call confirmation gate.",
+      "exposure": "Conditional: --enable-write or truthy GMCP_ENABLE_WRITE; no review token or confirm parameter.",
+      "annotations": {
+        "title": "Create a tag in a workspace",
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gtm_update_tag",
+      "description": "CHANGES A WORKSPACE. Updates a tag, MERGING your changes over its current configuration. REVERSIBLE: workspace-only until published, and GTM keeps version history. Fields you omit are PRESERVED — this server fetches the current tag and merges, because the raw GTM API replaces instead, which silently clears omitted fields. (Verified: omitting firingTriggerId on the raw API empties it, leaving a tag that looks normal in the GTM UI but never fires.) To deliberately CLEAR a field, pass it explicitly as an empty array — e.g. firingTriggerId: [] unwires the tag from all triggers. Omission preserves; explicit empty clears. `parameter` is merged by key, so you can change one parameter without resending the rest. Requires the full tag path from gtm_list_tags.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tagPath": {
+            "type": "string",
+            "description": "Full tag path 'accounts/{a}/containers/{c}/workspaces/{w}/tags/{id}'. Get it from gtm_list_tags."
+          },
+          "name": {
+            "type": "string",
+            "description": "New tag name."
+          },
+          "type": {
+            "type": "string",
+            "description": "GTM tag type code. Required by the API on update."
+          },
+          "parameter": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "GTM parameter array: [{ type: 'template'|'boolean'|'integer'|'list'|'map', key: string, value: string }]. For a Custom HTML tag use [{ type: 'template', key: 'html', value: '<script>...</script>' }]."
+          },
+          "firingTriggerId": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Replacement firing triggers."
+          },
+          "blockingTriggerId": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Replacement blocking triggers."
+          },
+          "paused": {
+            "type": "boolean",
+            "description": "Pause or unpause the tag."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Free-text notes."
+          }
+        },
+        "required": [
+          "tagPath",
+          "name",
+          "type"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm-write.ts#L95-L329",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Reads and merges a workspace tag, preserves omitted fields, merges parameters by key, and updates with the current fingerprint.",
+      "exposure": "Conditional: --enable-write or truthy GMCP_ENABLE_WRITE; no review token or confirm parameter.",
+      "annotations": {
+        "title": "Update a tag in a workspace",
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gtm_create_trigger",
+      "description": "CHANGES A WORKSPACE. Creates a trigger in a Tag Manager workspace. REVERSIBLE: workspace-only until published. A trigger on its own fires nothing — it must be referenced by a tag's firingTriggerId.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Full workspace path 'accounts/{a}/containers/{c}/workspaces/{w}'."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM account ID. Ignored if `path` is supplied."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "Numeric internal container ID, not GTM-XXXXXXX."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "Workspace ID from gtm_list_workspaces."
+          },
+          "name": {
+            "type": "string",
+            "description": "Trigger name, unique within the workspace."
+          },
+          "type": {
+            "type": "string",
+            "description": "GTM trigger type code, e.g. 'pageview', 'domReady', 'windowLoaded', 'click', 'linkClick', 'customEvent', 'formSubmission'."
+          },
+          "filter": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Conditions: [{ type: 'equals'|'contains'|'startsWith'|..., parameter: [{type:'template',key:'arg0',value:'{{Page Path}}'},{type:'template',key:'arg1',value:'/checkout'}] }]."
+          },
+          "customEventFilter": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "For customEvent triggers: the event-name matching conditions."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Free-text notes."
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm-write.ts#L205-L329",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a workspace trigger; does not publish and has no per-call confirmation gate.",
+      "exposure": "Conditional: --enable-write or truthy GMCP_ENABLE_WRITE; no review token or confirm parameter.",
+      "annotations": {
+        "title": "Create a trigger in a workspace",
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "gtm_create_version",
+      "description": "CHANGES CONFIGURATION. Freezes the current workspace state into an immutable container version. SAFE: creating a version does NOT publish it and does NOT affect any live site. It is the staging step before gtm_preview_version. Returns the version ID needed to publish. Always supply `notes` — this is the audit trail for the change.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Full workspace path 'accounts/{a}/containers/{c}/workspaces/{w}'."
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM account ID. Ignored if `path` is supplied."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "Numeric internal container ID, not GTM-XXXXXXX."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "Workspace ID from gtm_list_workspaces."
+          },
+          "name": {
+            "type": "string",
+            "description": "Version name. Defaults to a timestamped name."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Version notes. Strongly recommended — this is the audit trail for the change."
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jabeer4148-ops/google-measurement-mcp/blob/9feb8a8e505289c86448dd8adc7207cf4421507b/src/tools/gtm-write.ts#L260-L329",
+      "scope": "gtm",
+      "tags": [
+        "workspace",
+        "release"
+      ],
+      "behavior": "Creates a container version from a workspace, rejecting compiler/sync failures in its result; publication remains manual.",
+      "exposure": "Conditional: --enable-write or truthy GMCP_ENABLE_WRITE; no review token or confirm parameter.",
+      "annotations": {
+        "title": "Snapshot a workspace into a container version",
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "changes",
+    "summary": "Inspects workspace state, previews entity writes, and reviews drafts before version creation and publication.",
+    "reason": "Implemented GTM read, diff and staging tools, but gtm_list_workspaces forwards encoded continuation cursors directly to Google, breaking subsequent paginated reads.",
+    "examples": [
+      "gtm_preview_version",
+      "gtm_create_tag",
+      "gtm_create_version"
+    ]
+  }
+}

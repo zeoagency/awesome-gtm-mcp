@@ -1,0 +1,927 @@
+{
+  "repo": "skiddgoddamn/google-seo-mcp",
+  "url": "https://github.com/skiddgoddamn/google-seo-mcp",
+  "commit": "fd3eb641535b7e3d40ac25f4bc56a423669630f8",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Six implemented GTM v2 tools list accounts/containers/workspaces/tags and create containers/tags; shared server also exposes 27 OAuth/SEO/Analytics tools.",
+  "method": "source",
+  "server": "src/index.ts (stdio; package bin build/index.js)",
+  "exposure": "All 33 tools are registered unconditionally. G_READONLY=true blocks mutating calls but does not hide tools. G_CONFIRM=true augments mutating tool schemas with optional confirm:boolean (description: Must be true to execute this mutating call (G_CONFIRM is enabled).); dispatch requires truthy confirmation. Auth tools are exempt; psi_run requires no OAuth. Default schemas below have G_CONFIRM unset.",
+  "sources": [
+    "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/index.ts#L17-L94",
+    "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/api.ts#L28-L68",
+    "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/auth.ts",
+    "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/searchconsole.ts",
+    "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/indexing.ts",
+    "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/analytics.ts",
+    "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/tagmanager.ts",
+    "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/pagespeed.ts"
+  ],
+  "limitations": [
+    "Static literal registration extraction; no tools/list runtime or live Google API calls were executed.",
+    "GTM list handlers return a single page; tag object is intentionally unrestricted by upstream schema.",
+    "Schema defaults described in prose are preserved as descriptions, not invented JSON Schema defaults; handler defaults are recorded in behavior.",
+    "README claims broader functionality than GTM handlers: no GTM update/delete, trigger/variable, version/publish or workspace creation tools are registered."
+  ],
+  "tools": [
+    {
+      "name": "g_auth_status",
+      "description": "Show Google auth status: client_id/secret set, refresh token present and valid.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/auth.ts#L133-L201",
+      "scope": "auxiliary",
+      "tags": [
+        "access"
+      ],
+      "behavior": "Reports credential presence and attempts token refresh if a refresh token exists."
+    },
+    {
+      "name": "g_set_credentials",
+      "description": "Save the Google OAuth app client_id and client_secret. Create a 'Desktop app' OAuth client at https://console.cloud.google.com/apis/credentials and enable the Search Console, Indexing, Analytics Admin/Data, Tag Manager APIs.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "client_id": {
+            "type": "string"
+          },
+          "client_secret": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_id",
+          "client_secret"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/auth.ts#L133-L201",
+      "scope": "auxiliary",
+      "tags": [
+        "access"
+      ],
+      "behavior": "Validates nonempty OAuth credentials and saves them to local configuration."
+    },
+    {
+      "name": "g_authorize",
+      "description": "Open Google's consent screen and capture the authorization code via a local loopback server, then store the refresh token. Use on a machine with a browser. Returns the authorize_url to open if the browser does not open automatically.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "timeout_seconds": {
+            "type": "integer",
+            "description": "How long to wait for consent (default 180)"
+          }
+        }
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/auth.ts#L133-L201",
+      "scope": "auxiliary",
+      "tags": [
+        "access"
+      ],
+      "behavior": "Opens a browser and loopback callback server, exchanges the consent code and stores the refresh token; timeout defaults to 180 seconds with a 30-second minimum."
+    },
+    {
+      "name": "g_set_code",
+      "description": "Manual fallback: paste an authorization code obtained by opening the authorize_url with a known redirect_uri (for headless machines).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "redirect_uri": {
+            "type": "string",
+            "description": "The exact redirect_uri used to get the code, e.g. http://127.0.0.1:5000"
+          }
+        },
+        "required": [
+          "code",
+          "redirect_uri"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/auth.ts#L133-L201",
+      "scope": "auxiliary",
+      "tags": [
+        "access"
+      ],
+      "behavior": "Exchanges a supplied authorization code and redirect URI and saves the refresh token."
+    },
+    {
+      "name": "gsc_sites_get",
+      "description": "Search Console: list all properties for the user.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/searchconsole.ts#L10-L61",
+      "scope": "other",
+      "tags": [],
+      "behavior": "GETs Search Console properties accessible to the OAuth user."
+    },
+    {
+      "name": "gsc_site_get",
+      "description": "Search Console: get one property and the user's permission level.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "site_url": {
+            "type": "string",
+            "description": "Property URL exactly as in Search Console, e.g. https://example.com/ or sc-domain:example.com"
+          }
+        },
+        "required": [
+          "site_url"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/searchconsole.ts#L10-L61",
+      "scope": "other",
+      "tags": [],
+      "behavior": "GETs one Search Console property and permission information with encoded site URL."
+    },
+    {
+      "name": "gsc_site_add",
+      "description": "Search Console: add (claim) a property.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "site_url": {
+            "type": "string",
+            "description": "Property URL exactly as in Search Console, e.g. https://example.com/ or sc-domain:example.com"
+          }
+        },
+        "required": [
+          "site_url"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/searchconsole.ts#L10-L61",
+      "scope": "other",
+      "tags": [],
+      "behavior": "PUTs a Search Console property URL to add it to the account; performs no ownership verification flow.",
+      "exposure": "G_READONLY=true denies execution; G_CONFIRM=true adds properties.confirm={type:\"boolean\",description:\"Must be true to execute this mutating call (G_CONFIRM is enabled).\"} with no required entry."
+    },
+    {
+      "name": "gsc_site_delete",
+      "description": "Search Console: remove a property from the account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "site_url": {
+            "type": "string",
+            "description": "Property URL exactly as in Search Console, e.g. https://example.com/ or sc-domain:example.com"
+          }
+        },
+        "required": [
+          "site_url"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/searchconsole.ts#L10-L61",
+      "scope": "other",
+      "tags": [],
+      "behavior": "DELETEs a Search Console property from the account.",
+      "exposure": "G_READONLY=true denies execution; G_CONFIRM=true adds properties.confirm={type:\"boolean\",description:\"Must be true to execute this mutating call (G_CONFIRM is enabled).\"} with no required entry."
+    },
+    {
+      "name": "gsc_sitemaps_get",
+      "description": "Search Console: list submitted sitemaps for a property.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "site_url": {
+            "type": "string",
+            "description": "Property URL exactly as in Search Console, e.g. https://example.com/ or sc-domain:example.com"
+          }
+        },
+        "required": [
+          "site_url"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/searchconsole.ts#L10-L61",
+      "scope": "other",
+      "tags": [],
+      "behavior": "GETs submitted sitemaps for an encoded Search Console site URL."
+    },
+    {
+      "name": "gsc_sitemap_get",
+      "description": "Search Console: get status of one sitemap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "site_url": {
+            "type": "string",
+            "description": "Property URL exactly as in Search Console, e.g. https://example.com/ or sc-domain:example.com"
+          },
+          "feedpath": {
+            "type": "string",
+            "description": "Full sitemap URL"
+          }
+        },
+        "required": [
+          "site_url",
+          "feedpath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/searchconsole.ts#L10-L61",
+      "scope": "other",
+      "tags": [],
+      "behavior": "GETs sitemap status using encoded site URL and sitemap URL."
+    },
+    {
+      "name": "gsc_sitemap_submit",
+      "description": "Search Console: submit a sitemap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "site_url": {
+            "type": "string",
+            "description": "Property URL exactly as in Search Console, e.g. https://example.com/ or sc-domain:example.com"
+          },
+          "feedpath": {
+            "type": "string",
+            "description": "Full sitemap URL"
+          }
+        },
+        "required": [
+          "site_url",
+          "feedpath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/searchconsole.ts#L10-L61",
+      "scope": "other",
+      "tags": [],
+      "behavior": "PUTs a sitemap URL to Search Console.",
+      "exposure": "G_READONLY=true denies execution; G_CONFIRM=true adds properties.confirm={type:\"boolean\",description:\"Must be true to execute this mutating call (G_CONFIRM is enabled).\"} with no required entry."
+    },
+    {
+      "name": "gsc_sitemap_delete",
+      "description": "Search Console: delete a sitemap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "site_url": {
+            "type": "string",
+            "description": "Property URL exactly as in Search Console, e.g. https://example.com/ or sc-domain:example.com"
+          },
+          "feedpath": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "site_url",
+          "feedpath"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/searchconsole.ts#L10-L61",
+      "scope": "other",
+      "tags": [],
+      "behavior": "DELETEs a sitemap submission from Search Console.",
+      "exposure": "G_READONLY=true denies execution; G_CONFIRM=true adds properties.confirm={type:\"boolean\",description:\"Must be true to execute this mutating call (G_CONFIRM is enabled).\"} with no required entry."
+    },
+    {
+      "name": "gsc_search_analytics",
+      "description": "Search Console: query search performance (clicks, impressions, CTR, position) by dimensions over a date range.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "site_url": {
+            "type": "string",
+            "description": "Property URL exactly as in Search Console, e.g. https://example.com/ or sc-domain:example.com"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD"
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "query",
+                "page",
+                "country",
+                "device",
+                "searchAppearance",
+                "date"
+              ]
+            }
+          },
+          "row_limit": {
+            "type": "integer",
+            "description": "Max rows, default 1000"
+          },
+          "search_type": {
+            "type": "string",
+            "enum": [
+              "web",
+              "image",
+              "video",
+              "news",
+              "discover",
+              "googleNews"
+            ]
+          },
+          "start_row": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "site_url",
+          "start_date",
+          "end_date"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/searchconsole.ts#L10-L61",
+      "scope": "other",
+      "tags": [],
+      "behavior": "POSTs Search Console date range and supplied dimensions, row limit, search type and start row; omitted row_limit is not explicitly defaulted by handler."
+    },
+    {
+      "name": "gsc_url_inspect",
+      "description": "Search Console: inspect a URL's index status, coverage, mobile usability, and rich results.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "site_url": {
+            "type": "string",
+            "description": "Property URL exactly as in Search Console, e.g. https://example.com/ or sc-domain:example.com"
+          },
+          "inspection_url": {
+            "type": "string",
+            "description": "The fully-qualified URL to inspect"
+          },
+          "language_code": {
+            "type": "string",
+            "description": "BCP-47, e.g. en-US"
+          }
+        },
+        "required": [
+          "site_url",
+          "inspection_url"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/searchconsole.ts#L10-L61",
+      "scope": "other",
+      "tags": [],
+      "behavior": "POSTs URL inspection request with site URL and optional language code."
+    },
+    {
+      "name": "idx_url_submit",
+      "description": "Indexing API: notify Google that a URL was added/updated (URL_UPDATED).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to index"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/indexing.ts#L8-L18",
+      "scope": "other",
+      "tags": [],
+      "behavior": "POSTs a URL_UPDATED notification to Google Indexing API.",
+      "exposure": "G_READONLY=true denies execution; G_CONFIRM=true adds properties.confirm={type:\"boolean\",description:\"Must be true to execute this mutating call (G_CONFIRM is enabled).\"} with no required entry."
+    },
+    {
+      "name": "idx_url_delete",
+      "description": "Indexing API: notify Google that a URL was removed (URL_DELETED).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/indexing.ts#L8-L18",
+      "scope": "other",
+      "tags": [],
+      "behavior": "POSTs a URL_DELETED notification to Google Indexing API.",
+      "exposure": "G_READONLY=true denies execution; G_CONFIRM=true adds properties.confirm={type:\"boolean\",description:\"Must be true to execute this mutating call (G_CONFIRM is enabled).\"} with no required entry."
+    },
+    {
+      "name": "idx_metadata",
+      "description": "Indexing API: get the latest notification metadata for a URL.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/indexing.ts#L8-L18",
+      "scope": "other",
+      "tags": [],
+      "behavior": "GETs latest Indexing API notification metadata for a URL."
+    },
+    {
+      "name": "ga4_accounts_get",
+      "description": "GA4 Admin: list Analytics accounts the user can access.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/analytics.ts#L9-L72",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Lists GA4 Analytics Admin accounts through GET /v1beta/accounts; returns a single page."
+    },
+    {
+      "name": "ga4_properties_get",
+      "description": "GA4 Admin: list properties under an account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "description": "Numeric account ID or 'accounts/123'"
+          }
+        },
+        "required": [
+          "account_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/analytics.ts#L9-L72",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Lists GA4 properties with parent account filter; accepts numeric account ID or accounts/ prefix."
+    },
+    {
+      "name": "ga4_property_get",
+      "description": "GA4 Admin: get a property.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "property_id": {
+            "type": "string",
+            "description": "Numeric property ID"
+          }
+        },
+        "required": [
+          "property_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/analytics.ts#L9-L72",
+      "scope": "other",
+      "tags": [],
+      "behavior": "GETs a GA4 property after stripping an optional properties/ prefix."
+    },
+    {
+      "name": "ga4_property_create",
+      "description": "GA4 Admin: create a new GA4 property under an account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "description": "Numeric account ID or 'accounts/123'"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "time_zone": {
+            "type": "string",
+            "description": "IANA tz, e.g. Europe/Moscow"
+          },
+          "currency_code": {
+            "type": "string",
+            "description": "e.g. RUB, USD (default USD)"
+          }
+        },
+        "required": [
+          "account_id",
+          "display_name",
+          "time_zone"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/analytics.ts#L9-L72",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Creates a GA4 property under an account with timezone and currency defaulting to USD.",
+      "exposure": "G_READONLY=true denies execution; G_CONFIRM=true adds properties.confirm={type:\"boolean\",description:\"Must be true to execute this mutating call (G_CONFIRM is enabled).\"} with no required entry."
+    },
+    {
+      "name": "ga4_datastreams_get",
+      "description": "GA4 Admin: list data streams of a property.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "property_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/analytics.ts#L9-L72",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Lists GA4 data streams for a property; returns a single page."
+    },
+    {
+      "name": "ga4_datastream_create",
+      "description": "GA4 Admin: create a WEB data stream (returns the Measurement ID / tag — i.e. installs the GA4 counter).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "property_id": {
+            "type": "string"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "default_uri": {
+            "type": "string",
+            "description": "Site URL, e.g. https://example.com"
+          }
+        },
+        "required": [
+          "property_id",
+          "display_name",
+          "default_uri"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/analytics.ts#L9-L72",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Creates a GA4 WEB_DATA_STREAM with display name and default URI; creation does not install site code.",
+      "exposure": "G_READONLY=true denies execution; G_CONFIRM=true adds properties.confirm={type:\"boolean\",description:\"Must be true to execute this mutating call (G_CONFIRM is enabled).\"} with no required entry."
+    },
+    {
+      "name": "ga4_datastream_get",
+      "description": "GA4 Admin: get a data stream (includes measurement ID).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "property_id": {
+            "type": "string"
+          },
+          "stream_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id",
+          "stream_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/analytics.ts#L9-L72",
+      "scope": "other",
+      "tags": [],
+      "behavior": "GETs a GA4 data stream using property and stream IDs."
+    },
+    {
+      "name": "ga4_run_report",
+      "description": "GA4 Data: run a report (metrics + dimensions over a date range).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "property_id": {
+            "type": "string"
+          },
+          "start_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD or e.g. 28daysAgo"
+          },
+          "end_date": {
+            "type": "string",
+            "description": "YYYY-MM-DD or 'today'"
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "e.g. ['activeUsers','sessions']"
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "e.g. ['country','date']"
+          },
+          "limit": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "property_id",
+          "start_date",
+          "end_date",
+          "metrics"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/analytics.ts#L9-L72",
+      "scope": "other",
+      "tags": [],
+      "behavior": "POSTs a GA4 Data runReport with date range, metrics, optional dimensions and limit."
+    },
+    {
+      "name": "ga4_realtime",
+      "description": "GA4 Data: run a realtime report.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "property_id": {
+            "type": "string"
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "property_id",
+          "metrics"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/analytics.ts#L9-L72",
+      "scope": "other",
+      "tags": [],
+      "behavior": "POSTs a GA4 Data runRealtimeReport with metrics and optional dimensions."
+    },
+    {
+      "name": "gtm_accounts_get",
+      "description": "Tag Manager: list GTM accounts.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/tagmanager.ts#L7-L27",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "GETs Tag Manager v2 accounts; does not paginate."
+    },
+    {
+      "name": "gtm_containers_get",
+      "description": "Tag Manager: list containers under an account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/tagmanager.ts#L7-L27",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "GETs containers under the supplied GTM account; does not paginate."
+    },
+    {
+      "name": "gtm_container_create",
+      "description": "Tag Manager: create a container (returns its GTM-ID).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "usage_context": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "web",
+                "android",
+                "ios",
+                "amp",
+                "server"
+              ]
+            },
+            "description": "Default ['web']"
+          }
+        },
+        "required": [
+          "account_id",
+          "name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/tagmanager.ts#L7-L27",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "POSTs name and usageContext to GTM containers, defaulting usageContext to [web].",
+      "exposure": "G_READONLY=true denies execution; G_CONFIRM=true adds properties.confirm={type:\"boolean\",description:\"Must be true to execute this mutating call (G_CONFIRM is enabled).\"} with no required entry."
+    },
+    {
+      "name": "gtm_workspaces_get",
+      "description": "Tag Manager: list workspaces of a container.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string"
+          },
+          "container_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/tagmanager.ts#L7-L27",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "GETs workspaces under the supplied GTM container; does not paginate."
+    },
+    {
+      "name": "gtm_tags_get",
+      "description": "Tag Manager: list tags in a workspace.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string"
+          },
+          "container_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/tagmanager.ts#L7-L27",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "GETs tags under the supplied GTM workspace; does not paginate."
+    },
+    {
+      "name": "gtm_tag_create",
+      "description": "Tag Manager: create a tag in a workspace. Pass the raw GTM tag object (type + parameters).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string"
+          },
+          "container_id": {
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "object",
+            "description": "GTM Tag resource, e.g. {\"name\":\"GA4 Config\",\"type\":\"googtag\",\"parameter\":[{\"type\":\"template\",\"key\":\"tagId\",\"value\":\"G-XXXX\"}]}"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/tagmanager.ts#L7-L27",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "POSTs the unrestricted raw tag object to the supplied GTM workspace tags endpoint.",
+      "exposure": "G_READONLY=true denies execution; G_CONFIRM=true adds properties.confirm={type:\"boolean\",description:\"Must be true to execute this mutating call (G_CONFIRM is enabled).\"} with no required entry."
+    },
+    {
+      "name": "psi_run",
+      "description": "PageSpeed Insights: analyze a URL (Core Web Vitals + Lighthouse). No OAuth needed; uses GOOGLE_PSI_API_KEY if set.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to analyze"
+          },
+          "strategy": {
+            "type": "string",
+            "enum": [
+              "mobile",
+              "desktop"
+            ],
+            "description": "Default mobile"
+          },
+          "category": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "performance",
+                "accessibility",
+                "best-practices",
+                "seo",
+                "pwa"
+              ]
+            },
+            "description": "Lighthouse categories"
+          },
+          "locale": {
+            "type": "string",
+            "description": "e.g. ru, en"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/skiddgoddamn/google-seo-mcp/blob/fd3eb641535b7e3d40ac25f4bc56a423669630f8/src/tools/pagespeed.ts#L7-L29",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Calls PageSpeed Insights with strategy defaulting to mobile, optional categories/locale and environment API key; OAuth is disabled."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "manage",
+    "summary": "Browse GTM accounts and workspaces, create containers, and create tags from raw resource objects.",
+    "examples": [
+      "gtm_container_create",
+      "gtm_tag_create",
+      "gtm_tags_get"
+    ]
+  }
+}

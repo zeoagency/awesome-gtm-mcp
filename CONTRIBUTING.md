@@ -1,44 +1,36 @@
 # Contributing to Awesome GTM MCP
 
-## Inclusion criteria
+## Scope
 
-Include MCP servers, command-line tools, and SDKs that implement Google Tag Manager functionality:
+Include executable MCP servers, CLIs, and SDKs with implemented Google Tag Manager features: container management, tracking audits, website/dataLayer inspection, server-side GTM hosting, API clients, or reusable website integration libraries. Multi-product tools qualify through verified GTM functionality. Prefer upstream projects; a fork needs a substantive implemented difference.
 
-- Manage GTM accounts, containers, workspaces, tags, triggers, variables, or versions.
-- Test or audit GTM containers, snippets, or dataLayer events.
-- Embed GTM in websites through a reusable integration library.
-- Provide a client for the Google Tag Manager API, including a dedicated module within a broader Google SDK.
+Guides, prompts, skill-only repositories, empty scaffolds, and planned integrations are outside the catalog. GTM means Google Tag Manager here.
 
-Multi-product tools qualify when they contain an implemented GTM feature. Describe only their GTM functionality. Separate API management SDKs from website integration libraries.
+## MCP records
 
-Exclude skill-only repositories, prompts, guides, plugin catalogs, generic marketing tools, empty scaffolds, and planned integrations without code. Other meanings of GTM, such as go-to-market or Global Traffic Manager, are outside this catalog. Prefer upstream projects over trivial copies; a fork needs a substantive implemented difference to earn a separate entry.
+Add or update a JSON record in `data/mcps/` using an existing reviewed record as a format example. Add its repository to `data/review-scope.json`. Capture every registered tool in the selected server, including supporting and other-product tools in shared servers. Separate servers in a monorepo do not contribute unrelated tool lists.
 
-## Evidence required
+For every tool, preserve its exact public name, full description, complete input JSON Schema, schema origin, immutable source link, scope (`gtm`, `auxiliary`, or `other`), and a factual handler behavior sentence. Include nested properties, required fields, enums, defaults, arrays, and referenced definitions. Keep unrestricted objects unrestricted. If advertised schemas omit source validation, preserve both through `inputSchema` and `validationInputSchema`; record additional validation functions when JSON Schema cannot express them.
 
-For projects with public source, link to the documentation and the source file or SDK module that implements the GTM feature in your pull request. For a CLI, identify its executable entry point; for an MCP server, identify its registered GTM tools; for an SDK, identify its public GTM interface. Check that the linked repository or package exists and that documented installation refers to the implemented tool.
+Identify the upstream commit, extraction date and method, permission-dependent exposure, and concrete limitations. Offline registration and source inspection are sufficient for a documented inventory; state whether live operations were tested. Hosted services need complete vendor schemas or an authenticated tool inventory: a reachable authentication endpoint alone does not establish parameters. Store unavailable information in `gaps` instead of inventing schemas.
 
-For a proprietary hosted MCP service, provide vendor documentation identifying concrete GTM tools and a reachable service endpoint instead of source code. Describe it as hosted. An authentication response establishes endpoint availability, not successful GTM operations; record the verification limits in the pull request.
+When alternate server surfaces register the same name differently, preserve the additional registrations in `exposureVariants`. Large shared inventories automatically keep GTM parameters on the provider page and link other-product parameters in parts; the global index links directly to each tool.
 
-Treat README claims as leads to verify, not proof. Omit unsupported claims about API coverage, safety, quotas, performance, and testing. Hosting an MCP server on Cloudflare or Docker does not by itself establish server-side GTM functionality. Label unofficial projects accurately.
+Independently review registration, schemas, and handlers before marking a record reviewed. Set an explicit keep/remove decision and reason for exclusions. Choose `review.classification`, the homepage summary, and up to three example tool names from actual GTM handlers. Marketing descriptions do not decide the grouping. Providers with unverified tool parameters or unusable implementations remain in review documents rather than the main catalog.
 
-## Entry format
+## CLIs and SDKs
 
-Add each project once, in alphabetical order within the appropriate section:
+Edit `SUPPORTING_TOOLS.md`. Keep one concise factual entry per project, sorted alphabetically within its category. Link to an executable CLI entry point or public SDK module and verify its GTM implementation. Separate API clients from website integration packages.
 
-```markdown
-| [**owner/repo**](https://github.com/owner/repo) | Manages GTM tags, triggers, and variables through MCP tools. |
-```
+## Build and check
 
-Use one or two concise, factual sentences, starting with an active verb, and no more than 60 words. Link to the relevant module when the project covers several products. Update the section count in its heading, summary, and contents, plus the overall project total.
-
-## Validation
-
-Run these checks before submitting:
+Generate the linked documents and verify them:
 
 ```sh
-npx --yes markdownlint-cli2@0.23.3 "**/*.md"
+node scripts/build-catalog.mjs
 node scripts/validate-catalog.mjs
+npx --yes markdownlint-cli2@0.23.3 "**/*.md"
 git diff --check
 ```
 
-Check external links and source evidence separately. Automated structure checks do not verify an external project's behavior.
+Check external sources separately. Include extraction and review evidence in the change description; automated checks verify structure and completeness, not authenticated GTM functionality.

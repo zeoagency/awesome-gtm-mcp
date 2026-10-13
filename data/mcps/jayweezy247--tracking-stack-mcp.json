@@ -1,0 +1,201 @@
+{
+  "repo": "jayweezy247/tracking-stack-mcp",
+  "url": "https://github.com/jayweezy247/tracking-stack-mcp",
+  "commit": "dda0006d75a3786775c7a6f458b3284b90779011",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Two registered GTM tools have concrete v2 account/container handlers; shared server also registers three WhatConverts and two GA4 tools.",
+  "method": "source",
+  "server": "src/index.ts (stdio)",
+  "exposure": "All seven tools are always listed; execution requires product credentials. Create-only writes require literal boolean confirmed:true, otherwise local preview; shared process-local cap is 10 successful tool writes per rolling hour.",
+  "sources": [
+    "https://github.com/jayweezy247/tracking-stack-mcp/blob/dda0006d75a3786775c7a6f458b3284b90779011/src/index.ts#L8-L47",
+    "https://github.com/jayweezy247/tracking-stack-mcp/blob/dda0006d75a3786775c7a6f458b3284b90779011/src/google-tracking.ts#L1-L192",
+    "https://github.com/jayweezy247/tracking-stack-mcp/blob/dda0006d75a3786775c7a6f458b3284b90779011/src/wc.ts#L1-L142",
+    "https://github.com/jayweezy247/tracking-stack-mcp/blob/dda0006d75a3786775c7a6f458b3284b90779011/src/safety.ts#L1-L112"
+  ],
+  "limitations": [
+    "Static source extraction; no live API calls or credential-dependent behavior verified.",
+    "List and duplicate-check handlers do not paginate Google results or WhatConverts results beyond accounts_per_page=250, so lists and duplicate guards may be incomplete.",
+    "Schemas preserve the exposed literals; handlers impose additional validation absent from JSON Schema: trimmed nonempty strings (generally <=200 characters), GTM account ID <=32 characters and digits only, Analytics parent accounts/<digits>, HTTPS URL <=2048 characters, and positive integer WhatConverts account ID.",
+    "GA4 creation is two sequential API writes without rollback; if stream creation fails, the property remains and the successful-write cap is not incremented. The process-local cap is checked before writes and has no concurrent reservation."
+  ],
+  "tools": [
+    {
+      "name": "wc_list_accounts",
+      "description": "Read-only — list all WhatConverts agency accounts and their profiles (ids + names).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jayweezy247/tracking-stack-mcp/blob/dda0006d75a3786775c7a6f458b3284b90779011/src/wc.ts#L40-L83",
+      "scope": "other",
+      "tags": [],
+      "behavior": "WhatConverts: retrieves up to 250 agency accounts and their embedded profiles."
+    },
+    {
+      "name": "wc_create_account",
+      "description": "⚠️ MUTATING — Create a WhatConverts account (one per client, matching the agency convention). Refuses if an account with the same name exists. Dry-run by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_name": {
+            "type": "string",
+            "description": "Client name, e.g. 'Acme Pools & Spas'."
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "Must be true to execute. Defaults to false (dry run)."
+          }
+        },
+        "required": [
+          "account_name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jayweezy247/tracking-stack-mcp/blob/dda0006d75a3786775c7a6f458b3284b90779011/src/wc.ts#L46-L108",
+      "scope": "other",
+      "tags": [],
+      "behavior": "WhatConverts: previews by default; confirmed true checks the shared write cap and case-insensitive duplicate account name before posting an account without a profile."
+    },
+    {
+      "name": "wc_create_profile",
+      "description": "⚠️ MUTATING — Create a profile inside an existing WhatConverts account. Refuses if a profile with the same name exists anywhere in the agency (guards against the duplicate/wrong-parent mistake). Dry-run by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "number",
+            "description": "Parent account id (from wc_list_accounts)."
+          },
+          "profile_name": {
+            "type": "string"
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "Must be true to execute. Defaults to false (dry run)."
+          }
+        },
+        "required": [
+          "account_id",
+          "profile_name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jayweezy247/tracking-stack-mcp/blob/dda0006d75a3786775c7a6f458b3284b90779011/src/wc.ts#L59-L142",
+      "scope": "other",
+      "tags": [],
+      "behavior": "WhatConverts: previews by default; confirmed true checks the shared write cap, parent presence and agency-wide duplicate profile name before posting a profile."
+    },
+    {
+      "name": "ga4_list_properties",
+      "description": "Read-only — list GA4 accounts and their properties (names + ids + measurement streams).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jayweezy247/tracking-stack-mcp/blob/dda0006d75a3786775c7a6f458b3284b90779011/src/google-tracking.ts#L37-L97",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: lists accounts, properties and data streams with measurement IDs."
+    },
+    {
+      "name": "ga4_create_property",
+      "description": "⚠️ MUTATING — Create a GA4 property under an existing Analytics account, plus a web data stream (returns the G- measurement ID). Refuses on duplicate display name. Dry-run by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "analytics_account": {
+            "type": "string",
+            "description": "Parent, e.g. 'accounts/12345678' (from ga4_list_properties)."
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Property name, e.g. 'Acme Pools & Spas'."
+          },
+          "website_url": {
+            "type": "string",
+            "description": "https:// URL for the web data stream."
+          },
+          "time_zone": {
+            "type": "string",
+            "description": "IANA tz. Defaults to GA4_DEFAULT_TIME_ZONE env, else UTC."
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "Must be true to execute. Defaults to false (dry run)."
+          }
+        },
+        "required": [
+          "analytics_account",
+          "display_name",
+          "website_url"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jayweezy247/tracking-stack-mcp/blob/dda0006d75a3786775c7a6f458b3284b90779011/src/google-tracking.ts#L42-L148",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: previews by default; confirmed true checks the shared write cap and case-insensitive duplicate name before sequentially creating a USD property and HTTPS web stream."
+    },
+    {
+      "name": "gtm_list_containers",
+      "description": "Read-only — list GTM accounts and their containers (names + public GTM-XXXX ids).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jayweezy247/tracking-stack-mcp/blob/dda0006d75a3786775c7a6f458b3284b90779011/src/google-tracking.ts#L58-L163",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists GTM accounts and containers using Google Tag Manager v2, returning account IDs, container IDs, public IDs and names."
+    },
+    {
+      "name": "gtm_create_container",
+      "description": "⚠️ MUTATING — Create a web container in an existing GTM account. Returns the GTM-XXXX id. Refuses on duplicate name. Does NOT publish anything. Dry-run by default.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gtm_account_id": {
+            "type": "string",
+            "description": "GTM account id (from gtm_list_containers)."
+          },
+          "container_name": {
+            "type": "string"
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "Must be true to execute. Defaults to false (dry run)."
+          }
+        },
+        "required": [
+          "gtm_account_id",
+          "container_name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/jayweezy247/tracking-stack-mcp/blob/dda0006d75a3786775c7a6f458b3284b90779011/src/google-tracking.ts#L63-L192",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Validates a numeric account ID and nonempty name, previews by default, and only with confirmed true checks the shared write cap and duplicate name before creating a web container without publishing."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "manage",
+    "summary": "Creates tracking workspaces and ensures GA4 event tags with create-only and dry-run checks.",
+    "reason": "Two registered GTM tools have concrete v2 account/container handlers; shared server also registers three WhatConverts and two GA4 tools.",
+    "examples": [
+      "gtm_list_containers",
+      "gtm_create_container"
+    ]
+  }
+}

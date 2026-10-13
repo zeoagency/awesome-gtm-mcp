@@ -1,0 +1,4149 @@
+{
+  "repo": "VasthavM/google-tag-manager-mcp",
+  "url": "https://github.com/VasthavM/google-tag-manager-mcp",
+  "commit": "c6b7e649be853cafbed86917b8a6daea3002b677",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "48 implemented GTM workflow tools plus two server utilities; handlers call GTM v2 or return local examples. auth_status is only a fixed readiness response.",
+  "method": "tools/list",
+  "server": "main.go (stdio); gtm/tools.go RegisterTools",
+  "exposure": "All 50 tools register unconditionally; production main authenticates before registering. Offline extraction bypassed only startup OAuth/client construction and never called tool handlers.",
+  "sources": [
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/main.go#L1-L121",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tools.go#L17-L86",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/main.go#L67-L104",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_client.go#L28-L72",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_container.go#L37-L97",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_tag.go#L33-L99",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_template.go#L30-L73",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_transformation.go#L27-L87",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_trigger.go#L30-L103",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_variable.go#L27-L72",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_version.go#L40-L95",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_workspace.go#L34-L75",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_delete_client.go#L24-L60",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_delete_container.go#L22-L55",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_delete_tag.go#L24-L62",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_delete_template.go#L24-L61",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_delete_transformation.go#L24-L60",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_delete_trigger.go#L24-L62",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_delete_variable.go#L24-L62",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_built_in_variables.go#L101-L135",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_built_in_variables.go#L57-L101",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_clients.go#L54-L75",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_folders.go#L54-L75",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_tags.go#L48-L69",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_templates.go#L14-L42",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_get_template.go#L30-L81",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_transformations.go#L54-L75",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_get_trigger.go#L19-L44",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_templates.go#L42-L61",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_get_variable.go#L19-L44",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_workspace_status.go#L17-L38",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_import_gallery_template.go#L26-L88",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_accounts.go#L13-L34",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_built_in_variables.go#L21-L57",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_clients.go#L20-L54",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_containers.go#L15-L36",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_folders.go#L33-L54",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_tags.go#L27-L48",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_list_templates.go#L39-L90",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_transformations.go#L20-L54",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_triggers.go#L17-L38",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_variables.go#L17-L38",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_list_versions.go#L33-L84",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_workspaces.go#L16-L37",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_version.go#L95-L133",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_update_client.go#L30-L80",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_update_tag.go#L34-L117",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_update_template.go#L32-L98",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_update_transformation.go#L29-L83",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_update_trigger.go#L32-L111",
+    "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_update_variable.go#L29-L80"
+  ],
+  "limitations": [
+    "No authenticated GTM operations were executed; implementation assessment is source based.",
+    "auth_status always returns authenticated=true and does not validate authentication.",
+    "Input fields holding JSON remain string schemas exactly as registered; their payload structures are described by source text, not enforced by MCP input schemas."
+  ],
+  "tools": [
+    {
+      "description": "Check authentication status with Google Tag Manager",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "name": "auth_status",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "authenticated",
+          "message"
+        ],
+        "properties": {
+          "authenticated": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/main.go#L67-L103",
+      "scope": "auxiliary",
+      "tags": [
+        "access"
+      ],
+      "behavior": "Returns authenticated=true and a fixed readiness message without checking credentials or contacting Google."
+    },
+    {
+      "description": "Create a new client in a GTM workspace (server-side containers only)",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Client name"
+          },
+          "notes": {
+            "type": "string",
+            "description": "description:Client notes (optional)"
+          },
+          "parametersJson": {
+            "type": "string",
+            "description": "description:Client parameters as JSON array (optional). Each parameter: {type, key, value} or {type, key, list/map}"
+          },
+          "priority": {
+            "type": "integer",
+            "description": "description:Client priority (optional, higher runs first)"
+          },
+          "type": {
+            "type": "string",
+            "description": "description:Client type (e.g. __ga4 for GA4, __googtag for Google tag)"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "create_client",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "client",
+          "message"
+        ],
+        "properties": {
+          "client": {
+            "type": "object",
+            "required": [
+              "clientId",
+              "name",
+              "type",
+              "path",
+              "fingerprint"
+            ],
+            "properties": {
+              "clientId": {
+                "type": "string"
+              },
+              "fingerprint": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_client.go#L28-L71",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "server-side"
+      ],
+      "behavior": "Calls GTM client CreateClient and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Create a new container in a GTM account. UsageContext specifies the container type (web, android, ios, amp, server).",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "name",
+          "usageContext"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "domainName": {
+            "type": "array",
+            "description": "description:List of domain names associated with the container (optional)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Container display name"
+          },
+          "notes": {
+            "type": "string",
+            "description": "description:Container notes (optional)"
+          },
+          "taggingServerUrls": {
+            "type": "array",
+            "description": "description:Server-side container URLs (for server containers only)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "usageContext": {
+            "type": "array",
+            "description": "description:Usage context for the container. Valid values: web, android, ios, amp, server",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "create_container",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "container",
+          "message"
+        ],
+        "properties": {
+          "container": {
+            "type": "object",
+            "required": [
+              "containerId",
+              "name",
+              "publicId",
+              "usageContext",
+              "path"
+            ],
+            "properties": {
+              "containerId": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "publicId": {
+                "type": "string"
+              },
+              "tagManagerUrl": {
+                "type": "string"
+              },
+              "usageContext": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_container.go#L37-L96",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Validates usage contexts, creates a GTM v2 container, and returns its identifiers, path, and UI URL."
+    },
+    {
+      "description": "Create a new tag in a GTM workspace. Requires at least one firing trigger ID.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "name",
+          "type",
+          "firingTriggerIds"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "blockingTriggerIds": {
+            "type": "array",
+            "description": "description:Array of trigger IDs that block this tag (optional)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "firingTriggerIds": {
+            "type": "array",
+            "description": "description:Array of trigger IDs that fire this tag",
+            "items": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Tag name"
+          },
+          "notes": {
+            "type": "string",
+            "description": "description:Tag notes (optional)"
+          },
+          "parametersJson": {
+            "type": "string",
+            "description": "description:Tag parameters as JSON array (optional). Each parameter: {type, key, value} or {type, key, list/map}"
+          },
+          "paused": {
+            "type": "boolean",
+            "description": "description:Whether tag is paused (optional)"
+          },
+          "setupTagJson": {
+            "type": "string",
+            "description": "description:Setup tag sequencing as JSON array (optional). Each element: {tagName: string, stopOnSetupFailure: bool}. The setup tag fires before this tag."
+          },
+          "teardownTagJson": {
+            "type": "string",
+            "description": "description:Teardown tag sequencing as JSON array (optional). Each element: {tagName: string, stopTeardownOnFailure: bool}. The teardown tag fires after this tag."
+          },
+          "type": {
+            "type": "string",
+            "description": "description:Tag type (e.g. gaawe for GA4, html for Custom HTML)"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "create_tag",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "tag",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "tag": {
+            "type": "object",
+            "required": [
+              "tagId",
+              "name",
+              "type",
+              "path",
+              "fingerprint"
+            ],
+            "properties": {
+              "fingerprint": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "tagId": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_tag.go#L33-L98",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Calls GTM client CreateTag and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Create a new custom template in a GTM workspace. Requires the full template code in .tpl format. For gallery templates, use import_gallery_template instead.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "name",
+          "templateData"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Template display name"
+          },
+          "templateData": {
+            "type": "string",
+            "description": "description:The template code in .tpl format (the full template file content)"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "create_template",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "templateId",
+          "name",
+          "type",
+          "path",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "tagManagerUrl": {
+            "type": "string"
+          },
+          "templateId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_template.go#L30-L72",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Uses Google Tag Manager v2 Accounts.Containers.Workspaces.Templates.Create(parent, template) to perform the requested operation and maps the response."
+    },
+    {
+      "description": "Create a new transformation in a GTM workspace (server-side containers only).\n\nType must be one of: tf_exclude_params, tf_allow_params, tf_augment_event.\n\nEach type uses a different table key and column names in parametersJson:\n- tf_allow_params: \"allowedParamsTable\" with column \"allowedParams\"\n- tf_exclude_params: \"excludedParamsTable\" with column \"excludedParams\"\n- tf_augment_event: \"augmentEventTable\" with columns \"paramName\" and \"paramValue\"\n\nCommon parameters shared by all types:\n- matchingConditionsEnabled (boolean) — whether conditions must match\n- allTagsExcept (boolean) — if true, apply to all tags except listed ones\n- affectedTags (list of maps with tagReference) — specific tags to target\n- affectedTagTypes (list of maps with tagType + tagTypeExceptions) — tag types to target\n- matchingConditionsTable (list of maps with variableName, variableReference, expressionType, expressionValue)\n\nExample for tf_exclude_params:\n[{\"key\":\"excludedParamsTable\",\"type\":\"list\",\"list\":[{\"type\":\"map\",\"map\":[{\"key\":\"excludedParams\",\"type\":\"template\",\"value\":\"x-fb-ck-fbp\"}]}]},{\"key\":\"matchingConditionsEnabled\",\"type\":\"boolean\",\"value\":\"false\"},{\"key\":\"allTagsExcept\",\"type\":\"boolean\",\"value\":\"false\"},{\"key\":\"affectedTags\",\"type\":\"list\"},{\"key\":\"affectedTagTypes\",\"type\":\"list\"}]",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Transformation name"
+          },
+          "notes": {
+            "type": "string",
+            "description": "description:Transformation notes (optional)"
+          },
+          "parametersJson": {
+            "type": "string",
+            "description": "description:Transformation parameters as JSON array (optional). Each parameter: {type, key, value} or {type, key, list/map}"
+          },
+          "type": {
+            "type": "string",
+            "description": "description:Transformation type. Valid values: tf_exclude_params (exclude parameters from tags), tf_allow_params (allow only specified parameters), tf_augment_event (add/modify event parameters)"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "create_transformation",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "transformation",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "transformation": {
+            "type": "object",
+            "required": [
+              "transformationId",
+              "name",
+              "path",
+              "fingerprint"
+            ],
+            "properties": {
+              "fingerprint": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "transformationId": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_transformation.go#L27-L86",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "server-side"
+      ],
+      "behavior": "Calls GTM client CreateTransformation and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Create a new trigger in a GTM workspace. Common types: pageview, customEvent, linkClick, formSubmission, timer, scrollDepth.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "autoEventFilterJson": {
+            "type": "string",
+            "description": "description:Auto-event filter as JSON array for click/form triggers (optional)"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "customEventFilterJson": {
+            "type": "string",
+            "description": "description:Custom event filter as JSON array for customEvent triggers. REQUIRED for customEvent type. Must contain exactly one condition matching the event name."
+          },
+          "eventNameJson": {
+            "type": "string",
+            "description": "description:Event name as JSON object {type, value} for timer triggers (optional)"
+          },
+          "filterJson": {
+            "type": "string",
+            "description": "description:Filter conditions as JSON array for pageview triggers (optional)"
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Trigger name"
+          },
+          "notes": {
+            "type": "string",
+            "description": "description:Trigger notes (optional)"
+          },
+          "type": {
+            "type": "string",
+            "description": "description:Trigger type (e.g. pageview, customEvent, linkClick, formSubmission, timer)"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "create_trigger",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "trigger",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "trigger": {
+            "type": "object",
+            "required": [
+              "triggerId",
+              "name",
+              "type",
+              "path",
+              "fingerprint"
+            ],
+            "properties": {
+              "fingerprint": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "triggerId": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_trigger.go#L30-L102",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Calls GTM client CreateTrigger and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Create a new variable in a GTM workspace. Common types: c (Constant), v (Data Layer), k (Cookie), jsm (Custom JavaScript), u (URL).",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Variable name"
+          },
+          "notes": {
+            "type": "string",
+            "description": "description:Variable notes (optional)"
+          },
+          "parametersJson": {
+            "type": "string",
+            "description": "description:Variable parameters as JSON array (required for most types)"
+          },
+          "type": {
+            "type": "string",
+            "description": "description:Variable type (e.g. c for Constant, v for Data Layer, k for Cookie, jsm for Custom JavaScript)"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "create_variable",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "variable",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "variable": {
+            "type": "object",
+            "required": [
+              "variableId",
+              "name",
+              "type",
+              "path",
+              "fingerprint"
+            ],
+            "properties": {
+              "fingerprint": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "variableId": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_variable.go#L27-L71",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Calls GTM client CreateVariable and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Create a new container version from workspace changes. This snapshots the current workspace state but does not publish it.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Version name (optional)"
+          },
+          "notes": {
+            "type": "string",
+            "description": "description:Version notes describing changes (optional)"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "create_version",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "version",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "object",
+            "required": [
+              "containerVersionId",
+              "name",
+              "path"
+            ],
+            "properties": {
+              "containerVersionId": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_version.go#L40-L95",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace",
+        "release"
+      ],
+      "behavior": "Checks workspace status, refuses unchanged or conflicting workspaces, then calls GTM v2 CreateVersion."
+    },
+    {
+      "description": "Create a new workspace in a GTM container. Workspaces are used to make changes that can later be versioned and published.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "name"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "description": {
+            "type": "string",
+            "description": "description:Workspace description (optional)"
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Workspace display name"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "create_workspace",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "workspace",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "workspace": {
+            "type": "object",
+            "required": [
+              "workspaceId",
+              "name",
+              "path"
+            ],
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "tagManagerUrl": {
+                "type": "string"
+              },
+              "workspaceId": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_create_workspace.go#L34-L74",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a named GTM v2 workspace under the resolved container and returns its identifiers and path."
+    },
+    {
+      "description": "Delete a client from a workspace. Requires confirm: true as a safety guard. Server-side containers only.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "clientId",
+          "confirm"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "clientId": {
+            "type": "string",
+            "description": "description:The client ID to delete"
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "description:Must be true to confirm deletion. This is a safety guard."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "delete_client",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_delete_client.go#L24-L59",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "server-side"
+      ],
+      "behavior": "Calls GTM client DeleteClient and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Delete a GTM container. Requires confirm: true as a safety guard. WARNING: This permanently deletes the container and ALL its contents including tags, triggers, variables, and versions.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "confirm"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "description:Must be true to confirm deletion. This is a safety guard."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "delete_container",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_delete_container.go#L22-L54",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Requires confirm=true, resolves the container path, and calls GTM v2 Containers.Delete."
+    },
+    {
+      "description": "Delete a tag from a workspace. Requires confirm: true as a safety guard.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "tagId",
+          "confirm"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "description:Must be true to confirm deletion. This is a safety guard."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "tagId": {
+            "type": "string",
+            "description": "description:The tag ID to delete"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "delete_tag",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_delete_tag.go#L24-L61",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Calls GTM client DeleteTag and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Delete a custom template from a workspace. Requires confirm: true as a safety guard. Note: Templates that are in use by tags cannot be deleted.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "templateId",
+          "confirm"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "description:Must be true to confirm deletion. This is a safety guard."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "templateId": {
+            "type": "string",
+            "description": "description:The template ID to delete"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "delete_template",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_delete_template.go#L24-L60",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Uses Google Tag Manager v2 Accounts.Containers.Workspaces.Templates.Delete(path) to perform the requested operation and maps the response."
+    },
+    {
+      "description": "Delete a transformation from a workspace. Requires confirm: true as a safety guard. Server-side containers only.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "transformationId",
+          "confirm"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "description:Must be true to confirm deletion. This is a safety guard."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "transformationId": {
+            "type": "string",
+            "description": "description:The transformation ID to delete"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "delete_transformation",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_delete_transformation.go#L24-L59",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "server-side"
+      ],
+      "behavior": "Calls GTM client DeleteTransformation and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Delete a trigger from a workspace. Requires confirm: true as a safety guard. Note: Triggers that are members of a trigger group cannot be deleted until the trigger group is deleted first.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "triggerId",
+          "confirm"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "description:Must be true to confirm deletion. This is a safety guard."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "triggerId": {
+            "type": "string",
+            "description": "description:The trigger ID to delete"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "delete_trigger",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_delete_trigger.go#L24-L61",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Calls GTM client DeleteTrigger and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Delete a variable from a workspace. Requires confirm: true as a safety guard.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "variableId",
+          "confirm"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "description:Must be true to confirm deletion. This is a safety guard."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "variableId": {
+            "type": "string",
+            "description": "description:The variable ID to delete"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "delete_variable",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_delete_variable.go#L24-L61",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Calls GTM client DeleteVariable and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Disable one or more built-in variable types. Requires confirm: true as a safety guard.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "types",
+          "confirm"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "description:Must be true to confirm disabling. This is a safety guard."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "types": {
+            "type": "array",
+            "description": "description:Array of built-in variable types to disable",
+            "items": {
+              "type": "string"
+            }
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "disable_built_in_variables",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_built_in_variables.go#L101-L134",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Calls GTM client DisableBuiltInVariables and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Enable one or more built-in variable types in a GTM workspace",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "types"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "types": {
+            "type": "array",
+            "description": "description:Array of built-in variable types to enable (e.g. eventName, clientName, requestPath, pageUrl, event)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "enable_built_in_variables",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "builtInVariables",
+          "message"
+        ],
+        "properties": {
+          "builtInVariables": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "type",
+                "path"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_built_in_variables.go#L57-L101",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Calls GTM client EnableBuiltInVariables and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Get a specific client by ID (server-side containers only)",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "clientId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "clientId": {
+            "type": "string",
+            "description": "description:The client ID to retrieve"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "get_client",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "client"
+        ],
+        "properties": {
+          "client": {
+            "type": "object",
+            "required": [
+              "clientId",
+              "name",
+              "type",
+              "path",
+              "fingerprint"
+            ],
+            "properties": {
+              "clientId": {
+                "type": "string"
+              },
+              "fingerprint": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "notes": {
+                "type": "string"
+              },
+              "parameter": true,
+              "parentFolderId": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "integer"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_clients.go#L54-L74",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "server-side"
+      ],
+      "behavior": "Calls GTM client GetClient and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Get the tags, triggers, and variables inside a specific folder.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "folderId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "folderId": {
+            "type": "string",
+            "description": "description:The folder ID"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "get_folder_entities",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "entities"
+        ],
+        "properties": {
+          "entities": {
+            "type": "object",
+            "properties": {
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "triggers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "variables": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_folders.go#L54-L74",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls GTM client GetFolderEntities and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Get a specific tag by ID",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "tagId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "tagId": {
+            "type": "string",
+            "description": "description:The tag ID to retrieve"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "get_tag",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "tag"
+        ],
+        "properties": {
+          "tag": {
+            "type": "object",
+            "required": [
+              "tagId",
+              "name",
+              "type",
+              "path"
+            ],
+            "properties": {
+              "blockingTriggerId": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "firingTriggerId": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "paused": {
+                "type": "boolean"
+              },
+              "setupTag": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "tagName"
+                  ],
+                  "properties": {
+                    "stopOnFailure": {
+                      "type": "boolean"
+                    },
+                    "tagName": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "tagId": {
+                "type": "string"
+              },
+              "teardownTag": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "tagName"
+                  ],
+                  "properties": {
+                    "stopOnFailure": {
+                      "type": "boolean"
+                    },
+                    "tagName": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_tags.go#L48-L68",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls GTM client GetTag and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Get example parameter structures for creating GTM tags. Use this BEFORE creating GA4 or complex tags to see the correct parameter format.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "name": "get_tag_templates",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "templates",
+          "usage"
+        ],
+        "properties": {
+          "templates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "description",
+                "type",
+                "parameters",
+                "notes"
+              ],
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                },
+                "parameters": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "usage": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_templates.go#L14-L42",
+      "scope": "auxiliary",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns locally defined example parameter structures and usage instructions."
+    },
+    {
+      "description": "Get a specific custom template by ID. Returns full template details including the template code.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "templateId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "templateId": {
+            "type": "string",
+            "description": "description:The template ID to retrieve"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "get_template",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "templateId",
+          "name",
+          "type",
+          "path",
+          "fingerprint"
+        ],
+        "properties": {
+          "fingerprint": {
+            "type": "string"
+          },
+          "galleryReference": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "required": [
+              "owner",
+              "repository"
+            ],
+            "properties": {
+              "galleryTemplateId": {
+                "type": "string"
+              },
+              "owner": {
+                "type": "string"
+              },
+              "repository": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "tagManagerUrl": {
+            "type": "string"
+          },
+          "templateData": {
+            "type": "string"
+          },
+          "templateId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_get_template.go#L30-L80",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Uses Google Tag Manager v2 Accounts.Containers.Workspaces.Templates.Get(path) to perform the requested operation and maps the response."
+    },
+    {
+      "description": "Get a specific transformation by ID (server-side containers only)",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "transformationId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "transformationId": {
+            "type": "string",
+            "description": "description:The transformation ID to retrieve"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "get_transformation",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "transformation"
+        ],
+        "properties": {
+          "transformation": {
+            "type": "object",
+            "required": [
+              "transformationId",
+              "name",
+              "type",
+              "path",
+              "fingerprint"
+            ],
+            "properties": {
+              "fingerprint": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "notes": {
+                "type": "string"
+              },
+              "parameter": true,
+              "parentFolderId": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "transformationId": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_transformations.go#L54-L74",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "server-side"
+      ],
+      "behavior": "Calls GTM client GetTransformation and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Get a specific trigger by ID",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "triggerId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "triggerId": {
+            "type": "string",
+            "description": "description:The trigger ID to retrieve"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "get_trigger",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "trigger"
+        ],
+        "properties": {
+          "trigger": {
+            "type": "object",
+            "required": [
+              "triggerId",
+              "name",
+              "type",
+              "path"
+            ],
+            "properties": {
+              "autoEventFilter": true,
+              "customEventFilter": true,
+              "filter": true,
+              "name": {
+                "type": "string"
+              },
+              "notes": {
+                "type": "string"
+              },
+              "parameter": true,
+              "parentFolderId": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "triggerId": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_get_trigger.go#L19-L43",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls GTM client GetTrigger and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Get example structures for creating GTM triggers. Use this to see the correct format for different trigger types.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "name": "get_trigger_templates",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "templates",
+          "usage"
+        ],
+        "properties": {
+          "templates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "description",
+                "type",
+                "notes"
+              ],
+              "properties": {
+                "autoEventFilterJson": {
+                  "type": "string"
+                },
+                "customEventFilterJson": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "filterJson": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "usage": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_templates.go#L42-L60",
+      "scope": "auxiliary",
+      "tags": [
+        "offline",
+        "inspect"
+      ],
+      "behavior": "Returns locally defined example parameter structures and usage instructions."
+    },
+    {
+      "description": "Get a specific variable by ID",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "variableId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "variableId": {
+            "type": "string",
+            "description": "description:The variable ID to retrieve"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "get_variable",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "variable"
+        ],
+        "properties": {
+          "variable": {
+            "type": "object",
+            "required": [
+              "variableId",
+              "name",
+              "type",
+              "path"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "variableId": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_get_variable.go#L19-L43",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls GTM client GetVariable and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Check if a workspace has pending changes or merge conflicts before versioning.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "get_workspace_status",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "object",
+            "required": [
+              "hasChanges",
+              "hasConflicts",
+              "changeCount",
+              "conflictCount"
+            ],
+            "properties": {
+              "changeCount": {
+                "type": "integer"
+              },
+              "conflictCount": {
+                "type": "integer"
+              },
+              "hasChanges": {
+                "type": "boolean"
+              },
+              "hasConflicts": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_workspace_status.go#L17-L37",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "audit"
+      ],
+      "behavior": "Calls GTM client GetWorkspaceStatus and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Import a GTM Custom Template from the Community Template Gallery into a workspace. Returns the template type string to use when creating tags. Example: import_gallery_template(galleryOwner='iubenda', galleryRepository='gtm-cookie-solution')",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "galleryOwner",
+          "galleryRepository"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "galleryOwner": {
+            "type": "string",
+            "description": "description:Owner of the Gallery template (e.g. 'iubenda' or 'GoogleAnalytics')"
+          },
+          "galleryRepository": {
+            "type": "string",
+            "description": "description:Repository of the Gallery template (e.g. 'gtm-cookie-solution')"
+          },
+          "gallerySha": {
+            "type": "string",
+            "description": "description:SHA version of the Gallery template. Defaults to latest if not provided"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "import_gallery_template",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "template",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "template": {
+            "type": "object",
+            "required": [
+              "templateId",
+              "name",
+              "type"
+            ],
+            "properties": {
+              "galleryReference": {
+                "type": [
+                  "null",
+                  "object"
+                ],
+                "required": [
+                  "owner",
+                  "repository"
+                ],
+                "properties": {
+                  "galleryTemplateId": {
+                    "type": "string"
+                  },
+                  "owner": {
+                    "type": "string"
+                  },
+                  "repository": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "name": {
+                "type": "string"
+              },
+              "tagManagerUrl": {
+                "type": "string"
+              },
+              "templateId": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_import_gallery_template.go#L26-L87",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Imports a community gallery template through GTM v2 with AcknowledgePermissions(true), optionally pins the SHA, and returns its custom template type."
+    },
+    {
+      "description": "List all GTM accounts accessible to the authenticated user",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "name": "list_accounts",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "accounts"
+        ],
+        "properties": {
+          "accounts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "accountId",
+                "name",
+                "path"
+              ],
+              "properties": {
+                "accountId": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_accounts.go#L13-L33",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls GTM client ListAccounts and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "List all enabled built-in variables in a GTM workspace",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "list_built_in_variables",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "builtInVariables"
+        ],
+        "properties": {
+          "builtInVariables": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "type",
+                "path"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_built_in_variables.go#L21-L57",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls GTM client ListBuiltInVariables and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "List all clients in a GTM workspace (server-side containers only)",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "list_clients",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "clients"
+        ],
+        "properties": {
+          "clients": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "clientId",
+                "name",
+                "type",
+                "path",
+                "fingerprint"
+              ],
+              "properties": {
+                "clientId": {
+                  "type": "string"
+                },
+                "fingerprint": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                },
+                "parameter": true,
+                "parentFolderId": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "priority": {
+                  "type": "integer"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_clients.go#L20-L54",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "server-side"
+      ],
+      "behavior": "Calls GTM client ListClients and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "List all containers in a GTM account",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "list_containers",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "containers"
+        ],
+        "properties": {
+          "containers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "containerId",
+                "name",
+                "publicId",
+                "usageContext",
+                "path"
+              ],
+              "properties": {
+                "containerId": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "publicId": {
+                  "type": "string"
+                },
+                "usageContext": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_containers.go#L15-L35",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls GTM client ListContainers and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "List all folders (trigger groups) in a GTM workspace. Folders help organize tags, triggers, and variables.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "list_folders",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "folders"
+        ],
+        "properties": {
+          "folders": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "folderId",
+                "name",
+                "path"
+              ],
+              "properties": {
+                "folderId": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_folders.go#L33-L54",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls GTM client ListFolders and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "List all tags in a GTM workspace",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "list_tags",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "tags"
+        ],
+        "properties": {
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "tagId",
+                "name",
+                "type",
+                "path"
+              ],
+              "properties": {
+                "blockingTriggerId": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "firingTriggerId": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "name": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "paused": {
+                  "type": "boolean"
+                },
+                "setupTag": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "tagName"
+                    ],
+                    "properties": {
+                      "stopOnFailure": {
+                        "type": "boolean"
+                      },
+                      "tagName": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "tagId": {
+                  "type": "string"
+                },
+                "teardownTag": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "tagName"
+                    ],
+                    "properties": {
+                      "stopOnFailure": {
+                        "type": "boolean"
+                      },
+                      "tagName": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_tags.go#L27-L48",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls GTM client ListTags and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "List all GTM Custom Templates in a workspace. Returns template IDs and their type strings (cvt_{galleryTemplateId} for gallery templates) for use when creating tags.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "list_templates",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "templates"
+        ],
+        "properties": {
+          "templates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "templateId",
+                "name",
+                "type"
+              ],
+              "properties": {
+                "galleryReference": {
+                  "type": [
+                    "null",
+                    "object"
+                  ],
+                  "required": [
+                    "owner",
+                    "repository"
+                  ],
+                  "properties": {
+                    "galleryTemplateId": {
+                      "type": "string"
+                    },
+                    "owner": {
+                      "type": "string"
+                    },
+                    "repository": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "name": {
+                  "type": "string"
+                },
+                "tagManagerUrl": {
+                  "type": "string"
+                },
+                "templateId": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_list_templates.go#L39-L89",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Uses Google Tag Manager v2 Accounts.Containers.Workspaces.Templates.List(parent) to perform the requested operation and maps the response."
+    },
+    {
+      "description": "List all transformations in a GTM workspace (server-side containers only)",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "list_transformations",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "transformations"
+        ],
+        "properties": {
+          "transformations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "transformationId",
+                "name",
+                "type",
+                "path",
+                "fingerprint"
+              ],
+              "properties": {
+                "fingerprint": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                },
+                "parameter": true,
+                "parentFolderId": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "transformationId": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_transformations.go#L20-L54",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "server-side"
+      ],
+      "behavior": "Calls GTM client ListTransformations and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "List all triggers in a GTM workspace",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "list_triggers",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "triggers"
+        ],
+        "properties": {
+          "triggers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "triggerId",
+                "name",
+                "type",
+                "path"
+              ],
+              "properties": {
+                "autoEventFilter": true,
+                "customEventFilter": true,
+                "filter": true,
+                "name": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                },
+                "parameter": true,
+                "parentFolderId": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "triggerId": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_triggers.go#L17-L37",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls GTM client ListTriggers and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "List all variables in a GTM workspace",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "list_variables",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "variables"
+        ],
+        "properties": {
+          "variables": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "variableId",
+                "name",
+                "type",
+                "path"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "variableId": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_variables.go#L17-L37",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Calls GTM client ListVariables and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "List all container versions. Returns version headers with counts of tags, triggers, variables, and templates.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "list_versions",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "versions"
+        ],
+        "properties": {
+          "versions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "versionId",
+                "path"
+              ],
+              "properties": {
+                "deleted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "numCustomTemplates": {
+                  "type": "string"
+                },
+                "numTags": {
+                  "type": "string"
+                },
+                "numTriggers": {
+                  "type": "string"
+                },
+                "numVariables": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "versionId": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_list_versions.go#L33-L83",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "release"
+      ],
+      "behavior": "Lists GTM v2 container version headers, optionally including deleted versions, and returns simplified version records."
+    },
+    {
+      "description": "List all workspaces in a GTM container",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "list_workspaces",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "workspaces"
+        ],
+        "properties": {
+          "workspaces": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "workspaceId",
+                "name",
+                "path"
+              ],
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "workspaceId": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_workspaces.go#L16-L36",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Calls GTM client ListWorkspaces and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Test connectivity to the GTM MCP server",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Optional message to echo back"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "ping",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "reply",
+          "timestamp"
+        ],
+        "properties": {
+          "reply": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/main.go#L67-L103",
+      "scope": "auxiliary",
+      "tags": [
+        "test"
+      ],
+      "behavior": "Returns pong, optionally echoes the input message, and adds the current UTC timestamp."
+    },
+    {
+      "description": "Publish a container version to make it live. Requires confirm: true as a safety guard. WARNING: This pushes changes to your live website.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "versionId",
+          "confirm"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "description:Must be true to confirm publishing. This is a safety guard - publishing makes changes live."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "versionId": {
+            "type": "string",
+            "description": "description:The version ID to publish"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "publish_version",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "version",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "object",
+            "required": [
+              "containerVersionId",
+              "name",
+              "path"
+            ],
+            "properties": {
+              "containerVersionId": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_version.go#L95-L132",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace",
+        "release"
+      ],
+      "behavior": "Requires confirm=true, then calls GTM v2 Versions.Publish to make the requested container version live."
+    },
+    {
+      "description": "Update an existing client. Automatically handles fingerprint for concurrency control. Server-side containers only.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "clientId",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "clientId": {
+            "type": "string",
+            "description": "description:The client ID to update"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Client name"
+          },
+          "notes": {
+            "type": "string",
+            "description": "description:Client notes (optional)"
+          },
+          "parametersJson": {
+            "type": "string",
+            "description": "description:Client parameters as JSON array (optional)"
+          },
+          "priority": {
+            "type": "integer",
+            "description": "description:Client priority (optional, higher runs first)"
+          },
+          "type": {
+            "type": "string",
+            "description": "description:Client type"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "update_client",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "client",
+          "message"
+        ],
+        "properties": {
+          "client": {
+            "type": "object",
+            "required": [
+              "clientId",
+              "name",
+              "type",
+              "path",
+              "fingerprint"
+            ],
+            "properties": {
+              "clientId": {
+                "type": "string"
+              },
+              "fingerprint": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_update_client.go#L30-L79",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "server-side"
+      ],
+      "behavior": "Calls GTM client UpdateClient and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Update an existing tag. Automatically handles fingerprint for concurrency control.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "tagId",
+          "name",
+          "type",
+          "firingTriggerIds"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "blockingTriggerIds": {
+            "type": "array",
+            "description": "description:Array of trigger IDs that block this tag (optional)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "firingTriggerIds": {
+            "type": "array",
+            "description": "description:Array of trigger IDs that fire this tag",
+            "items": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Tag name"
+          },
+          "notes": {
+            "type": "string",
+            "description": "description:Tag notes (optional)"
+          },
+          "parametersJson": {
+            "type": "string",
+            "description": "description:Tag parameters as JSON array (optional)"
+          },
+          "paused": {
+            "type": "boolean",
+            "description": "description:Whether tag is paused (optional)"
+          },
+          "setupTagJson": {
+            "type": "string",
+            "description": "description:Setup tag sequencing as JSON array (optional). Each element: {tagName: string, stopOnSetupFailure: bool}. The setup tag fires before this tag."
+          },
+          "tagId": {
+            "type": "string",
+            "description": "description:The tag ID to update"
+          },
+          "teardownTagJson": {
+            "type": "string",
+            "description": "description:Teardown tag sequencing as JSON array (optional). Each element: {tagName: string, stopTeardownOnFailure: bool}. The teardown tag fires after this tag."
+          },
+          "type": {
+            "type": "string",
+            "description": "description:Tag type"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "update_tag",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "tag",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "tag": {
+            "type": "object",
+            "required": [
+              "tagId",
+              "name",
+              "type",
+              "path",
+              "fingerprint"
+            ],
+            "properties": {
+              "fingerprint": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "tagId": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_update_tag.go#L34-L116",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Calls GTM client UpdateTag and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Update an existing custom template. Automatically handles fingerprint for concurrency control. Note: Updating gallery templates may break the link to the gallery. IMPORTANT: To change the visible template name, update the 'displayName' field inside the ___INFO___ section of templateData - the 'name' parameter is only an internal identifier.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "templateId"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Internal template name (optional). Note: This is NOT the visible display name. The visible name comes from the displayName field inside the ___INFO___ section of templateData."
+          },
+          "templateData": {
+            "type": "string",
+            "description": "description:New template code in .tpl format (optional)"
+          },
+          "templateId": {
+            "type": "string",
+            "description": "description:The template ID to update"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "update_template",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "templateId",
+          "name",
+          "type",
+          "path",
+          "fingerprint",
+          "message"
+        ],
+        "properties": {
+          "fingerprint": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "tagManagerUrl": {
+            "type": "string"
+          },
+          "templateId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_update_template.go#L32-L97",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Reads the existing custom template, preserves unchanged name/data and its fingerprint, then updates through GTM v2."
+    },
+    {
+      "description": "Update an existing transformation. Automatically handles fingerprint for concurrency control. Server-side containers only.\n\nType must be one of: tf_exclude_params, tf_allow_params, tf_augment_event. Table key and columns per type:\n- tf_allow_params: \"allowedParamsTable\" with column \"allowedParams\"\n- tf_exclude_params: \"excludedParamsTable\" with column \"excludedParams\"\n- tf_augment_event: \"augmentEventTable\" with columns \"paramName\" and \"paramValue\"",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "transformationId",
+          "name"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Transformation name"
+          },
+          "notes": {
+            "type": "string",
+            "description": "description:Transformation notes (optional)"
+          },
+          "parametersJson": {
+            "type": "string",
+            "description": "description:Transformation parameters as JSON array (optional)"
+          },
+          "transformationId": {
+            "type": "string",
+            "description": "description:The transformation ID to update"
+          },
+          "type": {
+            "type": "string",
+            "description": "description:Transformation type (optional). Valid values: tf_exclude_params, tf_allow_params, tf_augment_event"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "update_transformation",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "transformation",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "transformation": {
+            "type": "object",
+            "required": [
+              "transformationId",
+              "name",
+              "path",
+              "fingerprint"
+            ],
+            "properties": {
+              "fingerprint": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "transformationId": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_update_transformation.go#L29-L82",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "server-side"
+      ],
+      "behavior": "Calls GTM client UpdateTransformation and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Update an existing trigger. For trigger groups, use parameterJson with format: [{\"key\": \"triggerIds\", \"type\": \"list\", \"list\": [{\"type\": \"triggerReference\", \"value\": \"<triggerId>\"}, ...]}]",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "triggerId",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "autoEventFilterJson": {
+            "type": "string",
+            "description": "description:Auto-event filter as JSON array for click/form triggers (optional)"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "customEventFilterJson": {
+            "type": "string",
+            "description": "description:Custom event filter as JSON array for customEvent triggers (optional)"
+          },
+          "filterJson": {
+            "type": "string",
+            "description": "description:Filter conditions as JSON array for pageview triggers (optional)"
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Trigger name"
+          },
+          "notes": {
+            "type": "string",
+            "description": "description:Trigger notes (optional)"
+          },
+          "parameterJson": {
+            "type": "string",
+            "description": "description:Trigger parameters as JSON array. For triggerGroup type use: [{key: triggerIds, type: list, list: [{type: triggerReference, value: triggerId}, ...]}]"
+          },
+          "triggerId": {
+            "type": "string",
+            "description": "description:The trigger ID to update"
+          },
+          "type": {
+            "type": "string",
+            "description": "description:Trigger type (e.g. pageview, customEvent, linkClick, triggerGroup)"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "update_trigger",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "trigger",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "trigger": {
+            "type": "object",
+            "required": [
+              "triggerId",
+              "name",
+              "type",
+              "path",
+              "fingerprint"
+            ],
+            "properties": {
+              "fingerprint": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "triggerId": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_update_trigger.go#L32-L110",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Calls GTM client UpdateTrigger and returns the mapped result or propagated API error."
+    },
+    {
+      "description": "Update an existing variable. Automatically handles fingerprint for concurrency control.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "variableId",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "description:The GTM account ID"
+          },
+          "containerId": {
+            "type": "string",
+            "description": "description:The GTM container ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "description:Variable name"
+          },
+          "notes": {
+            "type": "string",
+            "description": "description:Variable notes (optional)"
+          },
+          "parametersJson": {
+            "type": "string",
+            "description": "description:Variable parameters as JSON array (required for most types)"
+          },
+          "type": {
+            "type": "string",
+            "description": "description:Variable type (e.g. c for Constant, v for Data Layer, k for Cookie, jsm for Custom JavaScript)"
+          },
+          "variableId": {
+            "type": "string",
+            "description": "description:The variable ID to update"
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "description:The GTM workspace ID"
+          }
+        },
+        "additionalProperties": false
+      },
+      "name": "update_variable",
+      "outputSchema": {
+        "type": "object",
+        "required": [
+          "success",
+          "variable",
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "variable": {
+            "type": "object",
+            "required": [
+              "variableId",
+              "name",
+              "type",
+              "path",
+              "fingerprint"
+            ],
+            "properties": {
+              "fingerprint": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "variableId": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/VasthavM/google-tag-manager-mcp/blob/c6b7e649be853cafbed86917b8a6daea3002b677/gtm/tool_update_variable.go#L29-L79",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Calls GTM client UpdateVariable and returns the mapped result or propagated API error."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "server-side",
+    "summary": "Create and update server clients and transformations, import gallery templates, and manage tracking resources.",
+    "examples": [
+      "create_client",
+      "update_transformation",
+      "import_gallery_template"
+    ]
+  }
+}

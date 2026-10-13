@@ -1,0 +1,1427 @@
+{
+  "repo": "dhawalshah/google-tag-manager-mcp",
+  "url": "https://github.com/dhawalshah/google-tag-manager-mcp",
+  "commit": "f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "18 registered GTM resource tools route to implemented authenticated GTM v2 REST handlers; no stubs.",
+  "method": "mixed",
+  "server": "server.py (stdio); main.py /mcp (HTTP)",
+  "exposure": "All 18 tools always registered; no conditional read/write groups. HTTP /mcp requires server-issued OAuth bearer; stdio operations require MCP_USER_EMAIL and local OAuth token. confirm gates selected destructive actions but does not hide tools.",
+  "sources": [
+    "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/server.py#L1-L42",
+    "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/client.py#L1-L173",
+    "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/main.py#L1-L89",
+    "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/oauth/google_auth.py#L1-L78"
+  ],
+  "limitations": [
+    "Offline FastMCP registration used current installed unpinned dependency version and inert OAuth import shim; no GTM operations/authentication executed. Config and params are unrestricted dictionaries in upstream schemas, with no resource-specific fields or action enums. Destination link is marked deprecated by upstream."
+  ],
+  "tools": [
+    {
+      "name": "gtm_account",
+      "description": "Manage GTM accounts.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/accounts.py#L12-L27",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Routes get, list, update actions for GTM accounts through the shared authenticated v2 REST dispatcher."
+    },
+    {
+      "name": "gtm_container",
+      "description": "Manage GTM containers.\n\nStandard CRUD (list/create: parent='accounts/{a}'; get/update/remove: path='accounts/{a}/containers/{c}') plus:\n  - combine:     path=<container>, params={containerId,...}, confirm=true. (destructive)\n  - lookup:      params={destinationId} -> find container by destination. (read-only; no parent/path needed)\n  - move_tag_id: path=<container>, params={...}, confirm=true. (destructive)\n  - snippet:     path=<container> -> GTM install snippet. (read-only)",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/containers.py#L14-L29",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Routes combine, create, get, list, lookup, move_tag_id, remove, snippet, update actions for GTM containers through the shared authenticated v2 REST dispatcher. Requires confirm=true for combine, move_tag_id, remove."
+    },
+    {
+      "name": "gtm_workspace",
+      "description": "Manage GTM workspaces.\n\nStandard CRUD (list/create: parent=<container>; get/update/remove: path=<workspace>) plus:\n  - create_version:   path=<workspace>, config={name,notes}, confirm=true. (destructive)\n  - get_status:       path=<workspace> -> uncommitted changes. (read-only)\n  - sync:             path=<workspace>, confirm=true. (destructive)\n  - quick_preview:    path=<workspace> -> preview of unsubmitted changes. (read-only)\n  - resolve_conflict: path=<workspace>, config={...}, confirm=true. (destructive)",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/workspaces.py#L17-L37",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace",
+        "release",
+        "audit",
+        "test"
+      ],
+      "behavior": "Routes create, create_version, get, get_status, list, quick_preview, remove, resolve_conflict, sync, update actions for GTM workspaces through the shared authenticated v2 REST dispatcher. Requires confirm=true for create_version, remove, resolve_conflict, sync."
+    },
+    {
+      "name": "gtm_tag",
+      "description": "Manage GTM tags within a workspace.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/tags.py#L12-L26",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Routes create, get, list, remove, revert, update actions for GTM tags through the shared authenticated v2 REST dispatcher. Requires confirm=true for remove, revert."
+    },
+    {
+      "name": "gtm_trigger",
+      "description": "Manage GTM triggers within a workspace. Same action set as gtm_tag\n(create, get, list, update, remove, revert; remove/revert require confirm=true).",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/triggers.py#L12-L18",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Routes create, get, list, remove, revert, update actions for GTM triggers through the shared authenticated v2 REST dispatcher. Requires confirm=true for remove, revert."
+    },
+    {
+      "name": "gtm_variable",
+      "description": "Manage GTM variables within a workspace. Same action set as gtm_tag\n(create, get, list, update, remove, revert; remove/revert require confirm=true).",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/variables.py#L12-L18",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Routes create, get, list, remove, revert, update actions for GTM variables through the shared authenticated v2 REST dispatcher. Requires confirm=true for remove, revert."
+    },
+    {
+      "name": "gtm_built_in_variable",
+      "description": "Manage GTM built-in variables.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/builtin_variables.py#L12-L24",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Routes create, list, remove, revert actions for GTM built_in_variables through the shared authenticated v2 REST dispatcher. Requires confirm=true for remove, revert."
+    },
+    {
+      "name": "gtm_folder",
+      "description": "Manage GTM folders.\n\nStandard CRUD+revert like gtm_tag, plus:\n  - entities:                 path=\"<workspace>/folders/{id}\" → list entities in folder. (read-only)\n  - move_entities_to_folder:  path=\"<workspace>/folders/{id}\", params={tagId/triggerId/variableId},\n                              confirm=true. Moves entities into the folder. (destructive)",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/folders.py#L14-L25",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Routes create, entities, get, list, move_entities_to_folder, remove, revert, update actions for GTM folders through the shared authenticated v2 REST dispatcher. Requires confirm=true for move_entities_to_folder, remove, revert."
+    },
+    {
+      "name": "gtm_client",
+      "description": "Manage GTM clients within a workspace. Same action set as gtm_tag\n(create, get, list, update, remove, revert; remove/revert require confirm=true).",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/clients.py#L12-L18",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "server-side"
+      ],
+      "behavior": "Routes create, get, list, remove, revert, update actions for GTM clients through the shared authenticated v2 REST dispatcher. Requires confirm=true for remove, revert."
+    },
+    {
+      "name": "gtm_zone",
+      "description": "Manage GTM zones within a workspace. Same action set as gtm_tag\n(create, get, list, update, remove, revert; remove/revert require confirm=true).",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/zones.py#L12-L18",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Routes create, get, list, remove, revert, update actions for GTM zones through the shared authenticated v2 REST dispatcher. Requires confirm=true for remove, revert."
+    },
+    {
+      "name": "gtm_template",
+      "description": "Manage GTM custom templates. Standard CRUD+revert plus:\n- import_from_gallery: parent=<workspace> (or path=\"<workspace>/templates\"),\n                       confirm=true. Imports a Community Template Gallery template.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/templates.py#L13-L23",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Routes create, get, import_from_gallery, list, remove, revert, update actions for GTM templates through the shared authenticated v2 REST dispatcher. Requires confirm=true for import_from_gallery, remove, revert."
+    },
+    {
+      "name": "gtm_transformation",
+      "description": "Manage GTM transformations within a workspace. Same action set as gtm_tag\n(create, get, list, update, remove, revert; remove/revert require confirm=true).",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/transformations.py#L12-L18",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "server-side"
+      ],
+      "behavior": "Routes create, get, list, remove, revert, update actions for GTM transformations through the shared authenticated v2 REST dispatcher. Requires confirm=true for remove, revert."
+    },
+    {
+      "name": "gtm_gtag_config",
+      "description": "Manage GTM Google tag (gtag) config. Standard CRUD (no revert).",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/gtag_config.py#L12-L17",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Routes create, get, list, remove, update actions for GTM gtag_config through the shared authenticated v2 REST dispatcher. Requires confirm=true for remove."
+    },
+    {
+      "name": "gtm_destination",
+      "description": "Manage GTM destinations.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/destinations.py#L13-L27",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Routes get, link, list actions for GTM destinations through the shared authenticated v2 REST dispatcher. Requires confirm=true for link."
+    },
+    {
+      "name": "gtm_environment",
+      "description": "Manage GTM environments. Standard CRUD (list/create: parent='<container>';\nget/update/remove: path='<container>/environments/{id}') plus:\n  - reauthorize: path='<container>/environments/{id}', confirm=true. (destructive)",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/environments.py#L13-L21",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "release"
+      ],
+      "behavior": "Routes create, get, list, reauthorize, remove, update actions for GTM environments through the shared authenticated v2 REST dispatcher. Requires confirm=true for reauthorize, remove."
+    },
+    {
+      "name": "gtm_version",
+      "description": "Manage GTM container versions.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/versions.py#L14-L34",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "release"
+      ],
+      "behavior": "Routes get, live, publish, remove, set_latest, undelete, update actions for GTM versions through the shared authenticated v2 REST dispatcher. Requires confirm=true for publish, remove, set_latest, undelete."
+    },
+    {
+      "name": "gtm_version_header",
+      "description": "List GTM container version headers.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/version_headers.py#L12-L22",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Routes latest, list actions for GTM version_headers through the shared authenticated v2 REST dispatcher."
+    },
+    {
+      "name": "gtm_user_permission",
+      "description": "Manage GTM account user permissions.",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "confirm": {
+            "default": false,
+            "type": "boolean"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/dhawalshah/google-tag-manager-mcp/blob/f670034db1835c38e5ecf48c26c1b8aaaa0cfcd5/gtm/user_permissions.py#L12-L25",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "access"
+      ],
+      "behavior": "Routes create, get, list, remove, update actions for GTM user_permissions through the shared authenticated v2 REST dispatcher. Requires confirm=true for remove."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "generic",
+    "summary": "Routes resource actions through shared GTM API tools, including conflict resolution and confirmed destructive changes.",
+    "reason": "18 registered GTM resource tools route to implemented authenticated GTM v2 REST handlers; no stubs.",
+    "examples": [
+      "gtm_template",
+      "gtm_transformation",
+      "gtm_workspace"
+    ]
+  }
+}

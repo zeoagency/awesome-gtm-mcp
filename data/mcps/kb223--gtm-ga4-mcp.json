@@ -1,0 +1,1093 @@
+{
+  "repo": "kb223/gtm-ga4-mcp",
+  "url": "https://github.com/kb223/gtm-ga4-mcp",
+  "commit": "40862b6e92d0b70e04b543a6f7ec854258e392cd",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Sixteen real GTM/GA4 API tools register successfully offline with declared-compatible mcp 2.0.0; all safety tiers and exact schemas verified by server.list_tools.",
+  "method": "tools/list",
+  "server": "src/gtm_ga4_mcp/server.py:build_server / gtm-ga4-mcp entrypoint",
+  "exposure": "All 16 registry tools captured: default READ exposes 8; WRITE exposes 12; DESTRUCTIVE exposes all 16 and implies WRITE. CLI flags or GTM_GA4_MCP_ALLOW_WRITE / GTM_GA4_MCP_ALLOW_DESTRUCTIVE enable tiers. --deny and comma-separated GTM_GA4_MCP_DENY remove individual tools before registration. GA4 shares this server and is included as other product.",
+  "sources": [
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/server.py#L17-L30",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/registry.py#L52-L82",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/config.py#L23-L119",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_admin.py#L49-L83",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_write.py#L41-L83",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_destructive.py#L27-L91",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_admin.py#L97-L129",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_write.py#L86-L141",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_data.py#L120-L166",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_admin.py#L86-L94",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_data.py#L85-L117",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_data.py#L33-L82",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/gtm_write.py#L54-L105",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/gtm_destructive.py#L46-L93",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/gtm.py#L214-L244",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/gtm.py#L152-L211",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/gtm_destructive.py#L171-L239",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/gtm_destructive.py#L96-L168",
+    "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/gtm_write.py#L108-L168"
+  ],
+  "limitations": [
+    "Actual offline registration/list_tools verified with mcp==2.0.0 (within declared >=2,<3). Installed mcp 2.13.5 lacks mcp.server.mcpserver and upstream server import fails; a compatible dependency pin is needed for reproducibility.",
+    "Google credentials and API operations were never invoked. GTM built_in_variables get dispatch and GA4 entity-operation availability remain unverified against the live API; bodies remain unrestricted dictionaries as declared upstream."
+  ],
+  "tools": [
+    {
+      "name": "ga4_account_summaries",
+      "description": "List every GA4 account and property the authenticated user can access.\n\nThis is the entry point for all GA4 work — it returns the property IDs the\nother ga4_* tools need.\n",
+      "inputSchema": {
+        "properties": {
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Pagination token from a previous response.",
+            "title": "Page Token"
+          }
+        },
+        "title": "ga4_account_summariesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_admin.py#L49-L83",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Lists GA4 account summaries and accessible property IDs with pagination.",
+      "exposure": "READ tier; enabled by default; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "List GA4 Accounts & Properties",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "ga4_account_summariesDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ga4_admin_create",
+      "description": "Create a GA4 custom dimension, custom metric, key event, or data stream on a property.\n\nDefaults to dry-run: nothing is sent until called with dry_run=False.\n",
+      "inputSchema": {
+        "$defs": {
+          "Ga4WriteEntityType": {
+            "enum": [
+              "custom_dimensions",
+              "custom_metrics",
+              "key_events",
+              "data_streams",
+              "property"
+            ],
+            "title": "Ga4WriteEntityType",
+            "type": "string"
+          }
+        },
+        "properties": {
+          "entity_type": {
+            "$ref": "#/$defs/Ga4WriteEntityType",
+            "description": "What to create: custom_dimensions, custom_metrics, key_events, or data_streams."
+          },
+          "property_id": {
+            "description": "GA4 property ID, e.g. '123456' or 'properties/123456'.",
+            "title": "Property Id",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "description": "Entity JSON per the Admin API, e.g. a custom dimension: {'parameterName': 'lead_type', 'displayName': 'Lead Type', 'scope': 'EVENT'}.",
+            "title": "Body",
+            "type": "object"
+          },
+          "dry_run": {
+            "default": true,
+            "description": "True (default) echoes the request without sending it.",
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "entity_type",
+          "property_id",
+          "body"
+        ],
+        "title": "ga4_admin_createArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_write.py#L41-L83",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Creates GA4 custom definitions, key events, or data streams, using dry-run by default; rejects property creation.",
+      "exposure": "WRITE tier; requires --allow-write or --allow-destructive / corresponding GTM_GA4_MCP environment flag; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "Create GA4 Entity",
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "ga4_admin_createDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ga4_admin_delete",
+      "description": "Delete or archive a GA4 entity by resource name. Two-phase.\n\nCustom dimensions/metrics are ARCHIVED (permanent — GA4 has no unarchive\nor true delete for them); key events and data streams are DELETED.\nDeleting a data stream stops collection for it. Properties cannot be\ndeleted through this tool by design.\n",
+      "inputSchema": {
+        "properties": {
+          "name": {
+            "description": "Full resource name from a read tool, e.g. 'properties/123/customDimensions/456' or 'properties/123/dataStreams/789'.",
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "confirm_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Omit on the first call — it returns a token and a summary instead of deleting. Pass the token back (same name) to execute.",
+            "title": "Confirm Token"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "ga4_admin_deleteArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_destructive.py#L27-L91",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Archives GA4 custom definitions or deletes key events/data streams after token confirmation; rejects property deletion.",
+      "exposure": "DESTRUCTIVE tier; requires --allow-destructive or GTM_GA4_MCP_ALLOW_DESTRUCTIVE; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "Delete/Archive GA4 Entity",
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "ga4_admin_deleteDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ga4_admin_list",
+      "description": "List a GA4 property's sub-entities.\n\nCovers data streams, key events, custom dimensions/metrics, Google Ads\nlinks, and Firebase links.\n",
+      "inputSchema": {
+        "$defs": {
+          "Ga4AdminEntityType": {
+            "enum": [
+              "data_streams",
+              "key_events",
+              "custom_dimensions",
+              "custom_metrics",
+              "google_ads_links",
+              "firebase_links"
+            ],
+            "title": "Ga4AdminEntityType",
+            "type": "string"
+          }
+        },
+        "properties": {
+          "entity_type": {
+            "$ref": "#/$defs/Ga4AdminEntityType",
+            "description": "Which property sub-entity to list."
+          },
+          "property_id": {
+            "description": "GA4 property ID, e.g. '123456' or 'properties/123456'.",
+            "title": "Property Id",
+            "type": "string"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Pagination token from a previous response.",
+            "title": "Page Token"
+          }
+        },
+        "required": [
+          "entity_type",
+          "property_id"
+        ],
+        "title": "ga4_admin_listArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_admin.py#L97-L129",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Lists GA4 property subentities through Admin API v1beta with pagination.",
+      "exposure": "READ tier; enabled by default; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "List GA4 Property Entities",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "ga4_admin_listDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ga4_admin_update",
+      "description": "Update a GA4 entity (or the property itself) by resource name. Defaults to dry-run.\n\nUnlike GTM, GA4 updates are partial: only fields named in update_mask change.\n",
+      "inputSchema": {
+        "$defs": {
+          "Ga4WriteEntityType": {
+            "enum": [
+              "custom_dimensions",
+              "custom_metrics",
+              "key_events",
+              "data_streams",
+              "property"
+            ],
+            "title": "Ga4WriteEntityType",
+            "type": "string"
+          }
+        },
+        "properties": {
+          "entity_type": {
+            "$ref": "#/$defs/Ga4WriteEntityType",
+            "description": "What to update, including 'property' for the property itself."
+          },
+          "name": {
+            "description": "Full resource name from a read tool, e.g. 'properties/123/customDimensions/456' or 'properties/123' for the property.",
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "description": "Fields to change, e.g. {'displayName': 'New name'}.",
+            "title": "Body",
+            "type": "object"
+          },
+          "update_mask": {
+            "description": "Comma-separated field names being updated (e.g. 'displayName,description'), or '*' to update every field present in body.",
+            "minLength": 1,
+            "title": "Update Mask",
+            "type": "string"
+          },
+          "dry_run": {
+            "default": true,
+            "description": "True (default) echoes the request without sending it.",
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "entity_type",
+          "name",
+          "body",
+          "update_mask"
+        ],
+        "title": "ga4_admin_updateArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_write.py#L86-L141",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Patches a GA4 entity or property using an update mask, using dry-run by default.",
+      "exposure": "WRITE tier; requires --allow-write or --allow-destructive / corresponding GTM_GA4_MCP environment flag; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "Update GA4 Entity",
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "ga4_admin_updateDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ga4_metadata",
+      "description": "List the dimension/metric API names available on a property (standard + custom).\n\nUse this before ga4_run_report to find exact API names.\n",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "description": "GA4 property ID, e.g. '123456' or 'properties/123456'.",
+            "title": "Property Id",
+            "type": "string"
+          },
+          "search": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional case-insensitive filter on API/UI names, e.g. 'revenue'.",
+            "title": "Search"
+          }
+        },
+        "required": [
+          "property_id"
+        ],
+        "title": "ga4_metadataArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_data.py#L120-L166",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Lists GA4 dimensions and metrics with an optional case-insensitive name filter.",
+      "exposure": "READ tier; enabled by default; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "List GA4 Dimensions & Metrics",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "ga4_metadataDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ga4_property_get",
+      "description": "Fetch one GA4 property's full configuration (timezone, currency, industry, service level).",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "description": "GA4 property ID, e.g. '123456' or 'properties/123456'.",
+            "title": "Property Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "property_id"
+        ],
+        "title": "ga4_property_getArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_admin.py#L86-L94",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Fetches GA4 property configuration after normalizing its numeric ID.",
+      "exposure": "READ tier; enabled by default; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "Get GA4 Property",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "ga4_property_getDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ga4_run_realtime_report",
+      "description": "Run a GA4 realtime report (last 30 minutes) — e.g. to verify events are firing now.",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "description": "GA4 property ID, e.g. '123456' or 'properties/123456'.",
+            "title": "Property Id",
+            "type": "string"
+          },
+          "metrics": {
+            "description": "Realtime metric API names, e.g. ['activeUsers', 'eventCount'].",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Metrics",
+            "type": "array"
+          },
+          "dimensions": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Realtime dimension API names, e.g. ['eventName', 'country'].",
+            "title": "Dimensions"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Maximum rows to return.",
+            "maximum": 250,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "property_id",
+          "metrics"
+        ],
+        "title": "ga4_run_realtime_reportArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_data.py#L85-L117",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Runs a GA4 realtime report and shapes returned rows into dictionaries.",
+      "exposure": "READ tier; enabled by default; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "Run GA4 Realtime Report",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "ga4_run_realtime_reportDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "ga4_run_report",
+      "description": "Run a GA4 report over a date range and return one dict per row.\n\nRows are keyed by the requested dimension/metric API names. `row_count` is\nthe total available on the server; raise `limit` or refine dimensions if\nrows were truncated.\n",
+      "inputSchema": {
+        "properties": {
+          "property_id": {
+            "description": "GA4 property ID, e.g. '123456' or 'properties/123456'.",
+            "title": "Property Id",
+            "type": "string"
+          },
+          "metrics": {
+            "description": "Metric API names, e.g. ['sessions', 'conversions', 'totalRevenue']. Discover names via ga4_metadata.",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Metrics",
+            "type": "array"
+          },
+          "dimensions": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Dimension API names, e.g. ['date', 'sessionDefaultChannelGroup'].",
+            "title": "Dimensions"
+          },
+          "start_date": {
+            "default": "28daysAgo",
+            "description": "Start date: 'YYYY-MM-DD', 'NdaysAgo', 'yesterday', or 'today'.",
+            "title": "Start Date",
+            "type": "string"
+          },
+          "end_date": {
+            "default": "today",
+            "description": "End date: 'YYYY-MM-DD', 'NdaysAgo', 'yesterday', or 'today'.",
+            "title": "End Date",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Maximum rows to return.",
+            "maximum": 250,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "property_id",
+          "metrics"
+        ],
+        "title": "ga4_run_reportArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/ga4_data.py#L33-L82",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Runs a GA4 date-range report and shapes dimension/metric rows into dictionaries.",
+      "exposure": "READ tier; enabled by default; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "Run GA4 Report",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "ga4_run_reportDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "gtm_create",
+      "description": "Create a GTM entity in a workspace (or a new workspace/environment in a container).\n\nDefaults to dry-run: nothing is sent until called with dry_run=False.\nChanges land in the workspace only — nothing goes live without gtm_publish.\n",
+      "inputSchema": {
+        "$defs": {
+          "GtmEntityType": {
+            "enum": [
+              "accounts",
+              "user_permissions",
+              "containers",
+              "destinations",
+              "environments",
+              "versions",
+              "workspaces",
+              "built_in_variables",
+              "clients",
+              "folders",
+              "tags",
+              "templates",
+              "transformations",
+              "triggers",
+              "variables",
+              "zones"
+            ],
+            "title": "GtmEntityType",
+            "type": "string"
+          }
+        },
+        "properties": {
+          "entity_type": {
+            "$ref": "#/$defs/GtmEntityType",
+            "description": "Entity to create: tags, triggers, variables, workspaces, ..."
+          },
+          "parent": {
+            "description": "Parent path: a container path for workspaces/environments, a workspace path for tags/triggers/variables/etc.",
+            "minLength": 1,
+            "title": "Parent",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "description": "Entity JSON per the GTM API, e.g. a tag: {'name': ..., 'type': 'gaawe', 'parameter': [...], 'firingTriggerId': [...]}. Read a similar existing entity with gtm_get to see the expected shape.",
+            "title": "Body",
+            "type": "object"
+          },
+          "dry_run": {
+            "default": true,
+            "description": "True (default) echoes the request without sending it.",
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "entity_type",
+          "parent",
+          "body"
+        ],
+        "title": "gtm_createArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/gtm_write.py#L54-L105",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace",
+        "server-side"
+      ],
+      "behavior": "Creates one of ten writable GTM entity collections, returning a request preview by default.",
+      "exposure": "WRITE tier; requires --allow-write or --allow-destructive / corresponding GTM_GA4_MCP environment flag; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "Create GTM Entity",
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_createDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "gtm_delete",
+      "description": "Delete a GTM entity (tag, trigger, variable, workspace, version, ...). Two-phase.\n\nWithout confirm_token nothing is deleted; you get a summary + token to\nconfirm with. Deleting a workspace discards its unpublished changes.\n",
+      "inputSchema": {
+        "properties": {
+          "path": {
+            "description": "Full path of the entity to delete, from gtm_list/gtm_get.",
+            "minLength": 1,
+            "title": "Path",
+            "type": "string"
+          },
+          "confirm_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Omit on the first call — it returns a token and a summary instead of deleting. Pass the token back (same path) to execute.",
+            "title": "Confirm Token"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "gtm_deleteArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/gtm_destructive.py#L46-L93",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace",
+        "release",
+        "server-side"
+      ],
+      "behavior": "Deletes an allowed GTM entity only after redeeming a one-use confirmation token; accounts and containers are excluded.",
+      "exposure": "DESTRUCTIVE tier; requires --allow-destructive or GTM_GA4_MCP_ALLOW_DESTRUCTIVE; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "Delete GTM Entity",
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_deleteDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "gtm_get",
+      "description": "Fetch one GTM entity's complete JSON by its path (tag, trigger, variable, version, ...).\n\nNote: fetching a version returns the entire published container (large).\n",
+      "inputSchema": {
+        "properties": {
+          "path": {
+            "description": "Full GTM entity path from a gtm_list result, e.g. 'accounts/123/containers/456/workspaces/7/tags/8' or 'accounts/123/containers/456/versions/42'.",
+            "minLength": 1,
+            "title": "Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "gtm_getArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/gtm.py#L214-L244",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "server-side"
+      ],
+      "behavior": "Fetches a GTM entity by collection path; built_in_variables dispatches to a get method which that API collection may not provide.",
+      "exposure": "READ tier; enabled by default; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "Get GTM Entity",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_getDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "gtm_list",
+      "description": "List Google Tag Manager entities one hierarchy level at a time.\n\nReturns trimmed summaries (path, name, type, IDs) to keep context small;\neach item's `path` feeds gtm_get (full detail) or a deeper gtm_list call.\n",
+      "inputSchema": {
+        "$defs": {
+          "GtmEntityType": {
+            "enum": [
+              "accounts",
+              "user_permissions",
+              "containers",
+              "destinations",
+              "environments",
+              "versions",
+              "workspaces",
+              "built_in_variables",
+              "clients",
+              "folders",
+              "tags",
+              "templates",
+              "transformations",
+              "triggers",
+              "variables",
+              "zones"
+            ],
+            "title": "GtmEntityType",
+            "type": "string"
+          }
+        },
+        "properties": {
+          "entity_type": {
+            "$ref": "#/$defs/GtmEntityType",
+            "description": "Which GTM entity to list. Walk the hierarchy: accounts -> containers -> workspaces -> tags/triggers/variables/..."
+          },
+          "parent": {
+            "default": "",
+            "description": "Parent path from a previous result, e.g. '' for accounts, 'accounts/123' for containers, 'accounts/123/containers/456' for workspaces/versions/environments, 'accounts/123/containers/456/workspaces/7' for tags/triggers/variables.",
+            "title": "Parent",
+            "type": "string"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Pagination token from a previous response.",
+            "title": "Page Token"
+          },
+          "full": {
+            "default": false,
+            "description": "Return complete entity JSON instead of trimmed summaries. Prefer gtm_get for a single entity.",
+            "title": "Full",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "entity_type"
+        ],
+        "title": "gtm_listArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/gtm.py#L152-L211",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "access",
+        "server-side"
+      ],
+      "behavior": "Dispatches hierarchical GTM lists with pagination and optional full JSON; versions use version_headers.",
+      "exposure": "READ tier; enabled by default; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "List GTM Entities",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_listDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "gtm_permissions",
+      "description": "Grant, update, or revoke a user's access to a GTM account. Two-phase.\n\nAccess changes are security-sensitive: always show the summary to the\nuser before confirming.\n",
+      "inputSchema": {
+        "properties": {
+          "action": {
+            "description": "'grant' (new user), 'update' (existing permission), or 'revoke'.",
+            "title": "Action",
+            "type": "string"
+          },
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "For 'grant': the GTM account ID, e.g. '123456'.",
+            "title": "Account Id"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "For 'update'/'revoke': the permission path from gtm_list(user_permissions), e.g. 'accounts/123/user_permissions/456'.",
+            "title": "Path"
+          },
+          "body": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "For 'grant'/'update': permission JSON, e.g. {'emailAddress': ..., 'accountAccess': {'permission': 'user'}, 'containerAccess': [{'containerId': ..., 'permission': 'edit'}]}.",
+            "title": "Body"
+          },
+          "confirm_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Omit first to get a summary + token; pass back to execute.",
+            "title": "Confirm Token"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "gtm_permissionsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/gtm_destructive.py#L171-L239",
+      "scope": "gtm",
+      "tags": [
+        "access",
+        "edit"
+      ],
+      "behavior": "Grants, replaces, or revokes GTM account user permissions after token confirmation.",
+      "exposure": "DESTRUCTIVE tier; requires --allow-destructive or GTM_GA4_MCP_ALLOW_DESTRUCTIVE; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "Manage GTM User Permissions",
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_permissionsDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "gtm_publish",
+      "description": "Compile a GTM workspace into a version and publish it LIVE. Two-phase.\n\nPublishing deploys the container to every page that loads it — treat it\nlike a production release. The source workspace is consumed by versioning.\n",
+      "inputSchema": {
+        "properties": {
+          "workspace_path": {
+            "description": "Workspace to publish, e.g. 'accounts/123/containers/456/workspaces/7'.",
+            "minLength": 1,
+            "title": "Workspace Path",
+            "type": "string"
+          },
+          "version_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Name for the created version.",
+            "title": "Version Name"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Notes for the created version.",
+            "title": "Notes"
+          },
+          "confirm_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Omit on the first call — it returns a token and a summary instead of publishing. Pass the token back (same arguments) to execute.",
+            "title": "Confirm Token"
+          }
+        },
+        "required": [
+          "workspace_path"
+        ],
+        "title": "gtm_publishArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/gtm_destructive.py#L96-L168",
+      "scope": "gtm",
+      "tags": [
+        "release",
+        "workspace"
+      ],
+      "behavior": "Creates a version from a workspace and publishes it after token confirmation, aborting on compiler errors or missing version path.",
+      "exposure": "DESTRUCTIVE tier; requires --allow-destructive or GTM_GA4_MCP_ALLOW_DESTRUCTIVE; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "Publish GTM Workspace",
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_publishDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "gtm_update",
+      "description": "Update (replace) a GTM entity by path. Defaults to dry-run.\n\nGTM updates are full replacements — always start from gtm_get output.\n",
+      "inputSchema": {
+        "properties": {
+          "path": {
+            "description": "Full path of the entity to update, from gtm_list/gtm_get.",
+            "minLength": 1,
+            "title": "Path",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "description": "COMPLETE entity JSON (the GTM API replaces the entity, not merges). Fetch with gtm_get, modify, and send the whole object back.",
+            "title": "Body",
+            "type": "object"
+          },
+          "fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional optimistic-lock fingerprint from gtm_get; the update fails if someone changed the entity since.",
+            "title": "Fingerprint"
+          },
+          "dry_run": {
+            "default": true,
+            "description": "True (default) echoes the request without sending it.",
+            "title": "Dry Run",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "path",
+          "body"
+        ],
+        "title": "gtm_updateArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/kb223/gtm-ga4-mcp/blob/40862b6e92d0b70e04b543a6f7ec854258e392cd/src/gtm_ga4_mcp/tools/gtm_write.py#L108-L168",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace",
+        "server-side"
+      ],
+      "behavior": "Replaces a writable GTM entity, optionally checking its fingerprint, with dry-run enabled by default.",
+      "exposure": "WRITE tier; requires --allow-write or --allow-destructive / corresponding GTM_GA4_MCP environment flag; any tool can be excluded by --deny / GTM_GA4_MCP_DENY.",
+      "annotations": {
+        "title": "Update GTM Entity",
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_updateDictOutput",
+        "type": "object"
+      }
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "generic",
+    "summary": "Read and change GTM resources through generic operations with separately enabled write and destructive tiers.",
+    "examples": [
+      "gtm_permissions",
+      "gtm_update",
+      "gtm_publish"
+    ]
+  }
+}

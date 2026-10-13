@@ -1,0 +1,420 @@
+{
+  "repo": "ErikTMA/gtm-mcp",
+  "url": "https://github.com/ErikTMA/gtm-mcp",
+  "commit": "0dd4022cb70c354dbd9aa5d81eba969350f7104f",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Twelve registered tools dispatch to implemented Tag Manager v2 handlers; simplified custom-event helper emits uppercase enum values while other API paths use lowercase values, requiring review.",
+  "method": "source",
+  "server": "src/gtm_mcp/server.py:GTMMCPServer / run",
+  "exposure": "All 12 tools are always listed; no conditional or read-only registration groups. Authentication occurs lazily on first call. GTM_ACCOUNT_ID filters list_accounts and checks resource account IDs for every client operation. OAuth requests readonly, edit.containers, edit.containerversions, publish, delete.containers, manage.accounts and manage.users scopes.",
+  "sources": [
+    "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/server.py#L15-L298",
+    "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/tools.py#L8-L464",
+    "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/gtm_client.py#L1-L280",
+    "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/helpers.py#L281-L353",
+    "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/utils.py#L1-L126",
+    "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/constants.py#L141-L159"
+  ],
+  "limitations": [
+    "Static AST extraction of literal Tool registrations; no authenticated GTM operation or runtime tools/list executed.",
+    "Configuration object schemas are intentionally unrestricted upstream; no nested models, defaults, additionalProperties restrictions, or local references are declared. Handler fallbacks do not change the registered schemas.",
+    "List methods return only the first API response page and do not follow nextPageToken.",
+    "Simplified custom_event_name builds uppercase EQUALS/TEMPLATE filter values; compatibility with the live API was not verified. Generic parameter conversion supports lists of mappings, not arbitrary JSON lists or fully typed nested GTM parameters."
+  ],
+  "tools": [
+    {
+      "name": "gtm_list_accounts",
+      "description": "List all accessible GTM accounts",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/server.py#L32-L40",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists accessible Tag Manager v2 accounts, filtered to GTM_ACCOUNT_ID when configured."
+    },
+    {
+      "name": "gtm_list_containers",
+      "description": "List all containers in a GTM account",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "description": "GTM Account ID"
+          }
+        },
+        "required": [
+          "account_id"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/server.py#L41-L54",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists containers under the requested account after checking the configured account restriction."
+    },
+    {
+      "name": "gtm_list_tags",
+      "description": "List all tags in a container workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container_path": {
+            "type": "string",
+            "description": "Full container path (e.g., accounts/123/containers/456)"
+          },
+          "workspace_id": {
+            "type": "string",
+            "description": "Workspace ID (optional, uses default if not provided)"
+          }
+        },
+        "required": [
+          "container_path"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/server.py#L55-L72",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists tags in the supplied workspace ID or the first returned workspace when workspace_id is absent."
+    },
+    {
+      "name": "gtm_get_tag",
+      "description": "Get detailed configuration of a specific tag",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag_path": {
+            "type": "string",
+            "description": "Full tag path (e.g., accounts/123/containers/456/workspaces/7/tags/8)"
+          }
+        },
+        "required": [
+          "tag_path"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/server.py#L73-L86",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Returns the full tag resource from Tag Manager v2."
+    },
+    {
+      "name": "gtm_create_tag",
+      "description": "Create a new tag in a GTM container",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_path": {
+            "type": "string",
+            "description": "Full workspace path"
+          },
+          "tag_name": {
+            "type": "string",
+            "description": "Name for the new tag"
+          },
+          "tag_type": {
+            "type": "string",
+            "description": "Type of tag (e.g., 'ua', 'ga4', 'html')"
+          },
+          "tag_config": {
+            "type": "object",
+            "description": "Tag configuration parameters"
+          },
+          "firing_trigger_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of trigger IDs that should fire this tag"
+          }
+        },
+        "required": [
+          "workspace_path",
+          "tag_name",
+          "tag_type"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/server.py#L87-L117",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a tag, transforming tag_config into template parameters or lists of maps and attaching firing trigger IDs."
+    },
+    {
+      "name": "gtm_update_tag",
+      "description": "Update an existing tag in a GTM container",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag_path": {
+            "type": "string",
+            "description": "Full tag path (e.g., accounts/123/containers/456/workspaces/7/tags/8)"
+          },
+          "tag_data": {
+            "type": "object",
+            "description": "Complete tag data object to update"
+          }
+        },
+        "required": [
+          "tag_path",
+          "tag_data"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/server.py#L118-L135",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Passes the supplied tag_data directly to the Tag Manager v2 tags.update API."
+    },
+    {
+      "name": "gtm_list_triggers",
+      "description": "List all triggers in a container workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_path": {
+            "type": "string",
+            "description": "Full workspace path"
+          }
+        },
+        "required": [
+          "workspace_path"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/server.py#L136-L149",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists trigger summaries in the supplied workspace."
+    },
+    {
+      "name": "gtm_create_trigger",
+      "description": "Create a new trigger in a GTM container. For Custom Event triggers, use custom_event_name parameter for simplified creation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_path": {
+            "type": "string",
+            "description": "Full workspace path"
+          },
+          "trigger_name": {
+            "type": "string",
+            "description": "Name for the new trigger"
+          },
+          "trigger_type": {
+            "type": "string",
+            "description": "Type of trigger",
+            "enum": [
+              "pageview",
+              "domReady",
+              "windowLoaded",
+              "customEvent",
+              "triggerGroup",
+              "init",
+              "consentInit",
+              "serverPageview",
+              "always",
+              "firebaseAppException",
+              "firebaseAppUpdate",
+              "firebaseCampaign",
+              "firebaseFirstOpen",
+              "firebaseInAppPurchase",
+              "firebaseNotificationDismiss",
+              "firebaseNotificationForeground",
+              "firebaseNotificationOpen",
+              "firebaseNotificationReceive",
+              "firebaseOsUpdate",
+              "firebaseSessionStart",
+              "firebaseUserEngagement",
+              "formSubmission",
+              "click",
+              "linkClick",
+              "jsError",
+              "historyChange",
+              "timer",
+              "ampClick",
+              "ampTimer",
+              "ampScroll",
+              "ampVisibility",
+              "youTubeVideo",
+              "scrollDepth",
+              "elementVisibility"
+            ]
+          },
+          "custom_event_name": {
+            "type": "string",
+            "description": "For Custom Event triggers: the event name to match (e.g., 'purchase', 'add_to_cart'). This automatically generates the customEventFilter."
+          },
+          "trigger_config": {
+            "type": "object",
+            "description": "Trigger configuration parameters (optional if using custom_event_name)"
+          }
+        },
+        "required": [
+          "workspace_path",
+          "trigger_name",
+          "trigger_type"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/server.py#L150-L192",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a trigger from supported API fields or trigger-group IDs; custom_event_name invokes a helper producing uppercase EQUALS and TEMPLATE values, unlike the lowercase enum strings in the legacy branch."
+    },
+    {
+      "name": "gtm_list_variables",
+      "description": "List all variables in a container workspace",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_path": {
+            "type": "string",
+            "description": "Full workspace path"
+          }
+        },
+        "required": [
+          "workspace_path"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/server.py#L193-L206",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists variable summaries in the supplied workspace."
+    },
+    {
+      "name": "gtm_get_variable",
+      "description": "Get detailed configuration of a specific variable",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variable_path": {
+            "type": "string",
+            "description": "Full variable path (e.g., accounts/123/containers/456/workspaces/7/variables/8)"
+          }
+        },
+        "required": [
+          "variable_path"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/server.py#L207-L220",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Returns the full variable resource from Tag Manager v2."
+    },
+    {
+      "name": "gtm_create_variable",
+      "description": "Create a new variable in a GTM container",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_path": {
+            "type": "string",
+            "description": "Full workspace path"
+          },
+          "variable_name": {
+            "type": "string",
+            "description": "Name for the new variable"
+          },
+          "variable_type": {
+            "type": "string",
+            "description": "Type of variable. Common types: 'c' (constant), 'v' (data layer variable), 'jsm' (javascript variable), 'u' (URL variable), 'k' (cookie)"
+          },
+          "variable_config": {
+            "type": "object",
+            "description": "Variable configuration. For constant: {value: 'string'}, for data layer: {data_layer_name: 'name'}, for cookie: {cookie_name: 'name'}, etc."
+          }
+        },
+        "required": [
+          "workspace_path",
+          "variable_name",
+          "variable_type"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/server.py#L221-L246",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates variables using type-specific parameter mappings or generic template/list-of-map conversion."
+    },
+    {
+      "name": "gtm_publish_container",
+      "description": "Create and publish a new version of a GTM container",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace_path": {
+            "type": "string",
+            "description": "Full workspace path"
+          },
+          "version_name": {
+            "type": "string",
+            "description": "Name for the new version"
+          },
+          "version_notes": {
+            "type": "string",
+            "description": "Notes describing changes in this version"
+          }
+        },
+        "required": [
+          "workspace_path",
+          "version_name"
+        ]
+      },
+      "schemaOrigin": "literal-source",
+      "source": "https://github.com/ErikTMA/gtm-mcp/blob/0dd4022cb70c354dbd9aa5d81eba969350f7104f/src/gtm_mcp/server.py#L247-L268",
+      "scope": "gtm",
+      "tags": [
+        "release",
+        "workspace"
+      ],
+      "behavior": "Creates a workspace version and publishes its returned containerVersion path; raises if that path is missing."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "manage",
+    "summary": "Creates tags, triggers, and variables with account restrictions and publishes workspace versions.",
+    "reason": "Twelve registered tools dispatch to implemented Tag Manager v2 handlers; simplified custom-event helper emits uppercase enum values while other API paths use lowercase values, requiring review.",
+    "examples": [
+      "gtm_create_tag",
+      "gtm_create_variable",
+      "gtm_publish_container"
+    ]
+  }
+}

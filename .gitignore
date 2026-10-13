@@ -10,6 +10,7 @@ __pycache__/
 
 # Data dumps & temporary caches
 *.json
+!data/**/*.json
 *.yaml
 *.yml
 !*.markdownlint.yml

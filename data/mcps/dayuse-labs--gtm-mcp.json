@@ -1,0 +1,729 @@
+{
+  "repo": "Dayuse-Labs/gtm-mcp",
+  "url": "https://github.com/Dayuse-Labs/gtm-mcp",
+  "commit": "0e2d66eccea6b6a3ad46db9a130ae0014d38c274",
+  "checkedAt": "2026-10-13",
+  "decision": "remove",
+  "reason": "Substantial implemented GTM changeset/mirror/server-container functionality, but production MCP endpoint fails closed with 501 because authentication federation is unimplemented; inverse and built-in writes are stubs.",
+  "method": "tools/list",
+  "server": "src/interfaces/mcp/server.ts buildMcpServer; src/index.ts remote HTTP entrypoint",
+  "exposure": "All 20 tools always registered. Configured aliases web/server/preprod are guarded at call time; unconfigured aliases return errors. OAuth/collaborator access and roles gate handlers, not tool enumeration. Catalog functions remain exposed when unconfigured. Production /mcp middleware rejects every request with HTTP 501 until OAuth federation is implemented; development uses stub request identity. Custom template, client and transformation changes are admin-only.",
+  "sources": [
+    "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L1-L632",
+    "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/domain/value-objects/operation.ts#L1-L54",
+    "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/domain/value-objects/container-alias.ts#L1-L47",
+    "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/infrastructure/gtm/googleapis-gtm-client.ts#L1-L476",
+    "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/application/use-cases/apply-changeset.ts#L1-L202",
+    "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/application/use-cases/publish-changeset.ts#L1-L169",
+    "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/http/require-auth.ts#L1-L38",
+    "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/domain/services/role-policy.ts#L1-L48"
+  ],
+  "limitations": [
+    "Offline tools/list used locked dependencies in isolated scratch copy and dummy services; no tool handlers, authentication, GTM reads or writes were invoked; live behavior was reviewed statically.",
+    "inverse is registered but returns only a deferred message.",
+    "builtInVariable is advertised in entity enums but create/update/delete adapter paths explicitly return NotImplementedError.",
+    "Runtime JSON Schema cannot encode EntityRefSchema custom refinement requiring one of id/name/ref; source validation does enforce it. Operation data intentionally remains an unrestricted object.",
+    "publish description requires GTM Preview observation, but handler has no programmatic verification gate.",
+    "Production requireAuth rejects every MCP request with HTTP 501; development bypass uses a stub collaborator. Upstream explicitly labels transport OAuth federation unimplemented."
+  ],
+  "tools": [
+    {
+      "name": "list_containers",
+      "description": "List the container aliases (web, server, preprod) and their GTM container ids; null means the alias is not configured on this server.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L237-L246",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "server-side"
+      ],
+      "behavior": "Returns deployment container aliases and ids, including null for unconfigured aliases."
+    },
+    {
+      "name": "whoami",
+      "description": "Return the current collaborator and their GTM access.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L247-L259",
+      "scope": "auxiliary",
+      "tags": [
+        "access",
+        "inspect"
+      ],
+      "behavior": "Resolves the collaborator and checks GTM container access, returning the minimum skill version."
+    },
+    {
+      "name": "pull",
+      "description": "Refresh the local mirror from GTM and return a change summary.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "type": "string",
+            "enum": [
+              "web",
+              "server",
+              "preprod"
+            ]
+          }
+        },
+        "required": [
+          "container"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L260-L273",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "offline",
+        "server-side"
+      ],
+      "behavior": "Reads the published GTM version (Default Workspace fallback for unpublished containers) and updates the local mirror with a change summary."
+    },
+    {
+      "name": "list_entities",
+      "description": "List entities of a type from the local mirror (zero GTM API calls), optionally filtered by name substring. Run pull first if the mirror is empty.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "type": "string",
+            "enum": [
+              "web",
+              "server",
+              "preprod"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "tag",
+              "trigger",
+              "variable",
+              "builtInVariable",
+              "folder",
+              "client",
+              "transformation",
+              "customTemplate"
+            ]
+          },
+          "filter": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "container",
+          "type"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L274-L295",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "offline",
+        "server-side"
+      ],
+      "behavior": "Lists mirror entity ids and names, optionally filtering name substrings."
+    },
+    {
+      "name": "get_entity",
+      "description": "Get one entity (full GTM JSON) by name or id from the local mirror (zero GTM API calls). Run pull first if the mirror is empty.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "type": "string",
+            "enum": [
+              "web",
+              "server",
+              "preprod"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "tag",
+              "trigger",
+              "variable",
+              "builtInVariable",
+              "folder",
+              "client",
+              "transformation",
+              "customTemplate"
+            ]
+          },
+          "ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "container",
+          "type",
+          "ref"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L296-L314",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "offline",
+        "server-side"
+      ],
+      "behavior": "Resolves an entity by id or name in the mirror and returns raw GTM JSON."
+    },
+    {
+      "name": "get_examples",
+      "description": "Representative valid examples of an entity type for clone-from-example authoring.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "type": "string",
+            "enum": [
+              "web",
+              "server",
+              "preprod"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "tag",
+              "trigger",
+              "variable",
+              "builtInVariable",
+              "folder",
+              "client",
+              "transformation",
+              "customTemplate"
+            ]
+          }
+        },
+        "required": [
+          "container",
+          "type"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L315-L329",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "server-side"
+      ],
+      "behavior": "Pulls GTM container state and returns up to five entities of the selected type."
+    },
+    {
+      "name": "export_container",
+      "description": "Export the WHOLE container from the local mirror in ONE call (zero GTM API calls). mode=compact (default) keeps ids/names/types plus condition & reference fields and omits bulky blobs (tag html, custom-template code) behind {_omitted,length} markers; mode=full returns raw bodies verbatim. Prefer this over fetching entities one-by-one. Run pull first if the mirror is empty.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "type": "string",
+            "enum": [
+              "web",
+              "server",
+              "preprod"
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "compact",
+              "full"
+            ]
+          }
+        },
+        "required": [
+          "container"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L330-L349",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "offline",
+        "server-side"
+      ],
+      "behavior": "Exports mirror entities compactly or as complete raw bodies; omitted mode is handled as compact."
+    },
+    {
+      "name": "search_container",
+      "description": "Search the local mirror (zero GTM API calls) for every entity whose full JSON contains the query string, case-insensitive. Finds entities that CARRY a value (e.g. a trigger condition equal to \"daypass\"), not just ones named for it — use this instead of fetching entities one-by-one. Returns matches with full bodies and which fields matched. Run pull first if the mirror is empty.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "type": "string",
+            "enum": [
+              "web",
+              "server",
+              "preprod"
+            ]
+          },
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "container",
+          "query"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L350-L362",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "offline",
+        "server-side"
+      ],
+      "behavior": "Searches case-insensitive full mirror JSON and returns matching bodies and fields."
+    },
+    {
+      "name": "workspace_status",
+      "description": "Report the LIVE GTM workspace count vs the per-container limit (3, incl. Default). slotsFree reflects GTM reality (counts workspaces created in the UI too); pendingChangesets is our informational tally.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "type": "string",
+            "enum": [
+              "web",
+              "server",
+              "preprod"
+            ]
+          }
+        },
+        "required": [
+          "container"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L363-L386",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "server-side"
+      ],
+      "behavior": "Counts live GTM workspaces and pending stored changesets against a hardcoded limit of three."
+    },
+    {
+      "name": "list_changesets",
+      "description": "List changesets, optionally filtered by container/status.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "type": "string",
+            "enum": [
+              "web",
+              "server",
+              "preprod"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "previewed",
+              "applied",
+              "rejected",
+              "published"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L387-L411",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit",
+        "workspace"
+      ],
+      "behavior": "Lists stored changesets filtered by optional container and status."
+    },
+    {
+      "name": "get_changeset",
+      "description": "Get a changeset with its operations, status and before-images.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L412-L425",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "audit",
+        "workspace"
+      ],
+      "behavior": "Loads a stored changeset with operations and before-images by UUID."
+    },
+    {
+      "name": "preview",
+      "description": "Phase 1 of Apply: validate + drift-check a changeset, return a plain-language summary, dependency impacts, and a previewId.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "type": "string",
+            "enum": [
+              "web",
+              "server",
+              "preprod"
+            ]
+          },
+          "operations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "op": {
+                  "type": "string",
+                  "enum": [
+                    "create",
+                    "update",
+                    "delete"
+                  ]
+                },
+                "entity": {
+                  "type": "string",
+                  "enum": [
+                    "tag",
+                    "trigger",
+                    "variable",
+                    "builtInVariable",
+                    "folder",
+                    "client",
+                    "transformation",
+                    "customTemplate"
+                  ]
+                },
+                "assignRef": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 120
+                },
+                "target": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 255
+                    },
+                    "ref": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "data": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              },
+              "required": [
+                "op",
+                "entity"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "maxItems": 200
+          }
+        },
+        "required": [
+          "container",
+          "operations"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L426-L456",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "test",
+        "audit",
+        "server-side"
+      ],
+      "behavior": "Validates operation shape, role permissions and references, pulls live state, and stores a baseline, impacts and summary with an expiring preview id.",
+      "exposure": "Always registered; customTemplate/client/transformation operations require admin; clients and transformations are valid only for server container."
+    },
+    {
+      "name": "apply",
+      "description": "Phase 2 of Apply: write a previewed changeset into a fresh ephemeral GTM workspace. Does not publish (see publish).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "previewId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "previewId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L457-L481",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace",
+        "server-side"
+      ],
+      "behavior": "Checks author/admin permission, role, live drift and workspace cap, then executes operations in a new workspace and saves the changeset, attempting workspace rollback on failure.",
+      "exposure": "Always registered; customTemplate/client/transformation operations require admin; clients and transformations are valid only for server container."
+    },
+    {
+      "name": "reject",
+      "description": "Reject a pending changeset and delete its workspace, freeing a slot.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "changesetId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "changesetId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L482-L507",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Checks author/admin permission, deletes any recorded workspace and marks the changeset rejected."
+    },
+    {
+      "name": "publish",
+      "description": "Admin-only. Make an applied changeset live: cuts a GTM container version from its workspace (named after the changeset, which consumes the workspace), then publishes it. Call ONLY after the change has been observed in GTM Preview on that workspace (gtm-change skill, step 5); an unverified change must not be published. Refuses on drift, merge conflict or compiler error without publishing. Returns the published versionId.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "changesetId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "changesetId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L508-L526",
+      "scope": "gtm",
+      "tags": [
+        "release",
+        "workspace",
+        "server-side"
+      ],
+      "behavior": "Checks admin permission and applied status, detects live drift, creates and records a container version, publishes it and saves published status.",
+      "exposure": "Always registered; handler is admin-only. Required GTM Preview verification is descriptive guidance, not a programmatic gate."
+    },
+    {
+      "name": "inverse",
+      "description": "Generate an inverse changeset from before-images (post-publish rollback helper).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "changesetId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "changesetId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L527-L540",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "behavior": "Registered stub: returns a deferred message advising publication of a previous version in GTM; generates no inverse changeset."
+    },
+    {
+      "name": "usage_stats",
+      "description": "Admin-only. Usage + error counts grouped by collaborator and tool over the last sinceHours (default 24) — answers \"usage per collaborator\" and \"is everything going right\".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sinceHours": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 8760
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L541-L561",
+      "scope": "auxiliary",
+      "tags": [
+        "audit",
+        "inspect",
+        "access"
+      ],
+      "behavior": "Checks admin permission and queries per-collaborator/tool usage and errors, using 24 hours when omitted.",
+      "exposure": "Always registered; handler is admin-only."
+    },
+    {
+      "name": "list_datalayer_events",
+      "description": "List every dataLayer event name the site can emit. The CHEAP index — call this FIRST, then drill into one event with get_datalayer_event. Authoritative upstream schema (read-only).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L562-L578",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Returns the configured read-only GitLab dataLayer catalog event index and any stale warning.",
+      "exposure": "Always registered; returns configuration error unless GITLAB_TOKEN and GITLAB_CATALOG_PROJECT_ID configure a catalog."
+    },
+    {
+      "name": "get_datalayer_event",
+      "description": "Get ONE dataLayer event's shape. mode=compact (default) collapses fat string-unions and keeps referenced types as bare names; mode=full expands referenced types one level. Call list_datalayer_events first for valid names; drill referenced types with get_datalayer_type.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "compact",
+              "full"
+            ]
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L579-L595",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Returns one configured dataLayer catalog event shape, using compact mode when omitted.",
+      "exposure": "Always registered; returns configuration error unless GITLAB_TOKEN and GITLAB_CATALOG_PROJECT_ID configure a catalog."
+    },
+    {
+      "name": "get_datalayer_type",
+      "description": "Get ONE helper type from the catalog (a referenced DTO or enum), compacted. Use to walk a type referenced by an event without expanding the whole graph.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/Dayuse-Labs/gtm-mcp/blob/0e2d66eccea6b6a3ad46db9a130ae0014d38c274/src/interfaces/mcp/tools.ts#L596-L609",
+      "scope": "auxiliary",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Returns one compacted helper type from the configured dataLayer catalog.",
+      "exposure": "Always registered; returns configuration error unless GITLAB_TOKEN and GITLAB_CATALOG_PROJECT_ID configure a catalog."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": null,
+    "summary": "Production transport rejects every request with HTTP 501 because authentication is unimplemented; inverse rollback is a stub.",
+    "reason": "Production transport rejects every request with HTTP 501 because authentication is unimplemented; inverse rollback is a stub."
+  }
+}

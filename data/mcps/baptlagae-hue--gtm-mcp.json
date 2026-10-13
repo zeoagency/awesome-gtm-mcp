@@ -1,0 +1,297 @@
+{
+  "repo": "baptlagae-hue/gtm-mcp",
+  "url": "https://github.com/baptlagae-hue/gtm-mcp",
+  "commit": "8273eb8c18ebf9cee779dafa8f38c0b2458ab0ce",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Ten registered tools implement GTM v2 collection reads and prefix-governed workspace/tag/trigger/variable creation.",
+  "method": "tools/list",
+  "server": "gtm_mcp/server.py:main (gtm-mcp CLI; FastMCP stdio)",
+  "exposure": "All ten decorators register unconditionally. GTM_WORKSPACE_PREFIX changes write guardrails (default IA | ) but does not change exposure.",
+  "sources": [
+    "https://github.com/baptlagae-hue/gtm-mcp/blob/8273eb8c18ebf9cee779dafa8f38c0b2458ab0ce/gtm_mcp/server.py#L15-L260"
+  ],
+  "limitations": [
+    "Offline FastMCP.list_tools registration only; no handlers, authentication, or GTM operations were executed. Dependencies are lower-bound-only; schemas reflect installed mcp 1.30.0.",
+    "Creation payload dict parameters are deliberately unrestricted objects, with no GTM resource-specific fields validated locally. Read collection handlers do not follow nextPageToken, so may return only the first page."
+  ],
+  "tools": [
+    {
+      "name": "list_gtm_accounts",
+      "description": "\nList all Google Tag Manager accounts accessible with your active credentials.\n",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_gtm_accountsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/baptlagae-hue/gtm-mcp/blob/8273eb8c18ebf9cee779dafa8f38c0b2458ab0ce/gtm_mcp/server.py#L49-L59",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "GETs the GTM v2 accounts collection using Application Default Credentials."
+    },
+    {
+      "name": "list_gtm_containers",
+      "description": "\nList GTM containers for a given account.\n\nArgs:\n    parent: The parent account path (e.g., 'accounts/123456')\n",
+      "inputSchema": {
+        "properties": {
+          "parent": {
+            "title": "Parent",
+            "type": "string"
+          }
+        },
+        "required": [
+          "parent"
+        ],
+        "title": "list_gtm_containersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/baptlagae-hue/gtm-mcp/blob/8273eb8c18ebf9cee779dafa8f38c0b2458ab0ce/gtm_mcp/server.py#L61-L74",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "GETs the GTM v2 containers collection under the supplied parent path."
+    },
+    {
+      "name": "list_gtm_workspaces",
+      "description": "\nList workspaces inside a GTM container.\n\nArgs:\n    parent: The parent container path (e.g., 'accounts/123456/containers/78901')\n",
+      "inputSchema": {
+        "properties": {
+          "parent": {
+            "title": "Parent",
+            "type": "string"
+          }
+        },
+        "required": [
+          "parent"
+        ],
+        "title": "list_gtm_workspacesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/baptlagae-hue/gtm-mcp/blob/8273eb8c18ebf9cee779dafa8f38c0b2458ab0ce/gtm_mcp/server.py#L76-L89",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "GETs the GTM v2 workspaces collection under the supplied parent path."
+    },
+    {
+      "name": "list_gtm_tags",
+      "description": "\nList tags inside a GTM workspace.\n\nArgs:\n    parent: The workspace path (e.g., 'accounts/123456/containers/78901/workspaces/12')\n",
+      "inputSchema": {
+        "properties": {
+          "parent": {
+            "title": "Parent",
+            "type": "string"
+          }
+        },
+        "required": [
+          "parent"
+        ],
+        "title": "list_gtm_tagsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/baptlagae-hue/gtm-mcp/blob/8273eb8c18ebf9cee779dafa8f38c0b2458ab0ce/gtm_mcp/server.py#L91-L104",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "GETs the GTM v2 tags collection under the supplied parent path."
+    },
+    {
+      "name": "list_gtm_triggers",
+      "description": "\nList triggers inside a GTM workspace.\n\nArgs:\n    parent: The workspace path (e.g., 'accounts/123456/containers/78901/workspaces/12')\n",
+      "inputSchema": {
+        "properties": {
+          "parent": {
+            "title": "Parent",
+            "type": "string"
+          }
+        },
+        "required": [
+          "parent"
+        ],
+        "title": "list_gtm_triggersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/baptlagae-hue/gtm-mcp/blob/8273eb8c18ebf9cee779dafa8f38c0b2458ab0ce/gtm_mcp/server.py#L106-L119",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "GETs the GTM v2 triggers collection under the supplied parent path."
+    },
+    {
+      "name": "list_gtm_variables",
+      "description": "\nList variables inside a GTM workspace.\n\nArgs:\n    parent: The workspace path (e.g., 'accounts/123456/containers/78901/workspaces/12')\n",
+      "inputSchema": {
+        "properties": {
+          "parent": {
+            "title": "Parent",
+            "type": "string"
+          }
+        },
+        "required": [
+          "parent"
+        ],
+        "title": "list_gtm_variablesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/baptlagae-hue/gtm-mcp/blob/8273eb8c18ebf9cee779dafa8f38c0b2458ab0ce/gtm_mcp/server.py#L121-L134",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "GETs the GTM v2 variables collection under the supplied parent path."
+    },
+    {
+      "name": "create_gtm_workspace",
+      "description": "\nCreate a new workspace in a GTM container. Enforces strict naming conventions.\n\nArgs:\n    parent: The parent container path (e.g., 'accounts/123456/containers/78901')\n    name: The name of the workspace. MUST start with the governance prefix (default 'IA | ', override with GTM_WORKSPACE_PREFIX)\n    description: Optional description of the workspace.\n",
+      "inputSchema": {
+        "properties": {
+          "parent": {
+            "title": "Parent",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "description": {
+            "default": null,
+            "title": "Description",
+            "type": "string"
+          }
+        },
+        "required": [
+          "parent",
+          "name"
+        ],
+        "title": "create_gtm_workspaceArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/baptlagae-hue/gtm-mcp/blob/8273eb8c18ebf9cee779dafa8f38c0b2458ab0ce/gtm_mcp/server.py#L139-L166",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Rejects names without the configured prefix, then POSTs a workspace name and optional description under the container."
+    },
+    {
+      "name": "create_gtm_tag",
+      "description": "\nCreate a new tag in a GTM workspace. Enforced to only run in workspaces matching the governance prefix (default 'IA | ').\n\nArgs:\n    parent: The parent workspace path (e.g., 'accounts/123456/containers/78901/workspaces/12')\n    tag_data: The JSON payload for the tag (matching GTM API v2 schema)\n",
+      "inputSchema": {
+        "properties": {
+          "parent": {
+            "title": "Parent",
+            "type": "string"
+          },
+          "tag_data": {
+            "additionalProperties": true,
+            "title": "Tag Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "parent",
+          "tag_data"
+        ],
+        "title": "create_gtm_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/baptlagae-hue/gtm-mcp/blob/8273eb8c18ebf9cee779dafa8f38c0b2458ab0ce/gtm_mcp/server.py#L168-L195",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "GETs the target workspace to verify its configured name prefix, then POSTs the unrestricted supplied tag payload."
+    },
+    {
+      "name": "create_gtm_trigger",
+      "description": "\nCreate a new trigger in a GTM workspace. Enforced to only run in workspaces matching the governance prefix (default 'IA | ').\n\nArgs:\n    parent: The parent workspace path (e.g., 'accounts/123456/containers/78901/workspaces/12')\n    trigger_data: The JSON payload for the trigger (matching GTM API v2 schema)\n",
+      "inputSchema": {
+        "properties": {
+          "parent": {
+            "title": "Parent",
+            "type": "string"
+          },
+          "trigger_data": {
+            "additionalProperties": true,
+            "title": "Trigger Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "parent",
+          "trigger_data"
+        ],
+        "title": "create_gtm_triggerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/baptlagae-hue/gtm-mcp/blob/8273eb8c18ebf9cee779dafa8f38c0b2458ab0ce/gtm_mcp/server.py#L197-L224",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "GETs the target workspace to verify its configured name prefix, then POSTs the unrestricted supplied trigger payload."
+    },
+    {
+      "name": "create_gtm_variable",
+      "description": "\nCreate a new variable in a GTM workspace. Enforced to only run in workspaces matching the governance prefix (default 'IA | ').\n\nArgs:\n    parent: The parent workspace path (e.g., 'accounts/123456/containers/78901/workspaces/12')\n    variable_data: The JSON payload for the variable (matching GTM API v2 schema)\n",
+      "inputSchema": {
+        "properties": {
+          "parent": {
+            "title": "Parent",
+            "type": "string"
+          },
+          "variable_data": {
+            "additionalProperties": true,
+            "title": "Variable Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "parent",
+          "variable_data"
+        ],
+        "title": "create_gtm_variableArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/baptlagae-hue/gtm-mcp/blob/8273eb8c18ebf9cee779dafa8f38c0b2458ab0ce/gtm_mcp/server.py#L226-L253",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "GETs the target workspace to verify its configured name prefix, then POSTs the unrestricted supplied variable payload."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "manage",
+    "summary": "Browses container entities and creates tags, triggers, and variables only in workspaces matching a configured prefix.",
+    "reason": "Ten registered tools implement GTM v2 collection reads and prefix-governed workspace/tag/trigger/variable creation.",
+    "examples": [
+      "create_gtm_workspace",
+      "create_gtm_tag",
+      "create_gtm_variable"
+    ]
+  }
+}

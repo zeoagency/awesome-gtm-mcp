@@ -1,0 +1,1616 @@
+{
+  "repo": "jinchliu/google-tag-manager-mcp",
+  "url": "https://github.com/jinchliu/google-tag-manager-mcp",
+  "commit": "96f764417e01115f044eafa2a7d5c39d5dbbfacb",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Implemented generic GTM v2 dispatch and dedicated workspace/container/version operations; 31 complete public schemas verified by offline MCP tools/list.",
+  "method": "tools/list",
+  "server": "src/google_tag_manager_mcp/server.py (google-tag-manager-mcp stdio entrypoint)",
+  "exposure": "30 tools default; 31 with GTM_MCP_ENABLE_RAW_API=1; 10 with GTM_MCP_READ_ONLY=1 (raw API excluded even if enabled). Boolean environment toggles accept 1,true,yes case-insensitively.",
+  "sources": [
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/server.py#L65-L95",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/registry.py#L29-L69",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/discovery.py#L1-L80",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/containers.py#L15-L33",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/containers.py#L36-L51",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/containers.py#L54-L89",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/containers.py#L92-L134",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/containers.py#L137-L166",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/containers.py#L169-L198",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/generic.py#L67-L155",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/generic.py#L158-L180",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/generic.py#L212-L240",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/generic.py#L243-L285",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/generic.py#L288-L306",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/generic.py#L309-L330",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/meta.py#L34-L58",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/meta.py#L66-L108",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/versions.py#L35-L48",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/versions.py#L51-L67",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/versions.py#L70-L94",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/versions.py#L97-L117",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/versions.py#L120-L135",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L31-L47",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L50-L75",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L78-L140",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L143-L162",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L165-L190",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L193-L231",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L234-L261",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L264-L284",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L287-L315",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L318-L359",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L362-L404",
+    "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L407-L448"
+  ],
+  "limitations": [
+    "No authenticated GTM operations executed; functionality assessed from handlers and discovery method binding.",
+    "Snapshot uses source-lock versions mcp 2.2.0 and google-api-python-client 2.200.0, with installed Pydantic 2.14.1; broad upstream dependency bounds can change schema rendering and bundled discovery data. Discovery snapshot dated 2026-10-13, revision 20260826. Generic bodies/patches/entities intentionally expose unrestricted objects, not expanded API entity schemas."
+  ],
+  "tools": [
+    {
+      "name": "gtm_lookup_container",
+      "description": "Finds the container behind a tag id or a destination id.\n\nArgs:\n    destination_id: A destination such as AW-123456789 or G-ABCDEF1234.\n    tag_id: A container public id such as GTM-ABCDEF.\n\nReturns:\n    The Container, including its path for further calls.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "destination_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Destination Id"
+          },
+          "tag_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tag Id"
+          }
+        },
+        "title": "gtm_lookup_containerArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_lookup_containerDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/containers.py#L15-L33",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Finds the container behind a tag id or a destination id."
+    },
+    {
+      "name": "gtm_get_container_snippet",
+      "description": "Returns the installation snippet of a container.\n\nArgs:\n    container: Path of the form accounts/{id}/containers/{id}.\n\nReturns:\n    snippet (the HTML to install) and, for server containers,\n    containerConfig for provisioning a tagging server manually.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "title": "Container",
+            "type": "string"
+          }
+        },
+        "required": [
+          "container"
+        ],
+        "title": "gtm_get_container_snippetArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_get_container_snippetDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/containers.py#L36-L51",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "hosting",
+        "server-side"
+      ],
+      "behavior": "Returns the installation snippet of a container."
+    },
+    {
+      "name": "gtm_combine_containers",
+      "description": "Merges another container of the same account into this one. Irreversible.\n\nArgs:\n    container: Path of the target container (accounts/{id}/containers/{id}).\n    source_container_id: containerId of the container merged into it.\n    setting_source: Whose container settings win: current (this\n        container) or other (the source container).\n    allow_user_permission_feature_update: Must be true if the merge would\n        switch on GTM-managed user permissions for the container.\n    confirm: Must be true; ask the user first.\n\nReturns:\n    The combined Container.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "title": "Container",
+            "type": "string"
+          },
+          "source_container_id": {
+            "title": "Source Container Id",
+            "type": "string"
+          },
+          "setting_source": {
+            "default": "current",
+            "enum": [
+              "current",
+              "other"
+            ],
+            "title": "Setting Source",
+            "type": "string"
+          },
+          "allow_user_permission_feature_update": {
+            "default": false,
+            "title": "Allow User Permission Feature Update",
+            "type": "boolean"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "container",
+          "source_container_id"
+        ],
+        "title": "gtm_combine_containersArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_combine_containersDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/containers.py#L54-L89",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "access"
+      ],
+      "behavior": "Merges another container of the same account into this one. Irreversible.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_move_tag_id",
+      "description": "Moves a Google tag id (G-XXXX) out of this container into a new one.\n\nArgs:\n    container: Path of the container that currently holds the tag id.\n    tag_id: The tag id to move, for example G-ABCDEF1234.\n    tag_name: Name for the newly created tag container.\n    copy_settings: Copy the tag settings to the new tag.\n    copy_terms_of_service: Must be true to accept the terms of service\n        copied to the new tag.\n    copy_users: Copy user permissions to the new tag.\n    allow_user_permission_feature_update: Must be true if the move would\n        switch on GTM-managed user permissions.\n    confirm: Must be true; ask the user first.\n\nReturns:\n    The new Container that owns the tag id.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "title": "Container",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          },
+          "tag_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tag Name"
+          },
+          "copy_settings": {
+            "default": false,
+            "title": "Copy Settings",
+            "type": "boolean"
+          },
+          "copy_terms_of_service": {
+            "default": false,
+            "title": "Copy Terms Of Service",
+            "type": "boolean"
+          },
+          "copy_users": {
+            "default": false,
+            "title": "Copy Users",
+            "type": "boolean"
+          },
+          "allow_user_permission_feature_update": {
+            "default": false,
+            "title": "Allow User Permission Feature Update",
+            "type": "boolean"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "container",
+          "tag_id"
+        ],
+        "title": "gtm_move_tag_idArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_move_tag_idDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/containers.py#L92-L134",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Moves a Google tag id (G-XXXX) out of this container into a new one.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_link_destination",
+      "description": "Links a destination (AW-, G-, DC-) to this container, unlinking it elsewhere.\n\nArgs:\n    container: Path of the container to link the destination to.\n    destination_id: The destination id, for example AW-123456789.\n    allow_user_permission_feature_update: Must be true if linking would\n        switch on GTM-managed user permissions.\n    confirm: Must be true; ask the user first.\n\nReturns:\n    The linked Destination.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "title": "Container",
+            "type": "string"
+          },
+          "destination_id": {
+            "title": "Destination Id",
+            "type": "string"
+          },
+          "allow_user_permission_feature_update": {
+            "default": false,
+            "title": "Allow User Permission Feature Update",
+            "type": "boolean"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "container",
+          "destination_id"
+        ],
+        "title": "gtm_link_destinationArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_link_destinationDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/containers.py#L137-L166",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Links a destination (AW-, G-, DC-) to this container, unlinking it elsewhere.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_reauthorize_environment",
+      "description": "Rotates an environment's authorization code; existing preview links stop working.\n\nArgs:\n    environment: Path of the form accounts/{id}/containers/{id}/environments/{id}.\n    confirm: Must be true; ask the user first.\n\nReturns:\n    The Environment with its new authorizationCode.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "environment": {
+            "title": "Environment",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "environment"
+        ],
+        "title": "gtm_reauthorize_environmentArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_reauthorize_environmentDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/containers.py#L169-L198",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "access"
+      ],
+      "behavior": "Rotates an environment's authorization code; existing preview links stop working.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_list",
+      "description": "Lists resources of one kind under a parent path.\n\nParents: accounts need none; containers and user_permissions take\naccounts/{id}; destinations, environments, version_headers and workspaces\ntake accounts/{id}/containers/{id}; everything else (tags, triggers,\nvariables, folders, templates, built_in_variables, clients,\ntransformations, zones, gtag_config) takes .../workspaces/{id}.\n\nArgs:\n    resource: The collection to list.\n    parent: Path of the enclosing resource, copied from earlier results.\n    response_format: markdown (default, compact table), json (same slim\n        fields as structured data) or json_full (complete configurations,\n        the way to read many tags without one gtm_get per tag).\n    include_deleted: version_headers only; include deleted versions.\n    include_google_tags: accounts only; include Google tag accounts.\n    page_token: Continue a listing that reported more pages.\n    max_pages: Pages to fetch in one call (each page is one API request).\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "resource": {
+            "enum": [
+              "accounts",
+              "containers",
+              "destinations",
+              "environments",
+              "version_headers",
+              "workspaces",
+              "built_in_variables",
+              "clients",
+              "folders",
+              "gtag_config",
+              "tags",
+              "templates",
+              "transformations",
+              "triggers",
+              "variables",
+              "zones",
+              "user_permissions"
+            ],
+            "title": "Resource",
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Parent"
+          },
+          "response_format": {
+            "default": "markdown",
+            "enum": [
+              "markdown",
+              "json",
+              "json_full"
+            ],
+            "title": "Response Format",
+            "type": "string"
+          },
+          "include_deleted": {
+            "default": false,
+            "title": "Include Deleted",
+            "type": "boolean"
+          },
+          "include_google_tags": {
+            "default": false,
+            "title": "Include Google Tags",
+            "type": "boolean"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Token"
+          },
+          "max_pages": {
+            "default": 20,
+            "title": "Max Pages",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "resource"
+        ],
+        "title": "gtm_listArguments"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/generic.py#L67-L155",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "generic-api",
+        "workspace",
+        "access",
+        "server-side"
+      ],
+      "behavior": "Lists resources of one kind under a parent path."
+    },
+    {
+      "name": "gtm_get",
+      "description": "Fetches one resource by its full path.\n\nWorks for accounts, containers, destinations, environments, versions,\nworkspaces, user_permissions and every workspace entity (tags, triggers,\nvariables, folders, templates, clients, transformations, zones,\ngtag_config). The result is the complete configuration; edit it and send\nthe changed keys back with gtm_update.\n\nArgs:\n    path: Full path such as accounts/1/containers/2/workspaces/3/tags/4.\n    response_format: json (default) returns the entity as is, except for\n        container versions, which are summarised (entity lists reduced to\n        slim rows); json_full returns a version verbatim, which can run to\n        hundreds of KB.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "response_format": {
+            "default": "json",
+            "enum": [
+              "json",
+              "json_full"
+            ],
+            "title": "Response Format",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "gtm_getArguments"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/generic.py#L158-L180",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "generic-api",
+        "workspace",
+        "access",
+        "server-side"
+      ],
+      "behavior": "Fetches one resource by its full path."
+    },
+    {
+      "name": "gtm_create",
+      "description": "Creates one resource under a parent path.\n\nBodies use the API's camelCase JSON; call gtm_describe_schema('Tag') (or\nTrigger, Variable, Folder, Client, Transformation, Zone, GtagConfig,\nCustomTemplate, Container, Workspace, Environment, UserPermission) for the\nfields and example bodies. Workspace entities take .../workspaces/{id} as\nparent, containers and user_permissions take accounts/{id}, environments\nand workspaces take accounts/{id}/containers/{id}. Changes stay in the\nworkspace draft until a version is created and published.\n\nArgs:\n    resource: The collection to create in.\n    parent: Path of the enclosing resource.\n    body: The entity, for example {\"name\": \"...\", \"type\": \"gaawe\", ...}.\n\nReturns:\n    The created entity with its path and fingerprint (templateData is\n    omitted for templates).\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "resource": {
+            "enum": [
+              "containers",
+              "environments",
+              "workspaces",
+              "clients",
+              "folders",
+              "gtag_config",
+              "tags",
+              "templates",
+              "transformations",
+              "triggers",
+              "variables",
+              "zones",
+              "user_permissions"
+            ],
+            "title": "Resource",
+            "type": "string"
+          },
+          "parent": {
+            "title": "Parent",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "title": "Body",
+            "type": "object"
+          }
+        },
+        "required": [
+          "resource",
+          "parent",
+          "body"
+        ],
+        "title": "gtm_createArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_createDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/generic.py#L212-L240",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "generic-api",
+        "workspace",
+        "access",
+        "server-side"
+      ],
+      "behavior": "Creates one resource under a parent path.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_update",
+      "description": "Updates one resource by merging a patch into its current state.\n\nReads the entity, applies a shallow merge patch (a top-level key replaces\nthe current value, null deletes it, lists are replaced whole, nested\nobjects are not merged) and writes it back with the current fingerprint,\nretrying once if the entity changed in between. Send only the keys that\nchange. For versions only name and description are updatable.\n\nArgs:\n    path: Full path of the entity to update.\n    patch: The keys to change, in the API's camelCase JSON.\n\nReturns:\n    The updated entity (templateData omitted for templates).\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "patch": {
+            "additionalProperties": true,
+            "title": "Patch",
+            "type": "object"
+          }
+        },
+        "required": [
+          "path",
+          "patch"
+        ],
+        "title": "gtm_updateArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_updateDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/generic.py#L243-L285",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "generic-api",
+        "workspace",
+        "access",
+        "server-side"
+      ],
+      "behavior": "Updates one resource by merging a patch into its current state.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_delete",
+      "description": "Deletes one resource by path. Irreversible; requires confirm=true.\n\nWorks for workspace entities (tags, triggers, variables, folders,\ntemplates, clients, transformations, zones, gtag_config), workspaces,\nenvironments, versions, containers and user_permissions. Deleting a\nworkspace entity only changes the draft until published; deleting a\ncontainer or workspace takes effect immediately.\n\nArgs:\n    path: Full path of the resource.\n    confirm: Must be true; ask the user first.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "gtm_deleteArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_deleteDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/generic.py#L288-L306",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "generic-api",
+        "workspace",
+        "access",
+        "server-side"
+      ],
+      "behavior": "Deletes one resource by path. Irreversible; requires confirm=true.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_revert",
+      "description": "Discards the workspace's unpublished changes to one entity.\n\nThe entity returns to its state in the latest container version; an\nentity that was added in the workspace disappears. Works for tags,\ntriggers, variables, folders, templates, clients, transformations and\nzones (built-in variables have gtm_revert_built_in_variable). Requires\nconfirm=true.\n\nArgs:\n    path: Full path of the workspace entity.\n    confirm: Must be true; ask the user first.\n\nReturns:\n    The entity as it is after the revert, when the API returns one.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "gtm_revertArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_revertDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/generic.py#L309-L330",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "generic-api",
+        "workspace",
+        "access",
+        "server-side"
+      ],
+      "behavior": "Discards the workspace's unpublished changes to one entity.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_describe_schema",
+      "description": "Describes a Tag Manager API type or method, offline and without quota.\n\nUse it before building a body for gtm_create / gtm_update, or to check a\nmethod's parameters and scopes. Types come with example bodies for common\ntag, trigger and variable types (for example gaawe, googtag, customEvent).\n\nArgs:\n    name: A type such as 'Tag', 'Trigger', 'Variable', 'Parameter',\n        'Condition', 'BuiltInVariable', or a method id such as\n        'accounts.containers.workspaces.tags.create'.\n\nReturns:\n    For a type: its fields with type, enum values and description, plus\n    examples. For a method: HTTP method, path template, parameters, body\n    type and scopes.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "gtm_describe_schemaArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_describe_schemaDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/meta.py#L34-L58",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "offline",
+        "generic-api"
+      ],
+      "behavior": "Describes a Tag Manager API type or method, offline and without quota."
+    },
+    {
+      "name": "gtm_call_api",
+      "description": "Calls any Tag Manager API v2 method directly. An escape hatch.\n\nUse it only for methods the dedicated tools do not cover yet (the API\ngains methods over time). Look the method up with gtm_describe_schema\nfirst. Query parameters are validated against the discovery document;\nthe body is sent as is. Non-GET methods require confirm=true.\n\nArgs:\n    method_id: Dotted id without the service prefix, for example\n        accounts.containers.workspaces.tags.list.\n    params: Query and path parameters by their API names (parent, path,\n        fingerprint, ...).\n    body: Request body for methods that take one.\n    confirm: Must be true for any method that is not a GET.\n\nReturns:\n    The verbatim API response.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "method_id": {
+            "title": "Method Id",
+            "type": "string"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Params"
+          },
+          "body": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Body"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "method_id"
+        ],
+        "title": "gtm_call_apiArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_call_apiDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/meta.py#L66-L108",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "generic-api",
+        "workspace",
+        "access",
+        "server-side"
+      ],
+      "behavior": "Calls any Tag Manager API v2 method directly. An escape hatch.",
+      "exposure": "Opt-in only: GTM_MCP_ENABLE_RAW_API in {1,true,yes}, and GTM_MCP_READ_ONLY disabled."
+    },
+    {
+      "name": "gtm_get_latest_version_header",
+      "description": "Returns the header (id, name, entity counts) of the newest version.\n\nArgs:\n    container: Path of the form accounts/{id}/containers/{id}.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "title": "Container",
+            "type": "string"
+          }
+        },
+        "required": [
+          "container"
+        ],
+        "title": "gtm_get_latest_version_headerArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_get_latest_version_headerDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/versions.py#L35-L48",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Returns the header (id, name, entity counts) of the newest version."
+    },
+    {
+      "name": "gtm_get_live_version",
+      "description": "Returns the version currently published on the live site.\n\nArgs:\n    container: Path of the form accounts/{id}/containers/{id}.\n    response_format: markdown or json summarise every entity list to slim\n        rows; json_full returns the complete version, which is large.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "container": {
+            "title": "Container",
+            "type": "string"
+          },
+          "response_format": {
+            "default": "markdown",
+            "enum": [
+              "markdown",
+              "json",
+              "json_full"
+            ],
+            "title": "Response Format",
+            "type": "string"
+          }
+        },
+        "required": [
+          "container"
+        ],
+        "title": "gtm_get_live_versionArguments"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/versions.py#L51-L67",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Returns the version currently published on the live site."
+    },
+    {
+      "name": "gtm_publish_version",
+      "description": "Publishes a version to the live site. Requires confirm=true.\n\nThere is no unpublish: to roll back, publish an older version (any\nversion works). Check compilerError in the result.\n\nArgs:\n    version: Path of the form accounts/{id}/containers/{id}/versions/{id}.\n    confirm: Must be true; ask the user first.\n    response_format: markdown, json or json_full for the published version.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "title": "Version",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          },
+          "response_format": {
+            "default": "markdown",
+            "enum": [
+              "markdown",
+              "json",
+              "json_full"
+            ],
+            "title": "Response Format",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version"
+        ],
+        "title": "gtm_publish_versionArguments"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/versions.py#L70-L94",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "behavior": "Publishes a version to the live site. Requires confirm=true.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_set_latest_version",
+      "description": "Makes a version the \"latest\": the base new workspaces sync from.\n\nThis is not a rollback and does not change what is live; use\ngtm_publish_version for that. Requires confirm=true.\n\nArgs:\n    version: Path of the form accounts/{id}/containers/{id}/versions/{id}.\n    confirm: Must be true; ask the user first.\n\nReturns:\n    A summary of the version.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "title": "Version",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "version"
+        ],
+        "title": "gtm_set_latest_versionArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_set_latest_versionDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/versions.py#L97-L117",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "behavior": "Makes a version the \"latest\": the base new workspaces sync from.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_undelete_version",
+      "description": "Restores a deleted version.\n\nArgs:\n    version: Path of the form accounts/{id}/containers/{id}/versions/{id}.\n\nReturns:\n    A summary of the restored version.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version"
+        ],
+        "title": "gtm_undelete_versionArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_undelete_versionDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/versions.py#L120-L135",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "behavior": "Restores a deleted version.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_get_workspace_status",
+      "description": "Shows what a workspace changes against the latest version, and conflicts.\n\nArgs:\n    workspace: Path of the form accounts/{id}/containers/{id}/workspaces/{id}.\n    response_format: markdown or json list each changed entity as kind,\n        path, name and changeStatus; json_full returns the raw entities.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace": {
+            "title": "Workspace",
+            "type": "string"
+          },
+          "response_format": {
+            "default": "markdown",
+            "enum": [
+              "markdown",
+              "json",
+              "json_full"
+            ],
+            "title": "Response Format",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspace"
+        ],
+        "title": "gtm_get_workspace_statusArguments"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L31-L47",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "audit"
+      ],
+      "behavior": "Shows what a workspace changes against the latest version, and conflicts."
+    },
+    {
+      "name": "gtm_quick_preview_workspace",
+      "description": "Compiles the workspace without creating a version, to catch errors early.\n\nArgs:\n    workspace: Path of the form accounts/{id}/containers/{id}/workspaces/{id}.\n    response_format: markdown or json summarise the compiled version;\n        json_full returns it verbatim.\n\nReturns:\n    compilerError and syncStatus alongside the compiled version summary.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace": {
+            "title": "Workspace",
+            "type": "string"
+          },
+          "response_format": {
+            "default": "markdown",
+            "enum": [
+              "markdown",
+              "json",
+              "json_full"
+            ],
+            "title": "Response Format",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspace"
+        ],
+        "title": "gtm_quick_preview_workspaceArguments"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L50-L75",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "test"
+      ],
+      "behavior": "Compiles the workspace without creating a version, to catch errors early."
+    },
+    {
+      "name": "gtm_list_folder_entities",
+      "description": "Lists the tags, triggers and variables inside one folder.\n\nArgs:\n    folder: Path of the form .../workspaces/{id}/folders/{id}.\n    response_format: markdown or json give slim rows per kind; json_full\n        returns complete configurations.\n    page_token: Continue a listing that reported more pages.\n    max_pages: Pages to fetch in one call.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "title": "Folder",
+            "type": "string"
+          },
+          "response_format": {
+            "default": "markdown",
+            "enum": [
+              "markdown",
+              "json",
+              "json_full"
+            ],
+            "title": "Response Format",
+            "type": "string"
+          },
+          "page_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Page Token"
+          },
+          "max_pages": {
+            "default": 20,
+            "title": "Max Pages",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "folder"
+        ],
+        "title": "gtm_list_folder_entitiesArguments"
+      },
+      "annotations": {
+        "readOnlyHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L78-L140",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists the tags, triggers and variables inside one folder."
+    },
+    {
+      "name": "gtm_sync_workspace",
+      "description": "Merges the latest container version into the workspace.\n\nNeeded before a version can be created when the container moved on. The\nresult lists merge conflicts; resolve each with\ngtm_resolve_workspace_conflict.\n\nArgs:\n    workspace: Path of the form accounts/{id}/containers/{id}/workspaces/{id}.\n    response_format: markdown, json or json_full.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace": {
+            "title": "Workspace",
+            "type": "string"
+          },
+          "response_format": {
+            "default": "markdown",
+            "enum": [
+              "markdown",
+              "json",
+              "json_full"
+            ],
+            "title": "Response Format",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspace"
+        ],
+        "title": "gtm_sync_workspaceArguments"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L143-L162",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Merges the latest container version into the workspace.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_resolve_workspace_conflict",
+      "description": "Marks one merge conflict as resolved with the given entity state.\n\nArgs:\n    workspace: Path of the form accounts/{id}/containers/{id}/workspaces/{id}.\n    entity: An Entity object as reported by gtm_get_workspace_status with\n        json_full: {\"changeStatus\": \"...\", \"tag\": {...}} (or trigger,\n        variable, folder, ...), holding the state to keep.\n    fingerprint: Optional fingerprint of the workspace entity; when given\n        it must match the current one.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace": {
+            "title": "Workspace",
+            "type": "string"
+          },
+          "entity": {
+            "additionalProperties": true,
+            "title": "Entity",
+            "type": "object"
+          },
+          "fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fingerprint"
+          }
+        },
+        "required": [
+          "workspace",
+          "entity"
+        ],
+        "title": "gtm_resolve_workspace_conflictArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_resolve_workspace_conflictDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L165-L190",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Marks one merge conflict as resolved with the given entity state.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_bulk_update_workspace",
+      "description": "Applies many entity changes to a workspace in one request.\n\nEach change is an Entity: {\"changeStatus\": \"added\" | \"updated\" |\n\"deleted\", \"tag\": {...}} (or trigger, variable, folder, client,\ntransformation, zone, gtagConfig, customTemplate, builtInVariable).\nUpdated and deleted entities need their ids. This is the efficient way to\nmake many edits under the 25 requests / 100 s quota. Requires\nconfirm=true because a single call can delete entities.\n\nArgs:\n    workspace: Path of the form accounts/{id}/containers/{id}/workspaces/{id}.\n    changes: The Entity objects to apply.\n    confirm: Must be true; ask the user first.\n\nReturns:\n    The added and updated entities, as slim rows with their paths.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace": {
+            "title": "Workspace",
+            "type": "string"
+          },
+          "changes": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Changes",
+            "type": "array"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "workspace",
+          "changes"
+        ],
+        "title": "gtm_bulk_update_workspaceArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_bulk_update_workspaceDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L193-L231",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Applies many entity changes to a workspace in one request.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_enable_built_in_variables",
+      "description": "Enables built-in variables (pageUrl, clickClasses, eventName, ...).\n\nCall gtm_describe_schema('BuiltInVariable') for the full list of types.\n\nArgs:\n    workspace: Path of the form accounts/{id}/containers/{id}/workspaces/{id}.\n    types: Built-in variable types to enable.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace": {
+            "title": "Workspace",
+            "type": "string"
+          },
+          "types": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Types",
+            "type": "array"
+          }
+        },
+        "required": [
+          "workspace",
+          "types"
+        ],
+        "title": "gtm_enable_built_in_variablesArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_enable_built_in_variablesDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L234-L261",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Enables built-in variables (pageUrl, clickClasses, eventName, ...).",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_disable_built_in_variables",
+      "description": "Disables built-in variables in the workspace draft (re-enable to undo).\n\nArgs:\n    workspace: Path of the form accounts/{id}/containers/{id}/workspaces/{id}.\n    types: Built-in variable types to disable.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace": {
+            "title": "Workspace",
+            "type": "string"
+          },
+          "types": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Types",
+            "type": "array"
+          }
+        },
+        "required": [
+          "workspace",
+          "types"
+        ],
+        "title": "gtm_disable_built_in_variablesArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_disable_built_in_variablesDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L264-L284",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Disables built-in variables in the workspace draft (re-enable to undo).",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_revert_built_in_variable",
+      "description": "Discards the workspace's change to one built-in variable.\n\nArgs:\n    workspace: Path of the form accounts/{id}/containers/{id}/workspaces/{id}.\n    type: The built-in variable type, for example pageUrl.\n    confirm: Must be true; ask the user first.\n\nReturns:\n    enabled: whether the variable is enabled after the revert.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace": {
+            "title": "Workspace",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "workspace",
+          "type"
+        ],
+        "title": "gtm_revert_built_in_variableArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_revert_built_in_variableDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L287-L315",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Discards the workspace's change to one built-in variable.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_move_entities_to_folder",
+      "description": "Moves tags, triggers and variables (by id) into a folder.\n\nArgs:\n    folder: Path of the form .../workspaces/{id}/folders/{id}.\n    tag_ids: Tag ids (the tagId field) to move.\n    trigger_ids: Trigger ids to move.\n    variable_ids: Variable ids to move.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "title": "Folder",
+            "type": "string"
+          },
+          "tag_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tag Ids"
+          },
+          "trigger_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Trigger Ids"
+          },
+          "variable_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Variable Ids"
+          }
+        },
+        "required": [
+          "folder"
+        ],
+        "title": "gtm_move_entities_to_folderArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_move_entities_to_folderDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L318-L359",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Moves tags, triggers and variables (by id) into a folder.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_import_template_from_gallery",
+      "description": "Imports a Community Template Gallery template into the workspace.\n\nArgs:\n    workspace: Path of the form accounts/{id}/containers/{id}/workspaces/{id}.\n    gallery_owner: GitHub owner of the template repository.\n    gallery_repository: GitHub repository name of the template.\n    gallery_sha: Commit to import; the latest when omitted.\n    acknowledge_permissions: Must be true to accept the permissions the\n        template declares.\n\nReturns:\n    The imported CustomTemplate (templateData omitted; gtm_get reads it).\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace": {
+            "title": "Workspace",
+            "type": "string"
+          },
+          "gallery_owner": {
+            "title": "Gallery Owner",
+            "type": "string"
+          },
+          "gallery_repository": {
+            "title": "Gallery Repository",
+            "type": "string"
+          },
+          "gallery_sha": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Gallery Sha"
+          },
+          "acknowledge_permissions": {
+            "default": false,
+            "title": "Acknowledge Permissions",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "workspace",
+          "gallery_owner",
+          "gallery_repository"
+        ],
+        "title": "gtm_import_template_from_galleryArguments"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "gtm_import_template_from_galleryDictOutput",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L362-L404",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Imports a Community Template Gallery template into the workspace.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    },
+    {
+      "name": "gtm_create_version",
+      "description": "Turns the workspace into a new container version. Requires confirm=true.\n\nThe workspace is consumed: continue in the workspace named by\nnewWorkspacePath. Nothing goes live until gtm_publish_version. If\nsyncStatus reports a merge conflict, run gtm_sync_workspace and resolve\nthe conflicts first. Free containers allow at most 3 workspaces.\n\nArgs:\n    workspace: Path of the form accounts/{id}/containers/{id}/workspaces/{id}.\n    name: Version name.\n    notes: Version notes.\n    confirm: Must be true; ask the user first.\n    response_format: markdown, json or json_full for the created version.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workspace": {
+            "title": "Workspace",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Name"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Notes"
+          },
+          "confirm": {
+            "default": false,
+            "title": "Confirm",
+            "type": "boolean"
+          },
+          "response_format": {
+            "default": "markdown",
+            "enum": [
+              "markdown",
+              "json",
+              "json_full"
+            ],
+            "title": "Response Format",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspace"
+        ],
+        "title": "gtm_create_versionArguments"
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/jinchliu/google-tag-manager-mcp/blob/96f764417e01115f044eafa2a7d5c39d5dbbfacb/src/google_tag_manager_mcp/tools/workspaces.py#L407-L448",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace",
+        "release"
+      ],
+      "behavior": "Turns the workspace into a new container version. Requires confirm=true.",
+      "exposure": "Default unless GTM_MCP_READ_ONLY in {1,true,yes}."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "generic",
+    "summary": "Discovery-backed resource operations, API schema lookup, bulk workspace updates, and template imports.",
+    "examples": [
+      "gtm_describe_schema",
+      "gtm_bulk_update_workspace",
+      "gtm_import_template_from_gallery"
+    ]
+  }
+}

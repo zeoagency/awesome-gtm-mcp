@@ -1,0 +1,1105 @@
+{
+  "repo": "techdeveloper-org/mcp-gtm",
+  "url": "https://github.com/techdeveloper-org/mcp-gtm",
+  "commit": "bda1b1a41258c61065fab6dadf007942c6c47dc7",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "All 19 registered tools implement Google Tag Manager v2 discovery-client calls for inspection, drafting, and publication.",
+  "method": "tools/list",
+  "server": "server.py: mcp = MCPServer(\"gtm-server\"); mcp.run()",
+  "exposure": "All 19 tools registered unconditionally; optional rate limiting through ENABLE_RATE_LIMITING affects invocation, not exposure.",
+  "sources": [
+    "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L342-L1161",
+    "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L186-L282"
+  ],
+  "limitations": [
+    "Offline in-process MCP list_tools enumeration used installed mcp 1.30.0 via the source fallback FastMCP import; requirements permit other SDK versions whose schema formatting may differ. No GTM API operations or authentication were executed.",
+    "List handlers do not follow nextPageToken, so returned resource lists can be incomplete.",
+    "Claims that draft writes only affect server-created workspaces are advisory: handlers accept arbitrary resource paths and do not enforce workspace ownership or exclude Default Workspace.",
+    "create_tag documentation claims this MVP cannot update existing tags, but update_tag is registered and implemented. create_trigger forwards customEventFilter regardless of type despite describing it as ignored for other types.",
+    "Parameter and condition arrays are intentionally unrestricted list items or JSON strings; no GTM Parameter/Condition object schema validation is exposed."
+  ],
+  "tools": [
+    {
+      "name": "list_accounts",
+      "description": "List GTM accounts the configured service account can see.\n\nCall this first -- every other tool takes a ``path`` argument copied\nfrom a prior list/create call's output (e.g. an account's path feeds\nlist_containers, a container's path feeds list_workspaces), matching\nGTM API v2's own resource-path convention rather than inventing a\nseparate ID scheme.\n\nReturns:\n    JSON string with ``accounts``: list of {accountId, name, path}.\n",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_accountsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L342-L366",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists the first API response page of GTM accounts and returns selected resource fields.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_accountsOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_containers",
+      "description": "List GTM containers under an account.\n\nArgs:\n    account_path: An account's ``path`` from list_accounts, e.g.\n        'accounts/123456789'.\n\nReturns:\n    JSON string with ``containers``: list of\n    {containerId, name, publicId, path}.\n\nRaises:\n    ValueError: If account_path is missing.\n",
+      "inputSchema": {
+        "properties": {
+          "account_path": {
+            "title": "Account Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_path"
+        ],
+        "title": "list_containersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L369-L402",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists the first API response page of GTM containers and returns selected resource fields.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_containersOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_workspaces",
+      "description": "List GTM workspaces under a container.\n\nA container the user manages manually in the GTM UI typically has a\n'Default Workspace' plus any workspaces created by other collaborators\n-- this server's own write tools never touch those, only workspaces\ncreated via create_workspace below.\n\nArgs:\n    container_path: A container's ``path`` from list_containers, e.g.\n        'accounts/123456789/containers/456'.\n\nReturns:\n    JSON string with ``workspaces``: list of {workspaceId, name, path}.\n\nRaises:\n    ValueError: If container_path is missing.\n",
+      "inputSchema": {
+        "properties": {
+          "container_path": {
+            "title": "Container Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "container_path"
+        ],
+        "title": "list_workspacesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L405-L438",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists the first API response page of GTM workspaces and returns selected resource fields.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_workspacesOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_workspace",
+      "description": "Create a new, isolated GTM workspace for this server's own changes.\n\nEvery other write tool (create_tag, create_trigger, create_variable,\ncreate_version) takes a workspace_path -- always pass one created here,\nnever the container's 'Default Workspace', so this server's edits never\ncollide with a human's in-progress manual changes in the GTM UI.\n\nArgs:\n    container_path: A container's ``path`` from list_containers.\n    name: Workspace name, shown in the GTM UI.\n    description: Optional workspace description.\n\nReturns:\n    JSON string with workspaceId, name, and path of the created workspace.\n\nRaises:\n    ValueError: If container_path or name are missing.\n",
+      "inputSchema": {
+        "properties": {
+          "container_path": {
+            "title": "Container Path",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          }
+        },
+        "required": [
+          "container_path",
+          "name"
+        ],
+        "title": "create_workspaceArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L441-L477",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a GTM workspace with the supplied name and optional description.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "create_workspaceOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_tags",
+      "description": "List tags in a GTM workspace.\n\nArgs:\n    workspace_path: A workspace's ``path`` from list_workspaces or\n        create_workspace.\n\nReturns:\n    JSON string with ``tags``: list of {tagId, name, type, path}.\n\nRaises:\n    ValueError: If workspace_path is missing.\n",
+      "inputSchema": {
+        "properties": {
+          "workspace_path": {
+            "title": "Workspace Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspace_path"
+        ],
+        "title": "list_tagsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L480-L508",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists the first API response page of GTM tags and returns selected resource fields.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_tagsOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_tag",
+      "description": "Create a tag in a GTM workspace (draft -- has no effect until published).\n\nArgs:\n    workspace_path: A workspace's ``path``, always one this server\n        created via create_workspace, never a container's shared\n        Default Workspace.\n    name: Tag name, shown in the GTM UI.\n    tag_type: GTM built-in tag type id (e.g. 'gaawe' for a GA4 event\n        tag, 'html' for Custom HTML) or a custom template's short name.\n    parameter: JSON array of GTM Parameter objects configuring the tag\n        (e.g. '[{\"type\":\"template\",\"key\":\"eventName\",\"value\":\"generate_lead\"}]'),\n        or None for a tag with no parameters yet.\n    firing_trigger_id: Comma-separated trigger IDs (from list_triggers)\n        that should fire this tag, or None to leave unset (the tag will\n        not fire until a trigger is attached, in the GTM UI or via a\n        follow-up call to this same tool with update semantics -- this\n        MVP only creates, it does not update an existing tag).\n\nReturns:\n    JSON string with tagId, name, type, and path of the created tag.\n\nRaises:\n    ValueError: If workspace_path, name, tag_type, or parameter (when\n        provided but not valid JSON) are invalid.\n",
+      "inputSchema": {
+        "properties": {
+          "workspace_path": {
+            "title": "Workspace Path",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "tag_type": {
+            "title": "Tag Type",
+            "type": "string"
+          },
+          "parameter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Parameter"
+          },
+          "firing_trigger_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Firing Trigger Id"
+          }
+        },
+        "required": [
+          "workspace_path",
+          "name",
+          "tag_type"
+        ],
+        "title": "create_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L511-L569",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a GTM tag in the caller-specified workspace using parsed JSON arrays for configuration.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "create_tagOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_tag",
+      "description": "Fetch the full raw JSON of a single tag, firingTriggerId included.\n\n``list_tags`` only returns {tagId, name, type, path} -- this tool\nexists for inspecting/debugging a tag's actual firingTriggerId and\nparameter contents (e.g. confirming a create_tag call actually\nattached the intended trigger).\n\nArgs:\n    tag_path: A tag's ``path``, from create_tag or list_tags.\n\nReturns:\n    The full raw tag resource as returned by the GTM API,\n    JSON-formatted.\n\nRaises:\n    ValueError: If tag_path is missing.\n",
+      "inputSchema": {
+        "properties": {
+          "tag_path": {
+            "title": "Tag Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tag_path"
+        ],
+        "title": "get_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L572-L599",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Fetches and returns the full GTM tag resource JSON.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_tagOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_tag",
+      "description": "Update an existing tag in a GTM workspace (draft -- has no effect until published).\n\nGTM's API is a full-replace PUT on the tag resource, not a partial\nPATCH -- this tool fetches the current tag first and merges only the\nfields the caller actually passed on top of it, so e.g. attaching a\nmissing firingTriggerId does not accidentally wipe the tag's\nexisting parameter list.\n\nArgs:\n    tag_path: A tag's ``path``, from create_tag or list_tags (e.g.\n        'accounts/1/containers/9/workspaces/5/tags/12').\n    name: New tag name, or None to leave unchanged.\n    parameter: JSON array of GTM Parameter objects to replace the\n        tag's current ``parameter``, or None to leave unchanged.\n    firing_trigger_id: Comma-separated trigger IDs to replace the\n        tag's current ``firingTriggerId``, or None to leave\n        unchanged. Pass an empty string to clear it.\n\nReturns:\n    JSON string with tagId, name, type, and path of the updated tag.\n\nRaises:\n    ValueError: If tag_path is missing, or parameter (when provided\n        but not valid JSON) is invalid.\n",
+      "inputSchema": {
+        "properties": {
+          "tag_path": {
+            "title": "Tag Path",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Name"
+          },
+          "parameter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Parameter"
+          },
+          "firing_trigger_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Firing Trigger Id"
+          }
+        },
+        "required": [
+          "tag_path"
+        ],
+        "title": "update_tagArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L602-L664",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Fetches the current GTM tag, merges supplied fields, and replaces it using the workspace resource update API.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "update_tagOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_triggers",
+      "description": "List triggers in a GTM workspace.\n\nArgs:\n    workspace_path: A workspace's ``path`` from list_workspaces or\n        create_workspace.\n\nReturns:\n    JSON string with ``triggers``: list of {triggerId, name, type, path}.\n\nRaises:\n    ValueError: If workspace_path is missing.\n",
+      "inputSchema": {
+        "properties": {
+          "workspace_path": {
+            "title": "Workspace Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspace_path"
+        ],
+        "title": "list_triggersArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L667-L695",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists the first API response page of GTM triggers and returns selected resource fields.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_triggersOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_trigger",
+      "description": "Fetch the full raw JSON of a single trigger, filter included.\n\n``list_triggers`` only returns {triggerId, name, type, path} -- this\ntool exists for inspecting/debugging a trigger's actual filter and\ncustomEventFilter contents (e.g. confirming a negate flag actually\npersisted).\n\nArgs:\n    trigger_path: A trigger's ``path``, from create_trigger or\n        list_triggers.\n\nReturns:\n    The full raw trigger resource as returned by the GTM API,\n    JSON-formatted.\n\nRaises:\n    ValueError: If trigger_path is missing.\n",
+      "inputSchema": {
+        "properties": {
+          "trigger_path": {
+            "title": "Trigger Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "trigger_path"
+        ],
+        "title": "get_triggerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L698-L726",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Fetches and returns the full GTM trigger resource JSON.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_triggerOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_trigger",
+      "description": "Create a trigger in a GTM workspace (draft -- has no effect until published).\n\nArgs:\n    workspace_path: A workspace's ``path``, always one this server\n        created via create_workspace.\n    name: Trigger name, shown in the GTM UI.\n    trigger_type: GTM trigger type id (e.g. 'pageview', 'click',\n        'customEvent', 'formSubmission').\n    filter_: JSON array of GTM Condition objects restricting when the\n        trigger fires (e.g. matching a specific page path), or None to\n        fire on every instance of trigger_type. For 'customEvent'\n        triggers, GTM's API requires the event-name match to live in\n        ``custom_event_filter`` instead (a separate field, not this\n        one) -- ``filter_`` on a customEvent trigger is only for\n        *additional* AND-ed conditions beyond the event name.\n    custom_event_filter: JSON array with exactly one GTM Condition\n        object matching the event name, required by GTM's API for\n        'customEvent'-type triggers specifically (e.g.\n        '[{\"type\":\"equals\",\"parameter\":[{\"type\":\"template\",\"key\":\"arg0\",\"value\":\"{{_event}}\"},{\"type\":\"template\",\"key\":\"arg1\",\"value\":\"generate_lead\"}]}]').\n        Ignored for other trigger types.\n\nReturns:\n    JSON string with triggerId, name, type, and path of the created\n    trigger.\n\nRaises:\n    ValueError: If workspace_path, name, trigger_type, filter_, or\n        custom_event_filter (when provided but not valid JSON) are\n        invalid.\n",
+      "inputSchema": {
+        "properties": {
+          "workspace_path": {
+            "title": "Workspace Path",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "trigger_type": {
+            "title": "Trigger Type",
+            "type": "string"
+          },
+          "filter_": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filter"
+          },
+          "custom_event_filter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Custom Event Filter"
+          }
+        },
+        "required": [
+          "workspace_path",
+          "name",
+          "trigger_type"
+        ],
+        "title": "create_triggerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L729-L791",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a GTM trigger in the caller-specified workspace using parsed JSON arrays for configuration.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "create_triggerOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_trigger",
+      "description": "Update an existing trigger in a GTM workspace (draft -- has no effect until published).\n\nGTM's API is a full-replace PUT on the trigger resource, not a partial\nPATCH -- this tool fetches the current trigger first and merges only the\nfields the caller actually passed on top of it, so an update that only\nintends to fix ``filter_`` (e.g. adding a missing ``negate`` flag) does\nnot accidentally wipe ``customEventFilter`` or other fields it didn't\ntouch.\n\nArgs:\n    trigger_path: A trigger's ``path``, from create_trigger or\n        list_triggers (e.g.\n        'accounts/1/containers/9/workspaces/5/triggers/12').\n    name: New trigger name, or None to leave unchanged.\n    filter_: JSON array of GTM Condition objects to replace the\n        trigger's current ``filter``, or None to leave unchanged. Pass\n        an explicit empty list ``[]`` to clear it.\n    custom_event_filter: JSON array to replace the trigger's current\n        ``customEventFilter``, or None to leave unchanged. Pass an\n        explicit empty list ``[]`` to clear it.\n\nReturns:\n    JSON string with triggerId, name, type, and path of the updated\n    trigger.\n\nRaises:\n    ValueError: If trigger_path is missing, or filter_/custom_event_filter\n        (when provided but not valid JSON) are invalid.\n",
+      "inputSchema": {
+        "properties": {
+          "trigger_path": {
+            "title": "Trigger Path",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Name"
+          },
+          "filter_": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filter"
+          },
+          "custom_event_filter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Custom Event Filter"
+          }
+        },
+        "required": [
+          "trigger_path"
+        ],
+        "title": "update_triggerArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L794-L858",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Fetches the current GTM trigger, merges supplied fields, and replaces it using the workspace resource update API.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "update_triggerOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_variables",
+      "description": "List user-defined variables in a GTM workspace.\n\nArgs:\n    workspace_path: A workspace's ``path`` from list_workspaces or\n        create_workspace.\n\nReturns:\n    JSON string with ``variables``: list of {variableId, name, type, path}.\n\nRaises:\n    ValueError: If workspace_path is missing.\n",
+      "inputSchema": {
+        "properties": {
+          "workspace_path": {
+            "title": "Workspace Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspace_path"
+        ],
+        "title": "list_variablesArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L861-L889",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists the first API response page of GTM variables and returns selected resource fields.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_variablesOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_variable",
+      "description": "Create a user-defined variable in a GTM workspace (draft -- has no\neffect until published).\n\nArgs:\n    workspace_path: A workspace's ``path``, always one this server\n        created via create_workspace.\n    name: Variable name, shown in the GTM UI (referenced elsewhere as\n        {{name}}).\n    variable_type: GTM variable type id (e.g. 'c' for Constant, 'jsm'\n        for Custom JavaScript, 'v' for a Data Layer Variable).\n    parameter: JSON array of GTM Parameter objects configuring the\n        variable, or None for a variable with no parameters yet.\n\nReturns:\n    JSON string with variableId, name, type, and path of the created\n    variable.\n\nRaises:\n    ValueError: If workspace_path, name, variable_type, or parameter\n        (when provided but not valid JSON) are invalid.\n",
+      "inputSchema": {
+        "properties": {
+          "workspace_path": {
+            "title": "Workspace Path",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "variable_type": {
+            "title": "Variable Type",
+            "type": "string"
+          },
+          "parameter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Parameter"
+          }
+        },
+        "required": [
+          "workspace_path",
+          "name",
+          "variable_type"
+        ],
+        "title": "create_variableArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L892-L941",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a GTM variable in the caller-specified workspace using parsed JSON arrays for configuration.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "create_variableOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "get_variable",
+      "description": "Fetch the full raw JSON of a single variable, parameter list included.\n\n``list_variables`` only returns {variableId, name, type, path} -- this\ntool exists for inspecting/debugging a variable's actual parameter\ncontents (e.g. confirming an update_variable call actually changed the\nData Layer Variable's key name).\n\nArgs:\n    variable_path: A variable's ``path``, from create_variable or\n        list_variables.\n\nReturns:\n    The full raw variable resource as returned by the GTM API,\n    JSON-formatted.\n\nRaises:\n    ValueError: If variable_path is missing.\n",
+      "inputSchema": {
+        "properties": {
+          "variable_path": {
+            "title": "Variable Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "variable_path"
+        ],
+        "title": "get_variableArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L944-L972",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Fetches and returns the full GTM variable resource JSON.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_variableOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "update_variable",
+      "description": "Update an existing variable in a GTM workspace (draft -- has no effect until published).\n\nGTM's API is a full-replace PUT on the variable resource, not a partial\nPATCH -- this tool fetches the current variable first and merges only\nthe fields the caller actually passed on top of it, so e.g. renaming a\nData Layer Variable's key does not accidentally wipe other fields.\n\nArgs:\n    variable_path: A variable's ``path``, from create_variable or\n        list_variables (e.g.\n        'accounts/1/containers/9/workspaces/5/variables/12').\n    name: New variable name, or None to leave unchanged.\n    variable_type: New GTM variable type id, or None to leave unchanged.\n    parameter: JSON array of GTM Parameter objects to replace the\n        variable's current ``parameter``, or None to leave unchanged.\n\nReturns:\n    JSON string with variableId, name, type, and path of the updated\n    variable.\n\nRaises:\n    ValueError: If variable_path is missing, or parameter (when\n        provided but not valid JSON) is invalid.\n",
+      "inputSchema": {
+        "properties": {
+          "variable_path": {
+            "title": "Variable Path",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Name"
+          },
+          "variable_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Variable Type"
+          },
+          "parameter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Parameter"
+          }
+        },
+        "required": [
+          "variable_path"
+        ],
+        "title": "update_variableArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L975-L1034",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Fetches the current GTM variable, merges supplied fields, and replaces it using the workspace resource update API.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "update_variableOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "create_version",
+      "description": "Snapshot a workspace's current draft changes into a container version.\n\nA version is still not live -- it is a fixed, publishable snapshot of\nwhatever tags/triggers/variables the workspace holds at this moment.\nUse publish_version to actually make it live.\n\nArgs:\n    workspace_path: A workspace's ``path``, always one this server\n        created via create_workspace.\n    name: Version name, shown in the GTM UI's version history.\n    notes: Optional version notes describing what changed and why.\n\nReturns:\n    JSON string with containerVersionId, name, and path of the created\n    version.\n\nRaises:\n    ValueError: If workspace_path or name are missing.\n",
+      "inputSchema": {
+        "properties": {
+          "workspace_path": {
+            "title": "Workspace Path",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "default": "",
+            "title": "Notes",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workspace_path",
+          "name"
+        ],
+        "title": "create_versionArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L1037-L1076",
+      "scope": "gtm",
+      "tags": [
+        "workspace",
+        "release"
+      ],
+      "behavior": "Calls the workspace create_version API and returns the resulting container version identifiers.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "create_versionOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "list_versions",
+      "description": "List container versions (published and unpublished) for a container.\n\nUse this to find a version's path before calling publish_version, or to\naudit publish history.\n\nArgs:\n    container_path: A container's ``path`` from list_containers.\n\nReturns:\n    JSON string with ``versions``: list of\n    {containerVersionId, name, deleted, path}.\n\nRaises:\n    ValueError: If container_path is missing.\n",
+      "inputSchema": {
+        "properties": {
+          "container_path": {
+            "title": "Container Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "container_path"
+        ],
+        "title": "list_versionsArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L1079-L1115",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release",
+        "audit"
+      ],
+      "behavior": "Lists the first API response page of GTM versions and returns selected resource fields.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_versionsOutput",
+        "type": "object"
+      }
+    },
+    {
+      "name": "publish_version",
+      "description": "Publish a GTM container version, making it live on every site using\nthat container immediately.\n\nNot rate-limited like the tools above: publishing is already gated by\nrequiring an explicit, non-auto-approved tool call (see the destructive\nannotation), and a rate-limit wrapper here would only slow down an\nalready-deliberate action, not add safety.\n\nReverting: GTM keeps prior versions -- to undo, list_versions and\npublish an earlier one. There is no separate \"unpublish\" or \"rollback\"\ntool in this MVP; re-publishing an older version is the same operation\nas publishing any other version.\n\nArgs:\n    version_path: A container version's ``path`` from create_version or\n        list_versions, e.g.\n        'accounts/123/containers/456/versions/7'.\n\nReturns:\n    JSON string with containerVersionId, name, and path of the now-live\n    version.\n\nRaises:\n    ValueError: If version_path is missing.\n",
+      "inputSchema": {
+        "properties": {
+          "version_path": {
+            "title": "Version Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version_path"
+        ],
+        "title": "publish_versionArguments",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/techdeveloper-org/mcp-gtm/blob/bda1b1a41258c61065fab6dadf007942c6c47dc7/server.py#L1118-L1157",
+      "scope": "gtm",
+      "tags": [
+        "release"
+      ],
+      "behavior": "Publishes the specified container version immediately through the GTM versions publish API.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "publish_versionOutput",
+        "type": "object"
+      }
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "manage",
+    "summary": "Create workspaces and tracking resources, merge selected tag edits, and publish explicitly created versions.",
+    "examples": [
+      "update_tag",
+      "create_workspace",
+      "publish_version"
+    ]
+  }
+}

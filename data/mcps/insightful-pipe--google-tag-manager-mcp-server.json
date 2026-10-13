@@ -1,0 +1,461 @@
+{
+  "repo": "Insightful-Pipe/google-tag-manager-mcp-server",
+  "url": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server",
+  "commit": "a4dd293403487ea280eebc7e6839c58a7caa82f7",
+  "checkedAt": "2026-10-13",
+  "decision": "remove",
+  "reason": "Hosted GTM connector documented with 61 actions, but public repository contains no server implementation or schemas and unauthenticated tools/list is protected; official docs also report delete_workspace is expected to be refused by Google.",
+  "method": "official-docs",
+  "server": "https://google-tag-manager.insightfulmcp.com/",
+  "exposure": "Official docs: 61 possible actions (38 read, 23 write), individually configured per connected account; Read Only permits read actions only; destructive actions are off by default; User role receives enabled reads on granted accounts. Single-item lookups are omitted from the action list shown to agents but documented as callable by name.",
+  "sources": [
+    "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md",
+    "https://insightfulpipe.com/docs/connectors-google-tag-manager",
+    "https://insightfulpipe.com/mcp-servers/google-tag-manager",
+    "https://insightfulpipe.com/api-reference"
+  ],
+  "limitations": [
+    "No MCP registration, schemas, handlers or executable server code in supplied public checkout (README, LICENSE and images only).",
+    "Unauthenticated POST tools/list returned HTTP 401 invalid_token; saved response is not a tool catalog. No credentials used and no GTM operations invoked.",
+    "Official full action list provides descriptions/examples but no complete JSON input schemas; none of the 61 actions can be included as a verified-schema tool. Exact runtime descriptions, auxiliary tools, output schemas and annotations cannot be verified.",
+    "Official docs say delete_workspace is expected to be refused because the connector does not request the required Google permission. No handler inspection possible.",
+    "Public OpenAPI is for website discovery/content/contact routes, not hosted MCP tool schemas.",
+    "README revision is frozen by commit; hosted service version is unknown."
+  ],
+  "tools": [],
+  "gaps": [
+    {
+      "name": "get_account",
+      "description": "Fetch a single GTM account by id",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L76-L76",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_accounts",
+      "description": "List all GTM accounts the authenticated user can access",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L77-L77",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_built_in_variables",
+      "description": "List built-in variables enabled in the workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L78-L78",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_client",
+      "description": "Fetch a single server-side client",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L79-L79",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_clients",
+      "description": "List server-side clients in a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L80-L80",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_container",
+      "description": "Fetch a single container by id",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L81-L81",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_container_snippet",
+      "description": "Get the install <script> snippet for a container",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L82-L82",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_containers",
+      "description": "List containers in a GTM account",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L83-L83",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_destination",
+      "description": "Fetch a single destination",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L84-L84",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_destinations",
+      "description": "List destinations linked to a container",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L85-L85",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_environment",
+      "description": "Fetch a single environment",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L86-L86",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_environments",
+      "description": "List environments configured for a container",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L87-L87",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_folder",
+      "description": "Fetch a single folder",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L88-L88",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_folder_entities",
+      "description": "Return tags / triggers / variables that live inside a folder",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L89-L89",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_folders",
+      "description": "List folders in a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L90-L90",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_gtag_config",
+      "description": "Fetch a single Google Tag config",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L91-L91",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_gtag_configs",
+      "description": "List Google Tag (gtag.js) configurations in a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L92-L92",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_latest_version_header",
+      "description": "Fetch the most recent version header",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L93-L93",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_live_version",
+      "description": "Fetch the version currently published to live",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L94-L94",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_tag",
+      "description": "Fetch a single tag",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L95-L95",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_tags",
+      "description": "List all tags in a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L96-L96",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_template",
+      "description": "Fetch a single custom template",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L97-L97",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_templates",
+      "description": "List custom templates in a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L98-L98",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_transformation",
+      "description": "Fetch a single transformation",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L99-L99",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_transformations",
+      "description": "List server-side transformations in a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L100-L100",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_trigger",
+      "description": "Fetch a single trigger",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L101-L101",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_triggers",
+      "description": "List all triggers in a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L102-L102",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_variable",
+      "description": "Fetch a single variable",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L103-L103",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_variables",
+      "description": "List user-defined variables in a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L104-L104",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_version",
+      "description": "Fetch a single container version including all entities at that point in time",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L105-L105",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_version_headers",
+      "description": "List lightweight version headers (id, name, entity counts) without full entity payloads",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L106-L106",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_workspace",
+      "description": "Fetch a single workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L107-L107",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_workspace_status",
+      "description": "Show pending changes in a workspace and any merge conflicts vs the latest container version",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L108-L108",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_workspaces",
+      "description": "List workspaces (staging areas) in a container",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L109-L109",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_zone",
+      "description": "Fetch a single zone",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L110-L110",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "get_zones",
+      "description": "List zones in a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L111-L111",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "lookup_container",
+      "description": "Look up a container by its public id (e.g. GTM-XXXXXX)",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L112-L112",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "quick_preview_workspace",
+      "description": "Generate a debug-mode preview of a workspace without saving it as a version",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L113-L113",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "create_folder",
+      "description": "Create a folder for organizing workspace entities",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L121-L121",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "create_tag",
+      "description": "Create a tag in a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L122-L122",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "create_trigger",
+      "description": "Create a trigger in a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L123-L123",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "create_variable",
+      "description": "Create a variable",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L124-L124",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "create_workspace",
+      "description": "Create a new workspace (staging area)",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L125-L125",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "delete_folder",
+      "description": "Delete a folder from a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L126-L126",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "delete_tag",
+      "description": "Delete a tag from a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L127-L127",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "delete_trigger",
+      "description": "Delete a trigger from a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L128-L128",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "delete_variable",
+      "description": "Delete a user-defined variable from a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L129-L129",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "delete_workspace",
+      "description": "Delete a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L130-L130",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "disable_built_in_variable",
+      "description": "Disable one or more built-in variables in a workspace",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L131-L131",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "enable_built_in_variable",
+      "description": "Enable one or more built-in variables in the workspace by passing their type names as a comma-separated query value or repeated 'type' params",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L132-L132",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "move_entities_to_folder",
+      "description": "Move tags / triggers / variables into a folder",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L133-L133",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "resolve_conflict",
+      "description": "Resolve a merge conflict surfaced by sync_workspace by picking which side wins for a given entity",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L134-L134",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "revert_folder",
+      "description": "Discard a folder's uncommitted workspace changes",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L135-L135",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "revert_tag",
+      "description": "Discard a tag's uncommitted workspace changes, reverting it to the live container state",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L136-L136",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "revert_trigger",
+      "description": "Discard a trigger's uncommitted workspace changes",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L137-L137",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "revert_variable",
+      "description": "Discard a variable's uncommitted workspace changes",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L138-L138",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "sync_workspace",
+      "description": "Pull the latest container changes into a workspace, surfacing conflicts that need manual resolution",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L139-L139",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "update_folder",
+      "description": "Update a folder",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L140-L140",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "update_tag",
+      "description": "Update a tag",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L141-L141",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "update_trigger",
+      "description": "Update a trigger",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L142-L142",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    },
+    {
+      "name": "update_variable",
+      "description": "Update a variable",
+      "source": "https://github.com/Insightful-Pipe/google-tag-manager-mcp-server/blob/a4dd293403487ea280eebc7e6839c58a7caa82f7/README.md#L143-L143",
+      "reason": "Documented action only: private hosted implementation and full MCP inputSchema are not published in this repository or the reviewed official connector/action docs; unauthenticated tools/list returned HTTP 401. Actual registered name/description/schema and handler behavior could not be verified.",
+      "kind": "documented-action"
+    }
+  ],
+  "review": {
+    "status": "reviewed",
+    "classification": null,
+    "summary": "Private hosted documentation lists actions but does not verify registered MCP names or provide full input schemas.",
+    "reason": "Private hosted documentation lists actions but does not verify registered MCP names or provide full input schemas."
+  }
+}

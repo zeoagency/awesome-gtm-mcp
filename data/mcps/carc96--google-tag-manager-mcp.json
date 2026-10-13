@@ -1,0 +1,1528 @@
+{
+  "repo": "CarC96/google-tag-manager-mcp",
+  "url": "https://github.com/CarC96/google-tag-manager-mcp",
+  "commit": "aeef2e03be3072a9e0e90f16e8ea86c7640928b1",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "All 29 registered tools are implemented GTM v2 handlers; list handlers omit pagination.",
+  "method": "tools/list",
+  "server": "src/gtm_mcp/server.py:run_server",
+  "exposure": "All eight imported tool modules are registered unconditionally; no read-only or feature flags. Credentials are obtained only when handlers run.",
+  "sources": [
+    "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/server.py#L1-L23",
+    "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/coordinator.py#L1-L5",
+    "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/utils.py#L1-L74"
+  ],
+  "limitations": [
+    "Offline registration only; no GTM handler was invoked or authenticated.",
+    "Runtime schemas reflect installed mcp 1.30.0; upstream allows mcp>=1.2.0 without a lockfile.",
+    "List handlers discard nextPageToken; collect_all_pages is unregistered, unused and also stops after the first page."
+  ],
+  "tools": [
+    {
+      "name": "list_accounts",
+      "description": "Lists all Google Tag Manager accounts accessible by the user.",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_accountsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_accountsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/accounts.py#L9-L14",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists all Google Tag Manager accounts accessible by the user. Handler calls the GTM v2 discovery client using Application Default Credentials. Returns only the first response page."
+    },
+    {
+      "name": "get_account",
+      "description": "Gets a GTM account by ID.\n\nArgs:\n    account_id: The account ID (e.g. '123456' or 'accounts/123456').\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "get_accountArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_accountOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/accounts.py#L17-L26",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Gets a GTM account by ID. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "list_user_permissions",
+      "description": "Lists all user permissions for a GTM account.\n\nArgs:\n    account_id: The account ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "list_user_permissionsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_user_permissionsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/accounts.py#L29-L41",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "access"
+      ],
+      "behavior": "Lists all user permissions for a GTM account. Handler calls the GTM v2 discovery client using Application Default Credentials. Returns only the first response page."
+    },
+    {
+      "name": "list_containers",
+      "description": "Lists all containers in a GTM account.\n\nArgs:\n    account_id: The account ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "list_containersArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_containersOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/containers.py#L13-L23",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Lists all containers in a GTM account. Handler calls the GTM v2 discovery client using Application Default Credentials. Returns only the first response page."
+    },
+    {
+      "name": "get_container",
+      "description": "Gets a specific GTM container.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "get_containerArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_containerOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/containers.py#L26-L36",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Gets a specific GTM container. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "get_container_snippet",
+      "description": "Gets the tagging snippet for a GTM container (the code to install on the website).\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "get_container_snippetArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_container_snippetOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/containers.py#L39-L51",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Gets the tagging snippet for a GTM container (the code to install on the website). Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "list_workspaces",
+      "description": "Lists all workspaces in a GTM container.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_workspacesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_workspacesOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/workspaces.py#L13-L32",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists all workspaces in a GTM container. Handler calls the GTM v2 discovery client using Application Default Credentials. Returns only the first response page."
+    },
+    {
+      "name": "get_workspace",
+      "description": "Gets a specific GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "get_workspaceArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_workspaceOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/workspaces.py#L35-L54",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Gets a specific GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "get_workspace_status",
+      "description": "Gets the status of a workspace (conflicting and modified entities).\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "get_workspace_statusArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_workspace_statusOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/workspaces.py#L57-L76",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "audit"
+      ],
+      "behavior": "Gets the status of a workspace (conflicting and modified entities). Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "create_workspace",
+      "description": "Creates a new workspace in a container.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    name: The workspace name.\n    description: Optional workspace description.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "name"
+        ],
+        "title": "create_workspaceArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "create_workspaceOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/workspaces.py#L79-L100",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a new workspace in a container. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "list_tags",
+      "description": "Lists all tags in a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_tagsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_tagsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/tags.py#L9-L30",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists all tags in a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials. Returns only the first response page."
+    },
+    {
+      "name": "get_tag",
+      "description": "Gets a specific tag in a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n    tag_id: The tag ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id"
+        ],
+        "title": "get_tagArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_tagOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/tags.py#L33-L60",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Gets a specific tag in a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "create_tag",
+      "description": "Creates a new tag in a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n    tag_body: The tag configuration object. Must include at minimum:\n        - name (str): The tag name.\n        - type (str): The tag type (e.g. 'html', 'gaawc', 'gclidw', etc.).\n        Can also include:\n        - firingTriggerId (list): Trigger IDs that fire this tag.\n        - blockingTriggerId (list): Trigger IDs that block this tag.\n        - parameter (list): Tag parameters.\n        - consentSettings (dict): Consent configuration.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "tag_body": {
+            "additionalProperties": true,
+            "title": "Tag Body",
+            "type": "object"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_body"
+        ],
+        "title": "create_tagArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "create_tagOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/tags.py#L63-L94",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a new tag in a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "update_tag",
+      "description": "Updates an existing tag in a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n    tag_id: The tag ID.\n    tag_body: The updated tag configuration object.\n    fingerprint: Optional fingerprint for optimistic locking.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          },
+          "tag_body": {
+            "additionalProperties": true,
+            "title": "Tag Body",
+            "type": "object"
+          },
+          "fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fingerprint"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id",
+          "tag_body"
+        ],
+        "title": "update_tagArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "update_tagOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/tags.py#L97-L131",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Updates an existing tag in a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "delete_tag",
+      "description": "Deletes a tag from a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n    tag_id: The tag ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id"
+        ],
+        "title": "delete_tagArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "delete_tagOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/tags.py#L134-L157",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Deletes a tag from a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "list_triggers",
+      "description": "Lists all triggers in a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_triggersArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_triggersOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/triggers.py#L9-L30",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists all triggers in a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials. Returns only the first response page."
+    },
+    {
+      "name": "get_trigger",
+      "description": "Gets a specific trigger in a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n    trigger_id: The trigger ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "trigger_id": {
+            "title": "Trigger Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger_id"
+        ],
+        "title": "get_triggerArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_triggerOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/triggers.py#L33-L60",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Gets a specific trigger in a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "create_trigger",
+      "description": "Creates a new trigger in a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n    trigger_body: The trigger configuration object. Must include:\n        - name (str): The trigger name.\n        - type (str): The trigger type (e.g. 'customEvent', 'pageview',\n          'domReady', 'windowLoaded', 'click', 'formSubmission', etc.).\n        Can also include:\n        - customEventFilter (list): Filters for custom events.\n        - filter (list): Conditions that must be met.\n        - autoEventFilter (list): Auto-event filters.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "trigger_body": {
+            "additionalProperties": true,
+            "title": "Trigger Body",
+            "type": "object"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger_body"
+        ],
+        "title": "create_triggerArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "create_triggerOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/triggers.py#L63-L94",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a new trigger in a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "update_trigger",
+      "description": "Updates an existing trigger in a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n    trigger_id: The trigger ID.\n    trigger_body: The updated trigger configuration.\n    fingerprint: Optional fingerprint for optimistic locking.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "trigger_id": {
+            "title": "Trigger Id",
+            "type": "string"
+          },
+          "trigger_body": {
+            "additionalProperties": true,
+            "title": "Trigger Body",
+            "type": "object"
+          },
+          "fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fingerprint"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger_id",
+          "trigger_body"
+        ],
+        "title": "update_triggerArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "update_triggerOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/triggers.py#L97-L131",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Updates an existing trigger in a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "delete_trigger",
+      "description": "Deletes a trigger from a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n    trigger_id: The trigger ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "trigger_id": {
+            "title": "Trigger Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger_id"
+        ],
+        "title": "delete_triggerArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "delete_triggerOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/triggers.py#L134-L157",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Deletes a trigger from a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "list_variables",
+      "description": "Lists all variables in a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_variablesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_variablesOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/variables.py#L9-L30",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists all variables in a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials. Returns only the first response page."
+    },
+    {
+      "name": "get_variable",
+      "description": "Gets a specific variable in a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n    variable_id: The variable ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "variable_id": {
+            "title": "Variable Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable_id"
+        ],
+        "title": "get_variableArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_variableOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/variables.py#L33-L60",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Gets a specific variable in a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "create_variable",
+      "description": "Creates a new variable in a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n    variable_body: The variable configuration object. Must include:\n        - name (str): The variable name.\n        - type (str): The variable type (e.g. 'v', 'jsm', 'j', 'gas',\n          'remm', 'smm', 'k', 'ctv', etc.).\n        Can also include:\n        - parameter (list): Variable parameters specific to the type.\n        - formatValue (dict): Format options for the variable value.\n\n        Common types:\n        - 'v': Data Layer Variable\n        - 'jsm': Custom JavaScript\n        - 'j': JavaScript Variable\n        - 'k': 1st Party Cookie\n        - 'ctv': Constant\n        - 'remm': Regex Table\n        - 'smm': Lookup Table\n        - 'gas': Google Analytics Settings\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "variable_body": {
+            "additionalProperties": true,
+            "title": "Variable Body",
+            "type": "object"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable_body"
+        ],
+        "title": "create_variableArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "create_variableOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/variables.py#L63-L103",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Creates a new variable in a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "update_variable",
+      "description": "Updates an existing variable in a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n    variable_id: The variable ID.\n    variable_body: The updated variable configuration.\n    fingerprint: Optional fingerprint for optimistic locking.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "variable_id": {
+            "title": "Variable Id",
+            "type": "string"
+          },
+          "variable_body": {
+            "additionalProperties": true,
+            "title": "Variable Body",
+            "type": "object"
+          },
+          "fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fingerprint"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable_id",
+          "variable_body"
+        ],
+        "title": "update_variableArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "update_variableOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/variables.py#L106-L140",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Updates an existing variable in a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "delete_variable",
+      "description": "Deletes a variable from a GTM workspace.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n    variable_id: The variable ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "variable_id": {
+            "title": "Variable Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable_id"
+        ],
+        "title": "delete_variableArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "title": "Result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "delete_variableOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/variables.py#L143-L166",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Deletes a variable from a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "list_built_in_variables",
+      "description": "Lists all enabled built-in variables in a GTM workspace.\n\nBuilt-in variables are pre-defined variables provided by GTM\n(e.g. Click URL, Page URL, Event, etc.).\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    workspace_id: The workspace ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_built_in_variablesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_built_in_variablesOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/built_in_variables.py#L9-L33",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Lists all enabled built-in variables in a GTM workspace. Handler calls the GTM v2 discovery client using Application Default Credentials. Returns only the first response page."
+    },
+    {
+      "name": "list_version_headers",
+      "description": "Lists all container version headers (summary info for each version).\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_version_headersArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_version_headersOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/versions.py#L9-L28",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release",
+        "audit"
+      ],
+      "behavior": "Lists all container version headers (summary info for each version). Handler calls the GTM v2 discovery client using Application Default Credentials. Returns only the first response page."
+    },
+    {
+      "name": "get_live_version",
+      "description": "Gets the live (published) container version, including all its tags,\ntriggers, variables, and configuration.\n\nThis is useful for auditing the currently active configuration.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "get_live_versionArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_live_versionOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/versions.py#L31-L52",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release",
+        "audit"
+      ],
+      "behavior": "Gets the live (published) container version, including all its tags, Handler calls the GTM v2 discovery client using Application Default Credentials."
+    },
+    {
+      "name": "get_version",
+      "description": "Gets a specific container version with all its entities.\n\nArgs:\n    account_id: The account ID.\n    container_id: The container ID.\n    version_id: The version ID.\n",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "version_id": {
+            "title": "Version Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "version_id"
+        ],
+        "title": "get_versionArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "additionalProperties": true,
+            "title": "Result",
+            "type": "object"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "get_versionOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/CarC96/google-tag-manager-mcp/blob/aeef2e03be3072a9e0e90f16e8ea86c7640928b1/src/gtm_mcp/tools/versions.py#L55-L74",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release",
+        "audit"
+      ],
+      "behavior": "Gets a specific container version with all its entities. Handler calls the GTM v2 discovery client using Application Default Credentials."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "manage",
+    "summary": "Reads installation snippets and permissions, edits workspace entities, and retrieves complete versions.",
+    "reason": "All 29 registered tools are implemented GTM v2 handlers; list handlers omit pagination.",
+    "examples": [
+      "get_container_snippet",
+      "get_workspace_status",
+      "create_trigger"
+    ]
+  }
+}

@@ -1,0 +1,1301 @@
+{
+  "repo": "brynj-digital/gtm-mcp-server",
+  "url": "https://github.com/brynj-digital/gtm-mcp-server",
+  "commit": "f2b26592586135901c8706a5e7cc98713b692770",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "28 registered read tools implement real Google Tag Manager v2 list/get/live endpoints; authentication and API construction are lazy.",
+  "method": "tools/list",
+  "server": "src/gtm_mcp/server.py (FastMCP stdio; gtm-mcp-server entrypoint)",
+  "exposure": "All 28 tools are registered unconditionally. Server-side clients and transformations are exposed universally but applicable only to server-side containers. Two analysis helpers are MCP prompts, not tools.",
+  "sources": [
+    "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L22-L506",
+    "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/client.py#L117-L205",
+    "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/pyproject.toml#L28-L47"
+  ],
+  "limitations": [
+    "Offline FastMCP list_tools produced full schemas using installed MCP 1.30.0; upstream mcp>=1.2.0 is unpinned, so generated schema details may vary by installed version.",
+    "Handlers and bundled Google API discovery endpoint definitions were inspected offline; no credentials or GTM operations were executed. Pagination stops silently after 50 pages."
+  ],
+  "tools": [
+    {
+      "name": "list_accounts",
+      "description": "List all GTM accounts the authenticated user can access.",
+      "inputSchema": {
+        "properties": {},
+        "title": "list_accountsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_accountsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L40-L47",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "List all GTM accounts the authenticated user can access. Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "get_account",
+      "description": "Get a single GTM account by its numeric account ID.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "get_accountArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_accountDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L50-L54",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Get a single GTM account by its numeric account ID. Calls the Google Tag Manager v2 read endpoint."
+    },
+    {
+      "name": "list_containers",
+      "description": "List all containers within an account.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "list_containersArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_containersOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L62-L72",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "List all containers within an account. Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "get_container",
+      "description": "Get a single container by account + container ID (includes public ID, e.g. GTM-XXXX).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "get_containerArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_containerDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L75-L83",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Get a single container by account + container ID (includes public ID, e.g. GTM-XXXX). Calls the Google Tag Manager v2 read endpoint."
+    },
+    {
+      "name": "list_environments",
+      "description": "List a container's environments (e.g. Live, Latest, and any custom ones).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_environmentsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_environmentsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L91-L102",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "List a container's environments (e.g. Live, Latest, and any custom ones). Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "get_environment",
+      "description": "Get a single environment by ID.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "environment_id": {
+            "title": "Environment Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "environment_id"
+        ],
+        "title": "get_environmentArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_environmentDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L105-L112",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Get a single environment by ID. Calls the Google Tag Manager v2 read endpoint."
+    },
+    {
+      "name": "list_version_headers",
+      "description": "List version headers (lightweight metadata for each published/saved container version).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_version_headersArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_version_headersOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L120-L131",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "List version headers (lightweight metadata for each published/saved container version). Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "get_live_version",
+      "description": "Get the currently live (published) container version, with all of its tags/triggers/variables.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "get_live_versionArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_live_versionDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L134-L139",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Get the currently live (published) container version, with all of its tags/triggers/variables. Calls the Google Tag Manager v2 read endpoint."
+    },
+    {
+      "name": "get_container_version",
+      "description": "Get a specific container version by ID (use \"0\" or the live tool for the live version).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "version_id": {
+            "title": "Version Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "version_id"
+        ],
+        "title": "get_container_versionArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_container_versionDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L142-L149",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Get a specific container version by ID (use \"0\" or the live tool for the live version). Calls the Google Tag Manager v2 read endpoint."
+    },
+    {
+      "name": "list_destinations",
+      "description": "List the Google tag destinations linked to a container.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_destinationsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_destinationsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L157-L166",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "List the Google tag destinations linked to a container. Calls the Google Tag Manager v2 read endpoint."
+    },
+    {
+      "name": "list_workspaces",
+      "description": "List the workspaces in a container (changes are staged in a workspace before publishing).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id"
+        ],
+        "title": "list_workspacesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_workspacesOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L174-L185",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "List the workspaces in a container (changes are staged in a workspace before publishing). Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "get_workspace",
+      "description": "Get a single workspace by ID.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "get_workspaceArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_workspaceDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L188-L199",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Get a single workspace by ID. Calls the Google Tag Manager v2 read endpoint."
+    },
+    {
+      "name": "list_tags",
+      "description": "List all tags in a workspace.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_tagsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_tagsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L208-L222",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "List all tags in a workspace. Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "get_tag",
+      "description": "Get a single tag by ID, including its full parameter configuration.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "tag_id"
+        ],
+        "title": "get_tagArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_tagDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L225-L234",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Get a single tag by ID, including its full parameter configuration. Calls the Google Tag Manager v2 read endpoint."
+    },
+    {
+      "name": "list_triggers",
+      "description": "List all triggers in a workspace.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_triggersArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_triggersOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L237-L251",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "List all triggers in a workspace. Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "get_trigger",
+      "description": "Get a single trigger by ID, including its firing conditions.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "trigger_id": {
+            "title": "Trigger Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "trigger_id"
+        ],
+        "title": "get_triggerArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_triggerDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L254-L266",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Get a single trigger by ID, including its firing conditions. Calls the Google Tag Manager v2 read endpoint."
+    },
+    {
+      "name": "list_variables",
+      "description": "List all user-defined variables in a workspace.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_variablesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_variablesOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L269-L283",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "List all user-defined variables in a workspace. Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "get_variable",
+      "description": "Get a single user-defined variable by ID.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "variable_id": {
+            "title": "Variable Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "variable_id"
+        ],
+        "title": "get_variableArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_variableDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L286-L298",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Get a single user-defined variable by ID. Calls the Google Tag Manager v2 read endpoint."
+    },
+    {
+      "name": "list_built_in_variables",
+      "description": "List the enabled built-in variables in a workspace (e.g. Page URL, Click Classes).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_built_in_variablesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_built_in_variablesOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L301-L315",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "List the enabled built-in variables in a workspace (e.g. Page URL, Click Classes). Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "list_folders",
+      "description": "List the folders used to organise entities in a workspace.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_foldersArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_foldersOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L318-L332",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "List the folders used to organise entities in a workspace. Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "get_folder",
+      "description": "Get a single folder by ID.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "title": "Folder Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "folder_id"
+        ],
+        "title": "get_folderArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_folderDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L335-L347",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Get a single folder by ID. Calls the Google Tag Manager v2 read endpoint."
+    },
+    {
+      "name": "list_templates",
+      "description": "List the custom templates in a workspace.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_templatesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_templatesOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L350-L364",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "List the custom templates in a workspace. Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "get_template",
+      "description": "Get a single custom template by ID, including its source.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          },
+          "template_id": {
+            "title": "Template Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id",
+          "template_id"
+        ],
+        "title": "get_templateArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_templateDictOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L367-L379",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Get a single custom template by ID, including its source. Calls the Google Tag Manager v2 read endpoint."
+    },
+    {
+      "name": "list_clients",
+      "description": "List clients in a workspace (server-side containers only).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_clientsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_clientsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L382-L396",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "server-side"
+      ],
+      "behavior": "List clients in a workspace (server-side containers only). Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "list_transformations",
+      "description": "List transformations in a workspace (server-side containers only).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_transformationsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_transformationsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L399-L413",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace",
+        "server-side"
+      ],
+      "behavior": "List transformations in a workspace (server-side containers only). Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "list_zones",
+      "description": "List zones in a workspace (zones delegate to other containers).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_zonesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_zonesOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L416-L430",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "List zones in a workspace (zones delegate to other containers). Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "list_gtag_config",
+      "description": "List Google tag configuration settings in a workspace.",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          },
+          "container_id": {
+            "title": "Container Id",
+            "type": "string"
+          },
+          "workspace_id": {
+            "title": "Workspace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id",
+          "container_id",
+          "workspace_id"
+        ],
+        "title": "list_gtag_configArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_gtag_configOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L433-L447",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "List Google tag configuration settings in a workspace. Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    },
+    {
+      "name": "list_user_permissions",
+      "description": "List the user permissions configured on an account (who has access, and at what level).",
+      "inputSchema": {
+        "properties": {
+          "account_id": {
+            "title": "Account Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "account_id"
+        ],
+        "title": "list_user_permissionsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "properties": {
+          "result": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Result",
+            "type": "array"
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "title": "list_user_permissionsOutput",
+        "type": "object"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/brynj-digital/gtm-mcp-server/blob/f2b26592586135901c8706a5e7cc98713b692770/src/gtm_mcp/server.py#L455-L465",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "access"
+      ],
+      "behavior": "List the user permissions configured on an account (who has access, and at what level). Uses the Google Tag Manager v2 read endpoint; list results are collected across up to 50 pages."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "inspect",
+    "summary": "Reads containers, environments, permissions, templates, server clients, transformations, and full version snapshots.",
+    "reason": "28 registered read tools implement real Google Tag Manager v2 list/get/live endpoints; authentication and API construction are lazy.",
+    "examples": [
+      "get_live_version",
+      "list_templates",
+      "list_clients"
+    ]
+  }
+}

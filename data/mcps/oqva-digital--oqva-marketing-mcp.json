@@ -1,0 +1,1435 @@
+{
+  "repo": "oqva-digital/oqva-marketing-mcp",
+  "url": "https://github.com/oqva-digital/oqva-marketing-mcp",
+  "commit": "e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "The registered gtm handler implements an authenticated generic Google Tag Manager v2 REST proxy, including workspace changes, version creation and publication; all shared marketing tools are included.",
+  "method": "tools/list",
+  "server": "src/index.ts → startServer() (stdio JSON-RPC; dist/index.js packaged entrypoint)",
+  "exposure": "All 49 tools registered unconditionally and always listed; individual calls require their respective Google OAuth, Meta token, Places API key or DataForSEO credentials. Google autocomplete needs no credentials.",
+  "sources": [
+    "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L221-L254",
+    "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L835-L849",
+    "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L1158-L1188",
+    "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L115-L127"
+  ],
+  "limitations": [
+    "Catalog obtained offline from an isolated unmodified source copy using Node 24 TypeScript stripping, empty environment and isolated HOME; network fetch was blocked and only tools/list was invoked. Remote API functionality was not executed.",
+    "Schemas are preserved verbatim: descriptive defaults and limits are not JSON Schema constraints; gbp_update_attributes intentionally has an unrestricted array without items, and gbp_update_location has an unrestricted object. Server does not perform JSON Schema validation before dispatch.",
+    "GTM is a generic path proxy rather than enumerated resource-specific tools; body is a raw JSON string and its shape is intentionally unconstrained. Availability of arbitrary paths depends on Google API support and granted OAuth scopes."
+  ],
+  "tools": [
+    {
+      "name": "config_status",
+      "description": "Report which marketing data sources are configured (no secrets revealed). Call first if a tool says 'not configured'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L256-L262",
+      "scope": "other",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Reports configuration presence and configured resource IDs for the shared marketing server without revealing credentials."
+    },
+    {
+      "name": "gsc_list_sites",
+      "description": "List Search Console properties the service account can access (confirm the SA is granted + the exact siteUrl).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L263-L265",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Search Console: lists accessible properties via sites GET using user OAuth, despite the service-account wording."
+    },
+    {
+      "name": "gsc_query",
+      "description": "Search Console Search Analytics — clicks / impressions / CTR / position grouped by dimension(s). The core SEO tool (same data as the GSC Performance export, but live + filterable).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "description": "YYYY-MM-DD"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "YYYY-MM-DD"
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "query",
+                "page",
+                "country",
+                "device",
+                "date",
+                "searchAppearance"
+              ]
+            },
+            "description": "Group by these; omit for site totals."
+          },
+          "siteUrl": {
+            "type": "string",
+            "description": "Defaults to GSC_SITE_URL. URL-prefix (trailing slash) or sc-domain: form."
+          },
+          "rowLimit": {
+            "type": "integer",
+            "description": "Default 1000 (max 25000)."
+          },
+          "searchType": {
+            "type": "string",
+            "enum": [
+              "web",
+              "image",
+              "video",
+              "news",
+              "discover",
+              "googleNews"
+            ],
+            "description": "Result type to report. Default web."
+          },
+          "filterDimension": {
+            "type": "string",
+            "enum": [
+              "query",
+              "page",
+              "country",
+              "device"
+            ],
+            "description": "Optional single filter."
+          },
+          "filterOperator": {
+            "type": "string",
+            "enum": [
+              "equals",
+              "contains",
+              "notContains",
+              "includingRegex",
+              "excludingRegex"
+            ],
+            "description": "How filterExpression is matched against filterDimension. Default equals."
+          },
+          "filterExpression": {
+            "type": "string",
+            "description": "The value filterDimension is matched against. The filter applies when filterDimension and filterExpression are both set."
+          }
+        },
+        "required": [
+          "startDate",
+          "endDate"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L267-L304",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Search Console: posts date, dimensions, row limit and optional single dimension filter to searchAnalytics/query."
+    },
+    {
+      "name": "gsc_list_sitemaps",
+      "description": "List submitted sitemaps + processing status for a property.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "siteUrl": {
+            "type": "string",
+            "description": "Search Console property: URL-prefix form with its trailing slash, or sc-domain:<domain>. Defaults to GSC_SITE_URL."
+          }
+        },
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L306-L310",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Search Console: lists submitted sitemaps for a configured or supplied property."
+    },
+    {
+      "name": "gsc_inspect_url",
+      "description": "URL Inspection — index/coverage status, last crawl, canonical, mobile usability for one URL.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "inspectionUrl": {
+            "type": "string",
+            "description": "Full URL to inspect."
+          },
+          "siteUrl": {
+            "type": "string",
+            "description": "Search Console property: URL-prefix form with its trailing slash, or sc-domain:<domain>. Defaults to GSC_SITE_URL."
+          }
+        },
+        "required": [
+          "inspectionUrl"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L312-L324",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Search Console: posts an inspection URL and property to the URL Inspection API."
+    },
+    {
+      "name": "ga4_run_report",
+      "description": "GA4 Data API runReport — sessions, users, conversions, events, channels. Flexible dimensions + metrics over a date range.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "description": "YYYY-MM-DD, or 'NdaysAgo' / 'today' / 'yesterday'."
+          },
+          "endDate": {
+            "type": "string",
+            "description": "YYYY-MM-DD, or 'NdaysAgo' / 'today' / 'yesterday'."
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "e.g. ['sessions','activeUsers','conversions','eventCount']."
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "e.g. ['date','sessionDefaultChannelGroup','deviceCategory','eventName']."
+          },
+          "propertyId": {
+            "type": "string",
+            "description": "Numeric GA4 property id; defaults to GA4_PROPERTY_ID (NOT the G-XXXX measurement id)."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum rows returned. Defaults to the API's 10,000."
+          },
+          "dimensionFilter": {
+            "type": "string",
+            "description": "Dimension name to filter on (exact match)."
+          },
+          "dimensionFilterValue": {
+            "type": "string",
+            "description": "The exact value dimensionFilter must equal. The filter applies when dimensionFilter and dimensionFilterValue are both set."
+          }
+        },
+        "required": [
+          "startDate",
+          "endDate",
+          "metrics"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L327-L357",
+      "scope": "other",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Google Analytics 4: posts metrics, dimensions, date ranges and optional exact dimension filter to runReport."
+    },
+    {
+      "name": "ga4_realtime",
+      "description": "GA4 realtime report (active users in the last 30 min).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "Numeric GA4 property id (the property id, distinct from the G- measurement id). Defaults to GA4_PROPERTY_ID."
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Default ['activeUsers']."
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Realtime dimension names to group by; omit for totals."
+          }
+        },
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L359-L372",
+      "scope": "other",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Google Analytics 4: posts metrics and dimensions to runRealtimeReport."
+    },
+    {
+      "name": "gbp_list_accounts",
+      "description": "[GBP] List Business Profile accounts. NOTE: the Business Profile APIs require Google to approve API access (allowlist) first.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L375-L377",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Business Profile: lists accounts through Account Management API."
+    },
+    {
+      "name": "gbp_list_locations",
+      "description": "[GBP] List locations for an account (name, title, address, website, categories).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "type": "string",
+            "description": "accounts/123; defaults to GBP_ACCOUNT_ID."
+          }
+        },
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L379-L383",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Business Profile: lists account locations using a fixed read mask."
+    },
+    {
+      "name": "gbp_get_location",
+      "description": "[GBP] Read ONE location in full — description, hours, service area, service items and everything gbp_list_locations omits. Call this before any gbp_update_location so you know the current value of what you are about to overwrite.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "locations/123"
+          },
+          "readMask": {
+            "type": "string",
+            "description": "Comma-separated field paths. Defaults to every readable field."
+          }
+        },
+        "required": [
+          "location"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L393-L398",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Business Profile: gets one location with a supplied or comprehensive default read mask."
+    },
+    {
+      "name": "gbp_search_categories",
+      "description": "[GBP] Resolve a category display name to the resource name gbp_update_location needs — e.g. 'Cleaners' becomes 'categories/gcid:cleaners'. Categories are referenced by id, never by display text.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Display name to search, e.g. 'Cleaners'."
+          },
+          "regionCode": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2. Default GB."
+          },
+          "languageCode": {
+            "type": "string",
+            "description": "BCP 47. Default en."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L400-L414",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Business Profile: searches category display names with region and language filters."
+    },
+    {
+      "name": "gbp_search_places",
+      "description": "[GBP] Find Google Place IDs by place name, through the Places API (New) with GOOGLE_MAPS_API_KEY. Returns each match's id, display name and formatted address, up to maxResults. These ids are the placeId values that gbp_update_location's serviceArea entries carry.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Place to find, e.g. 'Kidlington, Oxfordshire, UK'."
+          },
+          "regionCode": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 bias. Default GB."
+          },
+          "maxResults": {
+            "type": "integer",
+            "description": "Default 5."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L416-L445",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Places: posts text search with API key and returns place IDs, names and addresses for Business Profile service areas."
+    },
+    {
+      "name": "gbp_update_location",
+      "description": "[GBP][WRITE] Update a location's public business information — categories, phoneNumbers, websiteUri, profile (description), regularHours, serviceArea, serviceItems, title, storefrontAddress. updateMask REPLACES each masked field wholesale, so send the complete value: masking 'categories' while sending only additionalCategories WIPES the primary category. Read the current value with gbp_get_location first and merge. serviceArea places each need a placeId from gbp_search_places: the API accepts an entry that lacks a valid placeId, reports success, and leaves that locality off the profile, so read serviceArea back with gbp_get_location after the write. This edits a public, client-visible profile — run with validateOnly=true first and confirm with the owner before the real write.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "locations/123"
+          },
+          "updateMask": {
+            "type": "string",
+            "description": "Comma-separated field paths to replace, e.g. 'categories' or 'phoneNumbers,websiteUri'. Mask the PARENT field — 'categories', not 'categories.additionalCategories'."
+          },
+          "update": {
+            "type": "object",
+            "description": "Partial Location body carrying the new values, e.g. {\"categories\":{\"primaryCategory\":{\"name\":\"categories/gcid:house_cleaning_service\"},\"additionalCategories\":[{\"name\":\"categories/gcid:cleaners\"}]}}"
+          },
+          "validateOnly": {
+            "type": "boolean",
+            "description": "Dry run — Google validates and returns the would-be result WITHOUT saving. Default false."
+          }
+        },
+        "required": [
+          "location",
+          "updateMask",
+          "update"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L447-L474",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Business Profile: patches an arbitrary partial Location object with updateMask and optional validateOnly."
+    },
+    {
+      "name": "gbp_list_available_attributes",
+      "description": "[GBP] The attributes Google will accept for a location's category — id, valueType (BOOL/ENUM/URL/REPEATED_ENUM), display name and any enum options. Attributes not in this list are rejected; the list depends on the location's primary category, so re-check after any category change.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "locations/123"
+          }
+        },
+        "required": [
+          "location"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L476-L481",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Business Profile: lists accepted attribute metadata for a location."
+    },
+    {
+      "name": "gbp_get_attributes",
+      "description": "[GBP] The attributes currently SET on a location. An empty result means none are set — not an error. Read this before gbp_update_attributes so you know what a masked write will replace.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "locations/123"
+          }
+        },
+        "required": [
+          "location"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L483-L488",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Business Profile: gets attributes set on a location."
+    },
+    {
+      "name": "gbp_update_attributes",
+      "description": "[GBP][WRITE] Set or clear attributes on a location. attributeMask lists the attribute ids being changed (e.g. 'attributes/url_appointment,attributes/offers_online_estimates'); a masked id with no matching entry in the body is CLEARED. Value shape depends on valueType — BOOL/ENUM: {name, values:[...]}; URL: {name, uriValues:[{uri}]}. Only ids from gbp_list_available_attributes save; anything else 400s. This edits a public, client-visible profile — confirm with the owner before writing, and read back with gbp_get_attributes after.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "locations/123"
+          },
+          "attributeMask": {
+            "type": "string",
+            "description": "Comma-separated attribute ids being set or cleared."
+          },
+          "attributes": {
+            "type": "array",
+            "description": "Attribute entries, e.g. [{\"name\":\"attributes/offers_online_estimates\",\"values\":[true]},{\"name\":\"attributes/url_appointment\",\"uriValues\":[{\"uri\":\"https://…\"}]}]"
+          }
+        },
+        "required": [
+          "location",
+          "attributeMask",
+          "attributes"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L490-L510",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Business Profile: patches the supplied unrestricted attributes array with attributeMask."
+    },
+    {
+      "name": "gbp_list_posts",
+      "description": "[GBP] Google Posts on a location (v4 localPosts — the same mybusiness.googleapis.com service as reviews). An empty result means no posts, not an error.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "Full path, e.g. accounts/123/locations/456."
+          }
+        },
+        "required": [
+          "location"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L519-L524",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Business Profile: lists localPosts using legacy v4 API."
+    },
+    {
+      "name": "gbp_create_post",
+      "description": "[GBP][WRITE] Publish a Google Post (v4 localPost, topicType STANDARD). summary is the visible body (≤1500 chars, ~250 shown before truncation); ctaUrl+ctaType add the button; photoUrl must be a PUBLIC https image ≥250×250 or the whole post is rejected. Posts expire from the profile surface after ~7 days — that is Google's design, not data loss. Public and client-visible: confirm the exact text with the owner before writing.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "Full path, e.g. accounts/123/locations/456."
+          },
+          "summary": {
+            "type": "string",
+            "description": "The post body."
+          },
+          "ctaType": {
+            "type": "string",
+            "enum": [
+              "LEARN_MORE",
+              "BOOK",
+              "ORDER",
+              "SHOP",
+              "SIGN_UP",
+              "CALL"
+            ],
+            "description": "Button type. Omit for no button."
+          },
+          "ctaUrl": {
+            "type": "string",
+            "description": "Button target URL (not used for CALL)."
+          },
+          "photoUrl": {
+            "type": "string",
+            "description": "Public https image URL, ≥250×250. Omit for text-only."
+          }
+        },
+        "required": [
+          "location",
+          "summary"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L526-L546",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Business Profile: publishes a STANDARD localPost with summary and optional call to action and photo."
+    },
+    {
+      "name": "gbp_delete_post",
+      "description": "[GBP][WRITE] Delete a Google Post — the undo for gbp_create_post.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "post": {
+            "type": "string",
+            "description": "Full post name from gbp_list_posts, e.g. accounts/123/locations/456/localPosts/789."
+          }
+        },
+        "required": [
+          "post"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L548-L553",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Business Profile: deletes a localPost by full resource name."
+    },
+    {
+      "name": "gbp_performance",
+      "description": "[GBP] Daily performance time series for a location: impressions (maps/search × desktop/mobile), call clicks, website clicks, direction requests, conversations, bookings.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "locations/123"
+          },
+          "metric": {
+            "type": "string",
+            "enum": [
+              "BUSINESS_IMPRESSIONS_DESKTOP_MAPS",
+              "BUSINESS_IMPRESSIONS_DESKTOP_SEARCH",
+              "BUSINESS_IMPRESSIONS_MOBILE_MAPS",
+              "BUSINESS_IMPRESSIONS_MOBILE_SEARCH",
+              "CALL_CLICKS",
+              "WEBSITE_CLICKS",
+              "BUSINESS_DIRECTION_REQUESTS",
+              "BUSINESS_CONVERSATIONS",
+              "BUSINESS_BOOKINGS"
+            ]
+          },
+          "startDate": {
+            "type": "string",
+            "description": "YYYY-MM-DD"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "YYYY-MM-DD"
+          }
+        },
+        "required": [
+          "location",
+          "metric",
+          "startDate",
+          "endDate"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L555-L591",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Business Profile: reads daily metric time series with decomposed start and end dates."
+    },
+    {
+      "name": "gbp_list_reviews",
+      "description": "[GBP] List reviews for a location (rating, comment, reviewer, time, any reply).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "Full path, e.g. accounts/123/locations/456 (v4 reviews API)."
+          }
+        },
+        "required": [
+          "location"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L593-L595",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Business Profile: lists reviews using legacy v4 API."
+    },
+    {
+      "name": "gbp_reply_review",
+      "description": "[GBP][WRITE] Post the business's reply to a review, replacing any reply already there (one reply per review). The reply appears publicly on the profile under the review: confirm the exact text with the owner before writing, and read it back with gbp_list_reviews after.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "accounts/123/locations/456"
+          },
+          "reviewId": {
+            "type": "string",
+            "description": "The reviewId field of a review from gbp_list_reviews: the bare id that follows reviews/ in the review's name."
+          },
+          "comment": {
+            "type": "string",
+            "description": "The reply text, exactly as it will appear publicly."
+          }
+        },
+        "required": [
+          "location",
+          "reviewId",
+          "comment"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L597-L603",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Business Profile: replaces the public reply on a review using PUT."
+    },
+    {
+      "name": "meta_graph",
+      "description": "Meta Graph / Marketing API call — flexible escape hatch, READ and WRITE. method defaults GET; POST to create/update (e.g. path='<campaignId>', params={status:'PAUSED'}), DELETE to remove. Does anything the token's scopes allow.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Graph path, e.g. 'me/adaccounts' or '<campaignId>'."
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST",
+              "DELETE"
+            ],
+            "description": "HTTP method. Default GET; POST creates or updates, DELETE removes."
+          },
+          "params": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Fields/params for reads; values for writes."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L606-L611",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Meta Graph / Marketing API: forwards supplied GET, POST or DELETE path and string parameters."
+    },
+    {
+      "name": "meta_page_insights",
+      "description": "[Meta] Facebook Page insights (impressions, engagement, fans, etc.).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "metric": {
+            "type": "string",
+            "description": "Comma-separated, e.g. 'page_impressions,page_post_engagements,page_fan_adds'."
+          },
+          "pageId": {
+            "type": "string",
+            "description": "Defaults to META_PAGE_ID."
+          },
+          "period": {
+            "type": "string",
+            "enum": [
+              "day",
+              "week",
+              "days_28"
+            ],
+            "description": "Aggregation period. Default day."
+          },
+          "since": {
+            "type": "string",
+            "description": "YYYY-MM-DD"
+          },
+          "until": {
+            "type": "string",
+            "description": "YYYY-MM-DD"
+          }
+        },
+        "required": [
+          "metric"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L613-L631",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Meta Facebook: reads configured or supplied Page insights metrics over an optional date range."
+    },
+    {
+      "name": "meta_ad_insights",
+      "description": "[Meta] Ad account insights (impressions, clicks, spend, actions, CPC, CTR). Only returns data if you actually run Meta ads.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "adAccountId": {
+            "type": "string",
+            "description": "act_<id>; defaults to META_AD_ACCOUNT_ID."
+          },
+          "fields": {
+            "type": "string",
+            "description": "Default 'impressions,clicks,spend,actions,cpc,ctr'."
+          },
+          "datePreset": {
+            "type": "string",
+            "description": "e.g. 'last_30d','last_7d','this_month'. Default last_30d."
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "account",
+              "campaign",
+              "adset",
+              "ad"
+            ],
+            "description": "Aggregation level. Default account."
+          }
+        },
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L633-L651",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Meta Marketing API: reads ad account insights with fields, date preset and aggregation level."
+    },
+    {
+      "name": "meta_list_ad_accounts",
+      "description": "[Meta] List ad accounts the token can access (id, name, status, spend, currency, business). NOTE: amount_spent is in the currency's MINOR unit (cents/pence) — divide by 100 for the real figure. (A SYSTEM-USER token returns [] here — use meta_graph on '<businessId>/owned_ad_accounts' instead.) Start of an ads audit.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L654-L656",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Meta Marketing API: lists accessible ad accounts with status, spend and business fields."
+    },
+    {
+      "name": "meta_list_businesses",
+      "description": "[Meta] List Business Manager businesses the token can access.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L657-L659",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Meta Business Manager: lists accessible businesses."
+    },
+    {
+      "name": "meta_list_pages",
+      "description": "[Meta] List Facebook Pages the token manages (id, name, category, fans).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L660-L662",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Meta Facebook: lists managed Pages with category, fan count and tasks."
+    },
+    {
+      "name": "meta_list_campaigns",
+      "description": "[Meta] List campaigns on an ad account (id, name, status, effective_status, objective, budget, dates). NOTE: daily_budget/lifetime_budget are in the currency's MINOR unit (cents/pence — ÷100). The core tool for finding dead/clutter campaigns.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "adAccountId": {
+            "type": "string",
+            "description": "act_<id>; defaults to META_AD_ACCOUNT_ID."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Default 200."
+          }
+        },
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L663-L672",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Meta Marketing API: lists campaigns with status, budget, objective and timestamps."
+    },
+    {
+      "name": "meta_update_campaign",
+      "description": "[Meta][WRITE] Change a campaign's status — ACTIVE / PAUSED / ARCHIVED / DELETED. The tidy verb for dead campaigns (prefer ARCHIVED over DELETED — reversible).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "Campaign id from meta_list_campaigns."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "PAUSED",
+              "ARCHIVED",
+              "DELETED"
+            ]
+          }
+        },
+        "required": [
+          "campaignId",
+          "status"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L673-L678",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Meta Marketing API: posts a campaign status change."
+    },
+    {
+      "name": "meta_list_custom_audiences",
+      "description": "[Meta] List custom audiences on an ad account (id, name, size, subtype, status, dates).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "adAccountId": {
+            "type": "string",
+            "description": "act_<id>; defaults to META_AD_ACCOUNT_ID."
+          }
+        },
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L679-L688",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Meta Marketing API: lists custom audiences including subtype, size bounds and operation status."
+    },
+    {
+      "name": "meta_delete_custom_audience",
+      "description": "[Meta][WRITE] Delete a custom audience (destructive — removed, not archived).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "audienceId": {
+            "type": "string",
+            "description": "Custom audience id from meta_list_custom_audiences."
+          }
+        },
+        "required": [
+          "audienceId"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L689-L694",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Meta Marketing API: deletes a custom audience."
+    },
+    {
+      "name": "meta_list_pixels",
+      "description": "[Meta] List ad pixels / datasets on an ad account (id, name, last_fired_time) — spot stale/duplicate pixels.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "adAccountId": {
+            "type": "string",
+            "description": "act_<id>; defaults to META_AD_ACCOUNT_ID."
+          }
+        },
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L695-L704",
+      "scope": "other",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Meta Marketing API: lists ad pixels with last fired time and availability."
+    },
+    {
+      "name": "ga4_account_summaries",
+      "description": "GA4 Admin: list the accounts + properties you can access, including each property's NUMERIC id — use this to discover GA4_PROPERTY_ID.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L707-L712",
+      "scope": "other",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Google Analytics 4 Admin: lists accessible account summaries and property IDs."
+    },
+    {
+      "name": "ga4_list_key_events",
+      "description": "GA4 Admin: list key events (conversions) on a property.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "numeric; defaults to GA4_PROPERTY_ID"
+          }
+        },
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L713-L722",
+      "scope": "other",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Google Analytics 4 Admin: lists property key events."
+    },
+    {
+      "name": "ga4_create_key_event",
+      "description": "GA4 Admin [WRITE]: mark an event name as a Key event (conversion). e.g. eventName='generate_lead'.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "eventName": {
+            "type": "string",
+            "description": "the GA4 event name"
+          },
+          "propertyId": {
+            "type": "string",
+            "description": "Numeric GA4 property id (the property id, distinct from the G- measurement id). Defaults to GA4_PROPERTY_ID."
+          },
+          "countingMethod": {
+            "type": "string",
+            "enum": [
+              "ONCE_PER_EVENT",
+              "ONCE_PER_SESSION"
+            ],
+            "description": "Default ONCE_PER_EVENT."
+          }
+        },
+        "required": [
+          "eventName"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L723-L738",
+      "scope": "other",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Google Analytics 4 Admin: creates a key event with eventName and countingMethod."
+    },
+    {
+      "name": "ga4_list_custom_dimensions",
+      "description": "GA4 Admin: list custom dimensions on a property.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "Numeric GA4 property id (the property id, distinct from the G- measurement id). Defaults to GA4_PROPERTY_ID."
+          }
+        },
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L739-L748",
+      "scope": "other",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Google Analytics 4 Admin: lists property custom dimensions."
+    },
+    {
+      "name": "ga4_create_custom_dimension",
+      "description": "GA4 Admin [WRITE]: register an event parameter as a custom dimension (e.g. surface a 'step' param as 'Booking Step').",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "parameterName": {
+            "type": "string",
+            "description": "the event parameter name"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "UI display name"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "EVENT",
+              "USER",
+              "ITEM"
+            ],
+            "description": "Default EVENT."
+          },
+          "propertyId": {
+            "type": "string",
+            "description": "Numeric GA4 property id (the property id, distinct from the G- measurement id). Defaults to GA4_PROPERTY_ID."
+          }
+        },
+        "required": [
+          "parameterName",
+          "displayName"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L749-L764",
+      "scope": "other",
+      "tags": [
+        "inspect",
+        "edit"
+      ],
+      "behavior": "Google Analytics 4 Admin: creates a custom dimension with parameterName, displayName and scope."
+    },
+    {
+      "name": "ga4_list_data_streams",
+      "description": "GA4 Admin: list data streams (web/app) on a property — incl. the measurement id.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "Numeric GA4 property id (the property id, distinct from the G- measurement id). Defaults to GA4_PROPERTY_ID."
+          }
+        },
+        "required": []
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L765-L774",
+      "scope": "other",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Google Analytics 4 Admin: lists property data streams."
+    },
+    {
+      "name": "ga4_admin",
+      "description": "GA4 Admin API escape hatch — any method/path under analyticsadmin v1beta (audiences, property/stream updates, etc.). WRITES are real; PATCH usually needs a updateMask query.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST",
+              "PATCH",
+              "DELETE"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "description": "relative to .../v1beta/ — e.g. properties/123/audiences"
+          },
+          "body": {
+            "type": "string",
+            "description": "JSON string for POST/PATCH"
+          },
+          "query": {
+            "type": "string",
+            "description": "e.g. updateMask=displayName"
+          }
+        },
+        "required": [
+          "method",
+          "path"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L775-L787",
+      "scope": "other",
+      "tags": [
+        "inspect",
+        "edit",
+        "generic-api"
+      ],
+      "behavior": "Google Analytics 4 Admin: forwards arbitrary v1beta method/path, optional query string and body."
+    },
+    {
+      "name": "gsc_submit_sitemap",
+      "description": "GSC [WRITE]: submit / resubmit a sitemap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "feedpath": {
+            "type": "string",
+            "description": "full sitemap URL, e.g. https://example.com/sitemap.xml"
+          },
+          "siteUrl": {
+            "type": "string",
+            "description": "Search Console property: URL-prefix form with its trailing slash, or sc-domain:<domain>. Defaults to GSC_SITE_URL."
+          }
+        },
+        "required": [
+          "feedpath"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L790-L802",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Search Console: submits a sitemap with PUT."
+    },
+    {
+      "name": "gsc_delete_sitemap",
+      "description": "GSC [WRITE]: remove a sitemap (re-submittable).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "feedpath": {
+            "type": "string",
+            "description": "full sitemap URL"
+          },
+          "siteUrl": {
+            "type": "string",
+            "description": "Search Console property: URL-prefix form with its trailing slash, or sc-domain:<domain>. Defaults to GSC_SITE_URL."
+          }
+        },
+        "required": [
+          "feedpath"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L803-L815",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Search Console: deletes a sitemap with DELETE."
+    },
+    {
+      "name": "gsc_add_site",
+      "description": "GSC [WRITE]: add a property to Search Console (ownership still has to be verified separately).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "siteUrl": {
+            "type": "string",
+            "description": "URL-prefix or sc-domain: form"
+          }
+        },
+        "required": [
+          "siteUrl"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L816-L822",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Search Console: adds a property with PUT; does not verify ownership."
+    },
+    {
+      "name": "gsc_request_indexing",
+      "description": "Indexing API [WRITE]: ask Google to (re)crawl a URL. NOTE: officially for JobPosting/BroadcastEvent pages; pinging general URLs works but is unofficial.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "the page URL"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "URL_UPDATED",
+              "URL_DELETED"
+            ],
+            "description": "Default URL_UPDATED; URL_DELETED reports the page as removed."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L823-L832",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Indexing API: posts a URL_UPDATED or URL_DELETED notification; unrelated to GTM."
+    },
+    {
+      "name": "gtm",
+      "description": "Google Tag Manager API v2 escape hatch — any method/path under tagmanager/v2. Discover: GET 'accounts', then '<acct>/containers', then '<container>/workspaces'. Manage: GET/POST '<workspace>/tags' | '/triggers' | '/variables'; create a version (POST '<workspace>:create_version'); publish (POST '<containerVersion>:publish'). WRITES + PUBLISH are real and affect the live site — build in a workspace, publish deliberately.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST",
+              "PUT",
+              "DELETE"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "description": "relative to https://www.googleapis.com/tagmanager/v2/ — e.g. accounts/123/containers/456/workspaces/7/tags"
+          },
+          "body": {
+            "type": "string",
+            "description": "JSON string for POST/PUT"
+          },
+          "query": {
+            "type": "string",
+            "description": "optional query string, e.g. fingerprint=..."
+          }
+        },
+        "required": [
+          "method",
+          "path"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L835-L847",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "edit",
+        "workspace",
+        "release",
+        "access",
+        "generic-api"
+      ],
+      "behavior": "Forwards GET, POST, PUT or DELETE to Google Tag Manager API v2 with the supplied relative path, raw JSON body and optional query string using OAuth."
+    },
+    {
+      "name": "kw_volume",
+      "description": "Keyword → monthly search volume / CPC / competition, batched (DataForSEO, Google Ads data). Send hundreds at once — deduped and chunked 500 per API call (≈ $0.05–0.075 per 1k keywords). Includes the 12-month monthly_searches trend.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Keywords to look up."
+          },
+          "location": {
+            "type": "integer",
+            "description": "DataForSEO location code. Default 2840 (US); 2826 is the UK."
+          },
+          "language": {
+            "type": "string",
+            "description": "Language code. Default en."
+          }
+        },
+        "required": [
+          "keywords"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L939-L961",
+      "scope": "other",
+      "tags": [],
+      "behavior": "DataForSEO: deduplicates and batches keywords in groups of 500 for Google Ads search volume and returns volume, CPC, competition and monthly trends."
+    },
+    {
+      "name": "kw_serp",
+      "description": "Live top-10 Google organic results for one keyword (DataForSEO) — position, domain, title, url — plus ads:true when paid results share the SERP (the commercial-intent signal). A fraction of a cent per query.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "The search query."
+          },
+          "location": {
+            "type": "integer",
+            "description": "DataForSEO location code. Default 2840 (US); 2826 is the UK."
+          },
+          "language": {
+            "type": "string",
+            "description": "Language code. Default en."
+          }
+        },
+        "required": [
+          "keyword"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L963-L975",
+      "scope": "other",
+      "tags": [],
+      "behavior": "DataForSEO: requests live Google SERP depth 20 and returns the first 10 organic results plus paid-result presence."
+    },
+    {
+      "name": "kw_suggest",
+      "description": "Mine Google autocomplete for a topic — FREE, no credentials. Expands the seed a–z, recurses on new finds, and returns the deduped sorted list: the visible query surface of a topic, i.e. what people actually type. depth 2 takes ~a minute; depth 3 can take several.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "seed": {
+            "type": "string",
+            "description": "Topic to mine, e.g. 'crm software'."
+          },
+          "gl": {
+            "type": "string",
+            "description": "Country for suggestions (ISO alpha-2). Default us."
+          },
+          "hl": {
+            "type": "string",
+            "description": "Language. Default en."
+          },
+          "depth": {
+            "type": "integer",
+            "description": "Recursion depth 1–3. Default 2."
+          }
+        },
+        "required": [
+          "seed"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L977-L1018",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google autocomplete: mines the seed and alphabet expansions, recursively probes fresh suggestions up to clamped depth 3 and returns sorted unique results."
+    },
+    {
+      "name": "kw_radar",
+      "description": "The demand-radar sweep. Reads the cluster file ~/.oqva-marketing-mcp/radar/<slug>.json ({clusters:{group:[terms]}, watchlist:[terms], locations:[codes]}), sweeps volume + top-10 SERP + suggest presence for every term × location, snapshots to radar/<slug>/<date>.json, and returns ONLY what changed since the previous snapshot: watchlist crossings (first suggest appearance / first nonzero volume — the headline), suggest appearances/disappearances on tracked terms, volume shifts >20%, and SERP top-10 entrants/dropouts/movers of ≥3 positions. First ever run returns {baseline:true}. Run weekly.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Names the cluster file: radar/<slug>.json."
+          },
+          "location": {
+            "type": "integer",
+            "description": "Sweep one DataForSEO location code only. Default: every code in the file's locations."
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/oqva-digital/oqva-marketing-mcp/blob/e9da7a025d1afa44f7e2d9510bd9c59bc836d9d0/src/index.ts#L1020-L1144",
+      "scope": "other",
+      "tags": [],
+      "behavior": "DataForSEO and Google autocomplete: reads a local keyword cluster file, sweeps volume/SERP/suggestions, writes a dated snapshot and returns changes since the previous snapshot."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "generic",
+    "summary": "Send GTM API requests with a chosen HTTP method, relative path, optional query, and raw JSON request body.",
+    "examples": [
+      "gtm"
+    ]
+  }
+}

@@ -1,0 +1,1807 @@
+{
+  "repo": "VKirill/ohmy-seo",
+  "url": "https://github.com/VKirill/ohmy-seo",
+  "commit": "4debd10b6a7f9b16c26fb1e2d5388f9948f85119",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Implements 24 GTM tools and nine credential auxiliaries; one deprecated stub and create-tag trigger field mismatch require review.",
+  "method": "reconstructed",
+  "server": "packages/gtm/src/index.ts (mcp-gtm stdio)",
+  "exposure": "All 33 tools registered unconditionally; startup requires MCP_GTM_MASTER_KEY configuration. Separate sibling product servers excluded. Hosted aggregate gateway has an allowlist and modifies write descriptions/schemas; this catalog captures the standalone GTM server.",
+  "sources": [
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L136-L148",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/list-google-oauth-apps.ts#L6-L13",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L151-L170",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/register-google-oauth-app.ts#L6-L46",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L180-L192",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/delete-google-oauth-app.ts#L6-L38",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L195-L206",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/list-google-accounts.ts#L6-L13",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L209-L225",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/start-google-oauth-flow.ts#L13-L102",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L233-L248",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/complete-google-oauth-flow.ts#L6-L20",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L257-L269",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/delete-google-account.ts#L6-L22",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L272-L284",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/set-default-google-account.ts#L6-L22",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L287-L302",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/register-google-service-account.ts#L12-L72",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L342-L352",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-accounts.ts#L29-L54",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L355-L366",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-containers.ts#L33-L58",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L369-L381",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-workspaces.ts#L37-L70",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L391-L404",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-tags.ts#L32-L73",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L415-L428",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-triggers.ts#L32-L73",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L439-L452",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-variables.ts#L32-L73",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L463-L475",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-versions.ts#L31-L70",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L485-L498",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-get-version.ts#L32-L70",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L513-L526",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-user-permissions.ts#L35-L53",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L539-L554",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-create-workspace.ts#L55-L86",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L567-L587",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-create-tag.ts#L106-L143",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L605-L624",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-create-trigger.ts#L92-L128",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L641-L658",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-create-variable.ts#L74-L108",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L673-L697",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-update-tag.ts#L44-L89",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L717-L734",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-delete-tag.ts#L46-L110",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L747-L766",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-create-version.ts#L55-L104",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L780-L796",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-create-container.ts#L75-L111",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L810-L827",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-update-account.ts#L45-L100",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L839-L863",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-create-user-permission.ts#L86-L125",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L878-L905",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-update-user-permission.ts#L86-L116",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L925-L944",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-publish-version.ts#L55-L100",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L957-L978",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-rollback.ts#L36-L159",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L993-L1011",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-delete-container.ts#L47-L105",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L1023-L1041",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-delete-user-permission.ts#L48-L106",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/lib/gtm-client.ts#L90-L187",
+    "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/hosting/apps/gateway/src/tool-policy.ts#L4-L65"
+  ],
+  "limitations": [
+    "Schemas reconstructed by evaluating registration configuration only, using exact locked Zod 4.4.3 offline; no server startup, OAuth or GTM API operations were invoked.",
+    "No credentialed integration verification; handlers use custom HTTP client and If-Match fingerprint concurrency mechanism.",
+    "complete_google_oauth_flow is an exposed deprecated error-only stub.",
+    "gtm_create_tag sends plural firingTriggerIds/blockingTriggerIds body fields; GTM resource uses singular firingTriggerId/blockingTriggerId (also reflected in this repo update-tag handler).",
+    "gtm_create_version description says confirm defaults false, but actual registered schema has required boolean confirm without a default.",
+    "List handlers issue a single request and do not exhaust API nextPageToken pagination.",
+    "Hosted aggregate catalog differs from standalone GTM and is outside the selected server scope."
+  ],
+  "tools": [
+    {
+      "name": "list_google_oauth_apps",
+      "description": "Returns all Google OAuth applications registered in the local encrypted database. Each entry shows label, client_id, declared scopes, and created_at. Client secrets are never returned — stored encrypted. Use before starting an OAuth flow or to audit registered credentials.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L136-L148",
+      "scope": "auxiliary",
+      "tags": [
+        "access",
+        "offline"
+      ],
+      "behavior": "Lists OAuth applications from the local GTM encrypted database without exposing client secrets.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/list-google-oauth-apps.ts#L6-L13"
+    },
+    {
+      "name": "register_google_oauth_app",
+      "description": "Registers a new Google OAuth application in the local encrypted database. client_secret is AES-256 encrypted before storage. redirect_uri must be a loopback URI (http://127.0.0.1:PORT/oauth/callback) — OOB redirect is not supported (Google deprecated it 2023-01-31). After registration, use start_google_oauth_flow to connect an account.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "Short unique name for this app, e.g. 'my-gtm-app'"
+          },
+          "client_id": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 256,
+            "description": "Google OAuth client_id from Google Cloud Console"
+          },
+          "client_secret": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 256,
+            "description": "Google OAuth client_secret (stored encrypted)"
+          },
+          "scopes_declared": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "description": "Space-delimited OAuth scopes"
+          },
+          "redirect_uri": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Loopback redirect URI, e.g. http://127.0.0.1:8765/oauth/callback"
+          }
+        },
+        "required": [
+          "label",
+          "client_id",
+          "client_secret",
+          "scopes_declared",
+          "redirect_uri"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L151-L170",
+      "scope": "auxiliary",
+      "tags": [
+        "access",
+        "offline"
+      ],
+      "behavior": "Stores an OAuth application in the GTM database and rejects deprecated OOB redirect URIs.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/register-google-oauth-app.ts#L6-L46"
+    },
+    {
+      "name": "delete_google_oauth_app",
+      "description": "Deletes a registered Google OAuth application by label. Blocked if accounts are linked to it — delete those first with delete_google_account. Action is irreversible.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "app_label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "Label of the OAuth app to delete"
+          }
+        },
+        "required": [
+          "app_label"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L180-L192",
+      "scope": "auxiliary",
+      "tags": [
+        "access",
+        "offline"
+      ],
+      "behavior": "Deletes a local OAuth application, with a specific error when accounts still reference it.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/delete-google-oauth-app.ts#L6-L38"
+    },
+    {
+      "name": "list_google_accounts",
+      "description": "Returns all Google accounts connected via OAuth or Service Account stored in the local database. Shows label, google_email, auth_method, scopes_granted, expires_at, and is_default. Tokens are never returned — stored encrypted.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L195-L206",
+      "scope": "auxiliary",
+      "tags": [
+        "access",
+        "offline"
+      ],
+      "behavior": "Lists locally registered Google accounts in the GTM package database.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/list-google-accounts.ts#L6-L13"
+    },
+    {
+      "name": "start_google_oauth_flow",
+      "description": "Begins a Google OAuth authorization code flow with automatic loopback callback. Opens a local HTTP listener, returns an authorize_url to open in a browser. Waits up to 5 minutes for the user to complete authorization, then saves the account. account_label must be free (not already taken — check list_google_accounts).",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "app_label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "Label of the registered OAuth app to use"
+          },
+          "account_label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "Desired label for the new account"
+          },
+          "login_hint": {
+            "description": "Google email to pre-fill in consent screen (optional)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_label",
+          "account_label"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L209-L225",
+      "scope": "auxiliary",
+      "tags": [
+        "access"
+      ],
+      "behavior": "Runs Google OAuth through a loopback callback and stores the resulting account credentials.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/start-google-oauth-flow.ts#L13-L102"
+    },
+    {
+      "name": "complete_google_oauth_flow",
+      "description": "Deprecated. Use start_google_oauth_flow which auto-completes via loopback. OOB flow no longer supported since Google deprecated it on 2023-01-31.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "app_label": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Label of the registered OAuth app"
+          },
+          "account_label": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Desired label for the account"
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Authorization code from Google"
+          },
+          "state": {
+            "type": "string",
+            "minLength": 1,
+            "description": "State token from start_google_oauth_flow"
+          }
+        },
+        "required": [
+          "app_label",
+          "account_label",
+          "code",
+          "state"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L233-L248",
+      "scope": "auxiliary",
+      "tags": [
+        "access"
+      ],
+      "behavior": "Deprecated stub always returns isError with instructions to use start_google_oauth_flow.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/complete-google-oauth-flow.ts#L6-L20"
+    },
+    {
+      "name": "delete_google_account",
+      "description": "Deletes a connected Google account by label. Removes tokens from the database. Does not revoke tokens on Google's side. To reconnect, run start_google_oauth_flow again.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account_label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "Label of the account to delete"
+          }
+        },
+        "required": [
+          "account_label"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L257-L269",
+      "scope": "auxiliary",
+      "tags": [
+        "access",
+        "offline"
+      ],
+      "behavior": "Deletes a locally registered Google account by label.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/delete-google-account.ts#L6-L22"
+    },
+    {
+      "name": "set_default_google_account",
+      "description": "Marks a Google account as the default. Tools that accept an optional 'account' parameter will use this account when none is specified. Use list_google_accounts to see available labels.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account_label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "Label of the account to set as default"
+          }
+        },
+        "required": [
+          "account_label"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L272-L284",
+      "scope": "auxiliary",
+      "tags": [
+        "access",
+        "offline"
+      ],
+      "behavior": "Sets a locally registered account as the default for the GTM package.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/set-default-google-account.ts#L6-L22"
+    },
+    {
+      "name": "register_google_service_account",
+      "description": "Registers a Google Service Account from a JSON key file. Validates the key by obtaining an access token before saving. Required for tools that need Service Account authentication. Provide scopes as space-delimited string.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account_label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "Label for this service account, e.g. 'gtm-sa'"
+          },
+          "json_path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Absolute path to the service account JSON key file"
+          },
+          "scopes": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Space-delimited OAuth scopes"
+          }
+        },
+        "required": [
+          "account_label",
+          "json_path",
+          "scopes"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L287-L302",
+      "scope": "auxiliary",
+      "tags": [
+        "access"
+      ],
+      "behavior": "Reads a service-account JSON key, verifies token acquisition and stores its encrypted credentials.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/register-google-service-account.ts#L12-L72"
+    },
+    {
+      "name": "gtm_list_accounts",
+      "description": "Lists all GTM accounts accessible to the resolved Google account.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          }
+        }
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L342-L352",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Reads GTM accounts through the v2 API and caches the extracted accounts array.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-accounts.ts#L29-L54"
+    },
+    {
+      "name": "gtm_list_containers",
+      "description": "Lists all containers in a GTM account.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID (numeric string)."
+          }
+        },
+        "required": [
+          "accountId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L355-L366",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Reads GTM containers under an account and caches the extracted containers array.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-containers.ts#L33-L58"
+    },
+    {
+      "name": "gtm_list_workspaces",
+      "description": "Lists all workspaces in a GTM container.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID (numeric string)."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID (numeric string)."
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L369-L381",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "workspace"
+      ],
+      "behavior": "Reads GTM workspaces under a container and caches the extracted workspaces array.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-workspaces.ts#L37-L70"
+    },
+    {
+      "name": "gtm_list_tags",
+      "description": "Lists all tags in a GTM workspace.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "GTM Workspace ID."
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L391-L404",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Reads workspace tags and caches the extracted tags array.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-tags.ts#L32-L73"
+    },
+    {
+      "name": "gtm_list_triggers",
+      "description": "Lists all triggers in a GTM workspace.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "GTM Workspace ID."
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L415-L428",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Reads workspace triggers and caches the extracted triggers array.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-triggers.ts#L32-L73"
+    },
+    {
+      "name": "gtm_list_variables",
+      "description": "Lists all variables in a GTM workspace.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "GTM Workspace ID."
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L439-L452",
+      "scope": "gtm",
+      "tags": [
+        "inspect"
+      ],
+      "behavior": "Reads workspace variables and caches the extracted variables array.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-variables.ts#L32-L73"
+    },
+    {
+      "name": "gtm_list_versions",
+      "description": "Lists version headers for a GTM container. Short TTL (5 min) because the edit cycle may create new versions frequently.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID."
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L463-L475",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Reads container version_headers and caches containerVersionHeader.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-versions.ts#L31-L70"
+    },
+    {
+      "name": "gtm_get_version",
+      "description": "Fetches a specific GTM container version by version ID.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID."
+          },
+          "versionId": {
+            "type": "string",
+            "description": "GTM Container Version ID."
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "versionId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L485-L498",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "release"
+      ],
+      "behavior": "Reads a container version and caches the response data.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-get-version.ts#L32-L70"
+    },
+    {
+      "name": "gtm_list_user_permissions",
+      "description": "Lists all users with access to a GTM account and their account/container permissions. Not cached — permission grants change out-of-band and staleness has access-control consequences.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID (numeric string)."
+          }
+        },
+        "required": [
+          "accountId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L513-L526",
+      "scope": "gtm",
+      "tags": [
+        "inspect",
+        "access"
+      ],
+      "behavior": "Reads account user_permissions without a cache.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-list-user-permissions.ts#L35-L53"
+    },
+    {
+      "name": "gtm_create_workspace",
+      "description": "WRITE — creates a GTM Workspace in the given Container. Requires confirm:true.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID (numeric string)."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID (numeric string)."
+          },
+          "name": {
+            "type": "string",
+            "description": "Workspace name."
+          },
+          "description": {
+            "description": "Workspace description (optional).",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "description": "Set to true to execute. False returns dry-run preview.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "name"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L539-L554",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Previews by default or POSTs a new workspace when confirmed.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-create-workspace.ts#L55-L86"
+    },
+    {
+      "name": "gtm_create_tag",
+      "description": "WRITE — creates a GTM Tag in the given Workspace. Requires confirm:true.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID (numeric string)."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID (numeric string)."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "GTM Workspace ID (numeric string)."
+          },
+          "name": {
+            "type": "string",
+            "description": "Tag name."
+          },
+          "type": {
+            "type": "string",
+            "description": "Tag type, e.g. 'ua', 'html', 'gclidAdw'."
+          },
+          "parameter": {
+            "description": "Tag configuration parameters.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            }
+          },
+          "firingTriggerIds": {
+            "description": "IDs of triggers that fire this tag.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "blockingTriggerIds": {
+            "description": "IDs of triggers that block this tag.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tagFiringOption": {
+            "description": "Tag firing option, e.g. 'oncePerLoad', 'unlimited'.",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "description": "Set to true to execute. False returns dry-run preview.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "name",
+          "type"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L567-L587",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Previews by default or POSTs a tag; firingTriggerIds/blockingTriggerIds are sent as plural body keys, inconsistent with GTM singular firingTriggerId/blockingTriggerId.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-create-tag.ts#L106-L143"
+    },
+    {
+      "name": "gtm_create_trigger",
+      "description": "WRITE — creates a GTM Trigger in the given Workspace. Requires confirm:true.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID (numeric string)."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID (numeric string)."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "GTM Workspace ID (numeric string)."
+          },
+          "name": {
+            "type": "string",
+            "description": "Trigger name."
+          },
+          "type": {
+            "type": "string",
+            "description": "Trigger type, e.g. 'pageview', 'click', 'customEvent'."
+          },
+          "filter": {
+            "description": "Trigger filter conditions.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            }
+          },
+          "customEventFilter": {
+            "description": "Custom event filter conditions.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            }
+          },
+          "parameter": {
+            "description": "Additional trigger parameters.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            }
+          },
+          "confirm": {
+            "default": false,
+            "description": "Set to true to execute. False returns dry-run preview.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "name",
+          "type"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L605-L624",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Previews by default or POSTs a trigger with supplied filters and parameters.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-create-trigger.ts#L92-L128"
+    },
+    {
+      "name": "gtm_create_variable",
+      "description": "WRITE — creates a GTM Variable in the given Workspace. Requires confirm:true.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID (numeric string)."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID (numeric string)."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "GTM Workspace ID (numeric string)."
+          },
+          "name": {
+            "type": "string",
+            "description": "Variable name."
+          },
+          "type": {
+            "type": "string",
+            "description": "Variable type, e.g. 'v' (constant), 'dlv' (dataLayer)."
+          },
+          "parameter": {
+            "description": "Variable configuration parameters.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            }
+          },
+          "confirm": {
+            "default": false,
+            "description": "Set to true to execute. False returns dry-run preview.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "name",
+          "type"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L641-L658",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Previews by default or POSTs a variable with supplied parameters.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-create-variable.ts#L74-L108"
+    },
+    {
+      "name": "gtm_update_tag",
+      "description": "WRITE — updates a GTM Tag via PUT. Requires a cached etag (run gtm_list_tags first). confirm:false returns dry-run preview; confirm:true executes the update.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Registered Google account label (optional).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "GTM Workspace ID."
+          },
+          "tagId": {
+            "type": "string",
+            "description": "GTM Tag ID to update."
+          },
+          "name": {
+            "description": "Tag display name.",
+            "type": "string"
+          },
+          "type": {
+            "description": "Tag type (e.g. 'ua', 'gaawe').",
+            "type": "string"
+          },
+          "parameter": {
+            "description": "Tag parameters.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            }
+          },
+          "firingTriggerId": {
+            "description": "Firing trigger IDs.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "blockingTriggerId": {
+            "description": "Blocking trigger IDs.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tagFiringOption": {
+            "description": "Tag firing option.",
+            "type": "string"
+          },
+          "notes": {
+            "description": "Optional notes.",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "description": "true = execute; false = dry-run preview.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "tagId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L673-L697",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Previews or GETs the current tag and PUTs merged fields with a cached fingerprint sent through If-Match.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-update-tag.ts#L44-L89"
+    },
+    {
+      "name": "gtm_delete_tag",
+      "description": "WRITE — deletes a GTM Tag. Requires a cached etag (run gtm_list_tags first). confirm:false returns a dry-run preview; confirm:true executes the delete.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "GTM Workspace ID."
+          },
+          "tagId": {
+            "type": "string",
+            "description": "GTM Tag ID to delete."
+          },
+          "confirm": {
+            "default": false,
+            "description": "Set to true to execute the delete. false returns a dry-run preview.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "tagId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L717-L734",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "workspace"
+      ],
+      "behavior": "Previews or GETs the tag and DELETEs it with a cached fingerprint sent through If-Match.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-delete-tag.ts#L46-L110"
+    },
+    {
+      "name": "gtm_create_version",
+      "description": "Creates a checkpoint from current workspace state. Does NOT publish — workspace remains active. Use gtm_publish_version separately to make this version live. With confirm:false (default) returns a dry-run preview. With confirm:true executes the create_version call.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID (numeric string)."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID (numeric string)."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "GTM Workspace ID (numeric string)."
+          },
+          "name": {
+            "type": "string",
+            "description": "Version name (human-readable label for the checkpoint)."
+          },
+          "notes": {
+            "description": "Optional notes describing what changed in this version.",
+            "type": "string"
+          },
+          "confirm": {
+            "type": "boolean",
+            "description": "Set to true to execute. False (default) returns dry-run preview."
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "name",
+          "confirm"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L747-L766",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "behavior": "Previews or POSTs workspace:create_version; registered confirm is required despite description saying default false.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-create-version.ts#L55-L104"
+    },
+    {
+      "name": "gtm_create_container",
+      "description": "WRITE — creates a GTM Container in the given Account. Requires confirm:true.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID (numeric string)."
+          },
+          "name": {
+            "type": "string",
+            "description": "Container display name."
+          },
+          "usageContext": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Usage contexts, e.g. ['web'], ['android'], ['ios']."
+          },
+          "domainName": {
+            "description": "Domain names associated with the container (optional).",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notes": {
+            "description": "Container notes (optional).",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "description": "Set to true to execute. False returns dry-run preview.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountId",
+          "name",
+          "usageContext"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L780-L796",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Previews or POSTs a container with usageContext and optional domains/notes.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-create-container.ts#L75-L111"
+    },
+    {
+      "name": "gtm_update_account",
+      "description": "WRITE — updates a GTM Account (name, shareData). Fetches the current account first to obtain a fresh fingerprint/etag and the full resource, then PUTs the merged resource. confirm:false returns dry-run preview with NO network call; confirm:true executes the read + update.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Registered Google account label (optional).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID to update."
+          },
+          "name": {
+            "description": "Account display name.",
+            "type": "string"
+          },
+          "shareData": {
+            "description": "Whether data may be shared anonymously with Google.",
+            "type": "boolean"
+          },
+          "confirm": {
+            "default": false,
+            "description": "true = execute; false = dry-run preview.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L810-L827",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Previews without network calls or GETs the current account and PUTs merged name/shareData.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-update-account.ts#L45-L100"
+    },
+    {
+      "name": "gtm_create_user_permission",
+      "description": "WRITE — grants a user Account and/or Container access on a GTM account. Requires confirm:true.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID (numeric string)."
+          },
+          "emailAddress": {
+            "type": "string",
+            "description": "Email address of the user to grant access to."
+          },
+          "accountPermission": {
+            "type": "string",
+            "enum": [
+              "noAccess",
+              "user",
+              "admin"
+            ],
+            "description": "Account-level permission for the user."
+          },
+          "containerAccess": {
+            "description": "Per-container permissions to grant (optional).",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "containerId": {
+                  "type": "string",
+                  "description": "GTM Container ID."
+                },
+                "permission": {
+                  "type": "string",
+                  "enum": [
+                    "noAccess",
+                    "read",
+                    "edit",
+                    "approve",
+                    "publish"
+                  ],
+                  "description": "Container-level permission."
+                }
+              },
+              "required": [
+                "containerId",
+                "permission"
+              ]
+            }
+          },
+          "confirm": {
+            "default": false,
+            "description": "Set to true to execute. False returns dry-run preview.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountId",
+          "emailAddress",
+          "accountPermission"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L839-L863",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "access"
+      ],
+      "behavior": "Previews or POSTs user_permissions, mapping accountPermission to accountAccess.permission.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-create-user-permission.ts#L86-L125"
+    },
+    {
+      "name": "gtm_update_user_permission",
+      "description": "WRITE — updates a user's Account/Container access on a GTM account via PUT. Requires permissionId (from gtm_list_user_permissions). confirm:false returns dry-run preview; confirm:true executes the update.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Registered Google account label (optional).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID (numeric string)."
+          },
+          "permissionId": {
+            "type": "string",
+            "description": "UserPermission ID to update."
+          },
+          "emailAddress": {
+            "description": "Email address of the user (usually unchanged).",
+            "type": "string"
+          },
+          "accountPermission": {
+            "description": "Account-level permission for the user.",
+            "type": "string",
+            "enum": [
+              "noAccess",
+              "user",
+              "admin"
+            ]
+          },
+          "containerAccess": {
+            "description": "Per-container permissions (replaces the existing set when provided).",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "containerId": {
+                  "type": "string",
+                  "description": "GTM Container ID."
+                },
+                "permission": {
+                  "type": "string",
+                  "enum": [
+                    "noAccess",
+                    "read",
+                    "edit",
+                    "approve",
+                    "publish"
+                  ],
+                  "description": "Container-level permission."
+                }
+              },
+              "required": [
+                "containerId",
+                "permission"
+              ]
+            }
+          },
+          "confirm": {
+            "default": false,
+            "description": "true = execute; false = dry-run preview.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "accountId",
+          "permissionId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L878-L905",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "access"
+      ],
+      "behavior": "Previews or PUTs supplied account/container access to a user permission.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-update-user-permission.ts#L86-L116"
+    },
+    {
+      "name": "gtm_publish_version",
+      "description": "DANGER — affects live container. Publishes a specific GTM container version, making it live. Verify version_id is the intended checkpoint. Two-step gate: confirm:true + acknowledge_live:'I-UNDERSTAND-THIS-IS-LIVE:<version_id>'. With confirm:false (default) returns a dry-run preview with the target version and a warning.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID (numeric string)."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID (numeric string)."
+          },
+          "versionId": {
+            "type": "string",
+            "description": "Target GTM Container Version ID to make live."
+          },
+          "confirm": {
+            "default": false,
+            "description": "Set to true to execute publish. False (default) returns dry-run preview.",
+            "type": "boolean"
+          },
+          "acknowledge_live": {
+            "description": "Required when confirm:true. Must be: I-UNDERSTAND-THIS-IS-LIVE:<versionId>",
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "versionId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L925-L944",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "behavior": "Previews or POSTs versions/<versionId>:publish after confirmation and live acknowledgement.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-publish-version.ts#L55-L100"
+    },
+    {
+      "name": "gtm_rollback",
+      "description": "DANGER — affects live container. Two-step DB-backed rollback. Step 1 (confirm:false): previews rollback from live → target version, stores a plan (5 min TTL), returns plan_id. Step 2 (confirm:true + plan_id + acknowledge_live): atomically claims plan, re-checks fingerprint, publishes target version. acknowledge_live format: I-UNDERSTAND-THIS-IS-LIVE:<containerId>.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID."
+          },
+          "workspaceId": {
+            "type": "string",
+            "description": "GTM Workspace ID."
+          },
+          "to_version_id": {
+            "type": "string",
+            "description": "Target version to roll back to."
+          },
+          "plan_id": {
+            "description": "Required for confirm step. UUID from step 1.",
+            "type": "string"
+          },
+          "confirm": {
+            "default": false,
+            "description": "False (default) = preview. True = execute.",
+            "type": "boolean"
+          },
+          "acknowledge_live": {
+            "description": "Required when confirm:true. Format: I-UNDERSTAND-THIS-IS-LIVE:<containerId>",
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId",
+          "workspaceId",
+          "to_version_id"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L957-L978",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "release"
+      ],
+      "behavior": "Stores a five-minute rollback plan, atomically claims it, checks live fingerprint and publishes the target version after confirmation.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-rollback.ts#L36-L159"
+    },
+    {
+      "name": "gtm_delete_container",
+      "description": "DANGER — irreversibly deletes a GTM Container and everything inside it (tags, triggers, variables, workspaces, versions). Verify containerId with gtm_list_containers first. Two-step gate: confirm:true + acknowledge_live:'I-UNDERSTAND-THIS-IS-LIVE:<containerId>'. With confirm:false (default) returns a dry-run preview with a warning.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID (numeric string)."
+          },
+          "containerId": {
+            "type": "string",
+            "description": "GTM Container ID to delete (numeric string)."
+          },
+          "confirm": {
+            "default": false,
+            "description": "Set to true to execute the delete. False (default) returns dry-run preview.",
+            "type": "boolean"
+          },
+          "acknowledge_live": {
+            "description": "Required when confirm:true. Must be: I-UNDERSTAND-THIS-IS-LIVE:<containerId>",
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "containerId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L993-L1011",
+      "scope": "gtm",
+      "tags": [
+        "edit"
+      ],
+      "behavior": "Previews or DELETEs the container after confirmation and matching live acknowledgement.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-delete-container.ts#L47-L105"
+    },
+    {
+      "name": "gtm_delete_user_permission",
+      "description": "DANGER — revokes a user's access to a GTM account and all of its containers. Verify permissionId with gtm_list_user_permissions first. Two-step gate: confirm:true + acknowledge_live:'I-UNDERSTAND-THIS-IS-LIVE:<permissionId>'. With confirm:false (default) returns a dry-run preview with a warning.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Label of a registered Google account (optional; uses default if omitted).",
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "description": "GTM Account ID (numeric string)."
+          },
+          "permissionId": {
+            "type": "string",
+            "description": "UserPermission ID to revoke."
+          },
+          "confirm": {
+            "default": false,
+            "description": "Set to true to execute the delete. False (default) returns dry-run preview.",
+            "type": "boolean"
+          },
+          "acknowledge_live": {
+            "description": "Required when confirm:true. Must be: I-UNDERSTAND-THIS-IS-LIVE:<permissionId>",
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "permissionId"
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "idempotentHint": false
+      },
+      "schemaOrigin": "reconstructed",
+      "source": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/index.ts#L1023-L1041",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "access"
+      ],
+      "behavior": "Previews or DELETEs a user permission after confirmation and matching live acknowledgement.",
+      "implementationSource": "https://github.com/VKirill/ohmy-seo/blob/4debd10b6a7f9b16c26fb1e2d5388f9948f85119/packages/gtm/src/tools/gtm-delete-user-permission.ts#L48-L106"
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "manage",
+    "summary": "Browse tracking resources, create workspace drafts, and preview confirmed trigger and variable edits.",
+    "examples": [
+      "gtm_create_workspace",
+      "gtm_create_trigger",
+      "gtm_create_variable"
+    ]
+  }
+}

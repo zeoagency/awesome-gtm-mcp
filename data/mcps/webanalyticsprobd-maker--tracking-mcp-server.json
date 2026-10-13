@@ -1,0 +1,261 @@
+{
+  "repo": "webanalyticsprobd-maker/tracking-mcp-server",
+  "url": "https://github.com/webanalyticsprobd-maker/tracking-mcp-server",
+  "commit": "285aacefcdf28fa7ada6da58759dd2cf5e844413",
+  "checkedAt": "2026-10-13",
+  "decision": "keep",
+  "reason": "Real local GTM payload validation, snippet generation and heuristic audit are implemented; no GTM management API, snippet escaping defects and misleading GA4 send success handling warrant review.",
+  "method": "mixed",
+  "server": "src/index.ts (stdio)",
+  "exposure": "All four tools registered unconditionally; no configuration or read-only groups. GA4 transmission is a separate product tool. Audit also supports Meta CAPI and GA4; snippet also supports GA4 and React.",
+  "sources": [
+    "https://github.com/webanalyticsprobd-maker/tracking-mcp-server/blob/285aacefcdf28fa7ada6da58759dd2cf5e844413/src/index.ts#L1-L198",
+    "https://github.com/webanalyticsprobd-maker/tracking-mcp-server/blob/285aacefcdf28fa7ada6da58759dd2cf5e844413/src/schemas.ts#L1-L56",
+    "https://github.com/webanalyticsprobd-maker/tracking-mcp-server/blob/285aacefcdf28fa7ada6da58759dd2cf5e844413/src/controller.ts#L1-L260",
+    "https://github.com/webanalyticsprobd-maker/tracking-mcp-server/blob/285aacefcdf28fa7ada6da58759dd2cf5e844413/package.json#L1-L35"
+  ],
+  "limitations": [
+    "Offline tools/list obtained from isolated source copy with freshly resolved semver dependencies, not a pinned upstream lockfile: @modelcontextprotocol/sdk and zod versions are preserved in work package-lock.json. No tool operations executed.",
+    "Audit readiness score is an implementation heuristic, not GA4 validation or actual Meta EMQ.",
+    "GA4 sender falls back to demo credentials and masks fetch failures as simulated_success; HTTP error responses are not treated as errors.",
+    "Snippet generation does not escape event names or object property keys. Validator schema prevents reporting several invalid types because MCP rejects them first."
+  ],
+  "tools": [
+    {
+      "name": "validate_datalayer_event",
+      "description": "Validates a GTM DataLayer event payload against GA4 & E-commerce schema standards to detect missing parameters or invalid types.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "eventPayload": {
+            "type": "object",
+            "properties": {
+              "event": {
+                "type": "string",
+                "description": "The name of the DataLayer event (e.g. 'purchase', 'add_to_cart', 'lead')"
+              },
+              "currency": {
+                "type": "string",
+                "description": "ISO 4217 3-letter currency code (e.g. 'USD', 'EUR')"
+              },
+              "value": {
+                "type": "number",
+                "description": "Monetary value associated with the event"
+              },
+              "transaction_id": {
+                "type": "string",
+                "description": "Unique transaction ID for purchase events"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "item_id": {
+                      "type": "string",
+                      "description": "Product ID or SKU"
+                    },
+                    "item_name": {
+                      "type": "string",
+                      "description": "Product name"
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "Item unit price"
+                    },
+                    "quantity": {
+                      "type": "number",
+                      "description": "Item quantity"
+                    },
+                    "item_category": {
+                      "type": "string",
+                      "description": "Product category"
+                    },
+                    "item_brand": {
+                      "type": "string",
+                      "description": "Product brand"
+                    }
+                  },
+                  "required": [
+                    "item_id",
+                    "item_name",
+                    "price",
+                    "quantity"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "Array of e-commerce items"
+              },
+              "user_data": {
+                "type": "object",
+                "properties": {
+                  "email_hash": {
+                    "type": "string"
+                  },
+                  "phone_hash": {
+                    "type": "string"
+                  },
+                  "client_id": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false,
+                "description": "Hashed user data for CAPI matching"
+              }
+            },
+            "required": [
+              "event"
+            ],
+            "additionalProperties": true,
+            "description": "The complete DataLayer event JSON object to validate"
+          }
+        },
+        "required": [
+          "eventPayload"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/webanalyticsprobd-maker/tracking-mcp-server/blob/285aacefcdf28fa7ada6da58759dd2cf5e844413/src/index.ts#L24-L50",
+      "scope": "gtm",
+      "tags": [
+        "audit",
+        "test",
+        "offline"
+      ],
+      "behavior": "Locally checks event presence, selected ecommerce fields and purchase transaction_id; MCP schema requires both item_id and item_name plus price and quantity before handler validation (controller.ts L6-L109)."
+    },
+    {
+      "name": "send_ga4_measurement_protocol_event",
+      "description": "Transmits a server-side analytics event to Google Analytics 4 via Measurement Protocol API.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "description": "GA4 Client ID (e.g. '123456789.987654321')"
+          },
+          "eventName": {
+            "type": "string",
+            "description": "Name of the event to track (e.g. 'purchase', 'page_view')"
+          },
+          "measurementId": {
+            "type": "string",
+            "description": "GA4 Measurement ID override (default read from ENV)"
+          },
+          "apiSecret": {
+            "type": "string",
+            "description": "GA4 API Secret override (default read from ENV)"
+          },
+          "eventParams": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Arbitrary event parameters object"
+          }
+        },
+        "required": [
+          "clientId",
+          "eventName"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/webanalyticsprobd-maker/tracking-mcp-server/blob/285aacefcdf28fa7ada6da58759dd2cf5e844413/src/index.ts#L52-L85",
+      "scope": "other",
+      "tags": [],
+      "behavior": "Google Analytics 4: posts to /mp/collect using argument or environment credentials, with demo fallback credentials; network failures return simulated_success and any non-204 response is reported as submitted (controller.ts L114-L159)."
+    },
+    {
+      "name": "generate_tracking_code_snippet",
+      "description": "Generates production-ready tracking code snippets for GTM dataLayer.push, GA4 gtag.js, or React custom hook.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "gtm_datalayer",
+              "ga4_gtag",
+              "react_hook"
+            ],
+            "description": "Target platform format for code generation"
+          },
+          "eventName": {
+            "type": "string",
+            "description": "Name of event (e.g. 'add_to_cart', 'lead')"
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Event parameters key-value object"
+          }
+        },
+        "required": [
+          "platform",
+          "eventName",
+          "parameters"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/webanalyticsprobd-maker/tracking-mcp-server/blob/285aacefcdf28fa7ada6da58759dd2cf5e844413/src/index.ts#L87-L113",
+      "scope": "gtm",
+      "tags": [
+        "edit",
+        "offline"
+      ],
+      "behavior": "Locally generates dataLayer.push, gtag or React hook text without installing it; event names and property keys are interpolated without escaping, so arbitrary inputs can generate invalid JavaScript (controller.ts L164-L199)."
+    },
+    {
+      "name": "audit_tracking_readiness",
+      "description": "Audits a tracking event payload against GA4 or Meta CAPI readiness standards and returns an EMQ/Quality score (0-100) with actionable recommendations.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "GA4",
+              "Meta CAPI",
+              "GTM"
+            ],
+            "description": "Platform to audit event against"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Event object payload to audit"
+          }
+        },
+        "required": [
+          "platform",
+          "payload"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "schemaOrigin": "tools/list",
+      "source": "https://github.com/webanalyticsprobd-maker/tracking-mcp-server/blob/285aacefcdf28fa7ada6da58759dd2cf5e844413/src/index.ts#L115-L144",
+      "scope": "gtm",
+      "tags": [
+        "audit",
+        "offline"
+      ],
+      "behavior": "Locally assigns a heuristic score from missing event, ecommerce or Meta user_data fields; GA4 and GTM share checks and the Meta score is not a measured EMQ (controller.ts L204-L260)."
+    }
+  ],
+  "gaps": [],
+  "review": {
+    "status": "reviewed",
+    "classification": "test",
+    "summary": "Check dataLayer event fields, generate GTM/gtag snippets, and score supplied tracking payloads with local heuristics.",
+    "examples": [
+      "validate_datalayer_event",
+      "generate_tracking_code_snippet",
+      "audit_tracking_readiness"
+    ]
+  }
+}
