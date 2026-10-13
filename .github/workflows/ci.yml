@@ -15,4 +15,5 @@ jobs:
         with:
           node-version: "24"
           package-manager-cache: false
-      - run: npx --yes markdownlint-cli2@latest "**/*.md"
+      - run: npx --yes markdownlint-cli2@0.23.3 "**/*.md"
+      - run: node scripts/validate-catalog.mjs
